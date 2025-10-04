@@ -2,6 +2,7 @@ package internity.cli;
 
 import internity.commands.ExitCommand;
 import internity.commands.Command;
+import internity.core.InternityException;
 
 /**
  * Parses raw user input into executable {@link Command} objects. <br>
@@ -21,11 +22,11 @@ public class Parser {
      *
      * @param input raw user input
      * @return a {@link Command} corresponding to the input
-     * @throws IllegalArgumentException if the input is null or blank
+     * @throws InternityException if input is null or blank or unknown command is entered
      */
-    public Command parseInput(String input) {
+    public Command parseInput(String input) throws InternityException {
         if (input == null || input.isBlank()) {
-            throw new IllegalArgumentException("Input cannot be null or blank");
+            throw InternityException.invalidInput();
         }
 
         String[] parts = input.trim().split("\\s+", 2);
@@ -36,7 +37,7 @@ public class Parser {
         case "exit":
             return new ExitCommand();
         default:
-            throw new IllegalStateException("Unknown command: " + command);
+            throw InternityException.unknownCommand(command);
         }
     }
 }

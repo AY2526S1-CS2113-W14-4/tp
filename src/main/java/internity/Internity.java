@@ -6,7 +6,7 @@ import internity.cli.Parser;
 import internity.commands.Command;
 
 public class Internity {
-    public static void initInternity() {
+    public static void printIntro() {
         String logo = " ___       _                  _ _\n" +
                 "|_ _|_ __ | |_ ___ _ __ _ __ (_) |_ _   _\n" +
                 " | || '_ \\| __/ _ \\ '__| '_ \\| | __| | | |\n" +
@@ -15,9 +15,16 @@ public class Internity {
                 "                                    |___/";
         System.out.println("Hello from\n" + logo);
         System.out.println("What is your name?");
+    }
 
+    public static void printGreeting(String input) {
+        System.out.println("Hello " + input);
+    }
+
+    public static void initInternity() {
+        printIntro();
         Scanner in = new Scanner(System.in);
-        System.out.println("Hello " + in.nextLine());
+        printGreeting(in.nextLine());
         Parser parser = new Parser();
         boolean isExit = false;
 
