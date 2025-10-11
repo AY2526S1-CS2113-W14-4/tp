@@ -20,28 +20,21 @@ class UpdateCommandTest {
 
     @Test
     void execute_validArgs_updatesStatusSuccessfully() throws InternityException {
-        UpdateCommand command = new UpdateCommand("1 status/Accepted");
+        UpdateCommand command = new UpdateCommand(0, "Accepted");
         command.execute();
         assertEquals("Accepted", InternshipList.get(0).getStatus());
     }
 
     @Test
     void execute_invalidIndex_doesNotUpdateStatus() throws InternityException {
-        UpdateCommand command = new UpdateCommand("5 status/Rejected");
+        UpdateCommand command = new UpdateCommand(5, "Rejected");
         assertThrows(InternityException.class, command::execute);
         assertEquals("Pending", InternshipList.get(0).getStatus());
     }
 
     @Test
-    void constructor_invalidFormat_throwsException() {
-        assertThrows(InternityException.class, () ->
-            new UpdateCommand("1 Accepted")
-        );
-    }
-
-    @Test
     void isExit_always_returnsFalse() throws InternityException {
-        UpdateCommand command = new UpdateCommand("1 status/Accepted");
+        UpdateCommand command = new UpdateCommand(0, "Accepted");
         assertFalse(command.isExit());
     }
 }

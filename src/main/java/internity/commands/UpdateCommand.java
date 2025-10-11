@@ -18,14 +18,9 @@ public class UpdateCommand extends Command {
      * Constructs an UpdateCommand from a raw argument string.
      * Example: "1 status/Accepted"
      */
-    public UpdateCommand(String args) throws InternityException {
-        try {
-            String[] splitArgs = args.split("\\s+status/");
-            this.index = Integer.parseInt(splitArgs[0].trim()) - 1;
-            this.newStatus = splitArgs[1].trim();
-        } catch (Exception e) {
-            throw new InternityException("Invalid update command format. Use: update INDEX status/NEW_STATUS");
-        }
+    public UpdateCommand(int index, String newStatus) throws InternityException {
+        this.index = index;
+        this.newStatus = newStatus;
     }
 
     @Override

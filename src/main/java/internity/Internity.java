@@ -4,7 +4,6 @@ import java.util.Scanner;
 
 import internity.cli.CommandParser;
 import internity.commands.Command;
-import internity.core.InternshipList;
 import internity.ui.Ui; 
 
 public class Internity {
@@ -14,7 +13,6 @@ public class Internity {
         Ui.printGreeting(in.nextLine());
         Ui.printHorizontalLine();
 
-        InternshipList internshipList = new InternshipList();
         CommandParser commandParser = new CommandParser();
         boolean isExit = false;
 
