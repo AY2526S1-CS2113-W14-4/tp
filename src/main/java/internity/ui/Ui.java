@@ -1,5 +1,7 @@
 package internity.ui;
 
+import internity.core.Internship;
+
 /**
  * The Ui Class provides user interface methods for the Internity chatbot.
  * Handles printing messages.
@@ -31,7 +33,14 @@ public class Ui {
         System.out.println("Thank you for using Internity! Goodbye!");
     }
 
-    public static void printAddInternship() {}
+    public static void printAddInternship(Internship internship) {
+        System.out.println("Noted. I've added this internship:");
+        System.out.println("  "
+                + internship.getCompany() + " - " + internship.getRole()
+                + " | Pay: " + internship.getPay()
+                + " | Deadline: " + internship.getDeadline()
+        );
+    }
 
     public static void printRemoveInternship(String item, int totalItems) {
         System.out.println("Noted. I've removed this task:");

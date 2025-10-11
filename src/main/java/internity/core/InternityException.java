@@ -25,6 +25,11 @@ public class InternityException extends Exception {
         return new InternityException("Invalid date format. Expected dd-MM-yyyy (e.g. 08-10-2025)");
     }
 
+    public static InternityException invalidAddCommand() {
+        return new InternityException("Invalid add command. Usage: add company/COMPANY_NAME" +
+                " role/ROLE_NAME deadline/DEADLINE pay/PAY_AMOUNT");
+    }
+
     public static InternityException invalidDeleteCommand() {
         return new InternityException("Invalid delete command. Usage: delete INDEX");
     }
