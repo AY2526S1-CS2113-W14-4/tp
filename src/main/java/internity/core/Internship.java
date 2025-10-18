@@ -1,6 +1,12 @@
 package internity.core;
 
+import java.util.Set;
+
 public class Internship {
+    private static final Set<String> VALID_STATUSES = Set.of(
+            "Pending", "Interested", "Applied", "Interviewing", "Offer", "Accepted", "Rejected"
+    );
+
     private String company;
     private String role;
     private Date deadline;
@@ -53,5 +59,15 @@ public class Internship {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    /**
+     * Checks if the given status is valid.
+     *
+     * @param status The status to validate.
+     * @return true if the status is valid, false otherwise.
+     */
+    public static boolean isValidStatus(String status) {
+        return status != null && VALID_STATUSES.contains(status);
     }
 }

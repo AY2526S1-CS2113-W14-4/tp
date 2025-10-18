@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import internity.utils.DateFormatter;
+
 /**
  * Handles loading and saving internships to a file for persistent storage.
  * The storage format is a pipe-delimited text file where each line represents one internship.
@@ -24,6 +26,14 @@ public class Storage {
     static {
         logger.setLevel(Level.WARNING);
     }
+
+    // Indices for pipe delimited format
+    private static final int IDX_COMPANY = 0;
+    private static final int IDX_ROLE = 1;
+    private static final int IDX_DEADLINE = 2;
+    private static final int IDX_PAY = 3;
+    private static final int IDX_STATUS = 4;
+    private static final int LEN_REQUIRED_FIELDS = 5;
 
     private final Path filePath;
 
@@ -58,12 +68,9 @@ public class Storage {
             int lineNumber = 0;
             while ((line = br.readLine()) != null) {
                 lineNumber++;
-                Internship internship = parseInternshipFromFile(line);
-                if (internship != null) {
-                    internships.add(internship);
-                } else {
-                    logger.warning("Skipped corrupted line " + lineNumber + ": " + line);
-                    System.out.println("Warning: Skipped corrupted line in storage file: " + line);
+                String errorMessage = parseInternshipFromFile(line, internships);
+                if (errorMessage != null) {
+                    System.err.println(errorMessage);
                 }
             }
         } catch (IOException e) {
@@ -79,21 +86,11 @@ public class Storage {
      * Parses a single line from the storage file into an Internship object.
      *
      * @param line The line to parse.
-     * @return The parsed Internship, or null if the line is corrupted.
+     * @param internships The list to add the parsed internship to.
+     * @return Error message if parsing failed, null if successful.
      */
-    private Internship parseInternshipFromFile(String line) {
+    private String parseInternshipFromFile(String line, ArrayList<Internship> internships) {
         assert line != null : "Line to parse cannot be null";
-
-        // Indices for pipe delimited format
-        final int IDX_COMPANY = 0;
-        final int IDX_ROLE = 1;
-        final int IDX_DEADLINE = 2;
-        final int IDX_PAY = 3;
-        final int IDX_STATUS = 4;
-
-        final int IDX_DAY = 0;
-        final int IDX_MONTH = 1;
-        final int IDX_YEAR = 2;
 
         String[] parts = line.split("\\|");
 
@@ -102,8 +99,8 @@ public class Storage {
             parts[i] = parts[i].trim();
         }
 
-        if (parts.length < 5) {
-            return null; // Corrupted line - line has fewer than 5 fields
+        if (parts.length < LEN_REQUIRED_FIELDS) {
+            return "Warning: Skipped line with insufficient fields: " + line;
         }
 
         try {
@@ -113,23 +110,26 @@ public class Storage {
             int pay = Integer.parseInt(parts[IDX_PAY]);
             String status = parts[IDX_STATUS];
 
-            // Parse the date (format: DD-MM-YYYY)
-            String[] dateParts = deadlineStr.split("-");
-            if (dateParts.length != 3) {
-                return null; // Invalid date format
+            // Validate status
+            if (!Internship.isValidStatus(status)) {
+                logger.fine("Invalid status in line: " + line + " - status: " + status);
+                return "Warning: Skipped line with invalid status: " + line;
             }
 
-            int day = Integer.parseInt(dateParts[IDX_DAY]);
-            int month = Integer.parseInt(dateParts[IDX_MONTH]);
-            int year = Integer.parseInt(dateParts[IDX_YEAR]);
-            Date deadline = new Date(day, month, year);
+            // DateFormatter validates date format and impossible dates (e.g., Feb 31)
+            Date deadline = DateFormatter.parse(deadlineStr);
 
             Internship internship = new Internship(company, role, deadline, pay);
             internship.setStatus(status);
+            internships.add(internship);
 
-            return internship;
+            return null;
         } catch (NumberFormatException e) {
-            return null; // Invalid number format
+            logger.fine("Invalid pay format in line: " + line + " - " + e.getMessage());
+            return "Warning: Skipped line with invalid pay amount: " + line;
+        } catch (InternityException e) {
+            logger.fine("Invalid date in line: " + line + " - " + e.getMessage());
+            return "Warning: Skipped line with invalid date: " + line;
         }
     }
 

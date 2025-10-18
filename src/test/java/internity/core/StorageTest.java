@@ -24,19 +24,24 @@ class StorageTest {
     private Storage storage;
     private String testFilePath;
     private final PrintStream originalOut = System.out;
+    private final PrintStream originalErr = System.err;
     private ByteArrayOutputStream outContent;
+    private ByteArrayOutputStream errContent;
 
     @BeforeEach
     void setUp() {
         testFilePath = tempDir.resolve("test_internships.txt").toString();
         storage = new Storage(testFilePath);
         outContent = new ByteArrayOutputStream();
+        errContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
+        System.setErr(new PrintStream(errContent));
     }
 
     @AfterEach
     void restoreStreams() {
         System.setOut(originalOut);
+        System.setErr(originalErr);
     }
 
     // Test save() with empty list
@@ -190,7 +195,7 @@ class StorageTest {
         assertEquals(2, internships.size());
         assertEquals("Google", internships.get(0).getCompany());
         assertEquals("Amazon", internships.get(1).getCompany());
-        assertTrue(outContent.toString().contains("Warning: Skipped corrupted line"));
+        assertTrue(errContent.toString().contains("Warning: Skipped line with insufficient fields:"));
     }
 
     // Test load() with corrupted line - invalid pay format
@@ -204,7 +209,7 @@ class StorageTest {
         ArrayList<Internship> internships = storage.load();
 
         assertEquals(2, internships.size());
-        assertTrue(outContent.toString().contains("Warning: Skipped corrupted line"));
+        assertTrue(errContent.toString().contains("Warning: Skipped line with invalid pay amount"));
     }
 
     // Test load() with corrupted line - invalid date format
@@ -218,7 +223,23 @@ class StorageTest {
         ArrayList<Internship> internships = storage.load();
 
         assertEquals(2, internships.size());
-        assertTrue(outContent.toString().contains("Warning: Skipped corrupted line"));
+        assertTrue(errContent.toString().contains("Warning: Skipped line with invalid date"));
+    }
+
+    // Test load() with corrupted line - invalid status
+    @Test
+    void load_corruptedLineInvalidStatus_skipsCorruptedLine() throws InternityException, IOException {
+        String content = "Google | SWE | 15-03-2025 | 6000 | Pending\n"
+                + "Meta | Data Scientist | 20-04-2025 | 7000 | InvalidStatus\n"  // Invalid status
+                + "Amazon | DevOps | 01-05-2025 | 5500 | Rejected\n";
+        Files.writeString(Path.of(testFilePath), content);
+
+        ArrayList<Internship> internships = storage.load();
+
+        assertEquals(2, internships.size());
+        assertEquals("Google", internships.get(0).getCompany());
+        assertEquals("Amazon", internships.get(1).getCompany());
+        assertTrue(errContent.toString().contains("Warning: Skipped line with invalid status"));
     }
 
     // Test save() and load() round trip
@@ -257,13 +278,13 @@ class StorageTest {
     @Test
     void load_multiWordFields_loadsCorrectly() throws InternityException, IOException {
         Files.writeString(Path.of(testFilePath),
-                "Jane Street | Quantitative Researcher | 25-12-2025 | 10000 | Under Review\n");
+                "Jane Street | Quantitative Researcher | 25-12-2025 | 10000 | Interviewing\n");
 
         ArrayList<Internship> internships = storage.load();
 
         assertEquals(1, internships.size());
         assertEquals("Jane Street", internships.get(0).getCompany());
         assertEquals("Quantitative Researcher", internships.get(0).getRole());
-        assertEquals("Under Review", internships.get(0).getStatus());
+        assertEquals("Interviewing", internships.get(0).getStatus());
     }
 }
