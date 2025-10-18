@@ -1,5 +1,7 @@
 package internity.commands;
 
+import internity.ui.Ui;
+
 /**
  * Represents the {@code exit} command, which terminates the program.
  *
@@ -18,7 +20,7 @@ public class ExitCommand extends Command {
      */
     @Override
     public void execute() {
-        System.out.println("Thank you for using Internity! Goodbye!");
+        Ui.printExit();
     }
 
     /**
