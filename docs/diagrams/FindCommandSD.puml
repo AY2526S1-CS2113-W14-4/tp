@@ -22,10 +22,13 @@ loop for each internship in list
     activate IN
     IN --> IL: return company and role
     deactivate IN
-    note right of IL: Check if company or role contains\nkeyword
+    opt company or role contains keyword
+        IL -> IL: add internship to an ArrayList\nof matching internships
+        activate IL
+        IL --> IL: return
+        deactivate IL
+    end
 end
-
-IL -> IL: Collect all matching internships\ninto a new ArrayList
 
 IL -> Ui: print matching internships
 activate Ui
