@@ -4,9 +4,8 @@ title Find Command - Sequence Diagram
 participant Logic
 participant ":FindCommand" as FC
 participant "<<class>>\nInternshipList" as IL
-participant "List:ArrayList<Internship>" as LI
 participant ":Internship" as IN
-participant ":Ui" as Ui
+participant "<<class>>\nUi" as Ui
 
 Logic -> FC**: new FindCommand(...)
 activate FC
@@ -18,19 +17,15 @@ activate FC
 FC -> IL: findInternship(...)
 activate IL
 
-IL -> LI: filter internships based on keyword
-activate LI
-
 loop for each internship in list
-    LI -> IN: get company and role
+    IL -> IN: get company and role
     activate IN
-    IN --> LI: return company and role
+    IN --> IL: return company and role
     deactivate IN
-    LI -> LI: check if company or role\ncontains keyword (case-insensitive)
+    note right of IL: Check if company or role contains\nkeyword
 end
 
-LI --> IL: return new ArrayList of matching internships
-deactivate LI
+IL -> IL: Collect all matching internships\ninto a new ArrayList
 
 IL -> Ui: print matching internships
 activate Ui
