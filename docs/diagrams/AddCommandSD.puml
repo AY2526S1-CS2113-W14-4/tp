@@ -5,8 +5,7 @@ participant Logic
 participant ":AddCommand" as AC
 participant ":Internship" as IN
 participant "<<class>>\nInternshipList" as IL
-participant "List:ArrayList<Internship>" as LI
-participant ":Ui" as Ui
+participant "<<class>>\nUi" as Ui
 
 Logic -> AC**: new AddCommand(...)
 activate AC
@@ -22,10 +21,7 @@ deactivate IN
 
 AC -> IL: add(...)
 activate IL
-IL -> LI: add()
-activate LI
-LI --> IL
-deactivate LI
+note right of IL: Internally adds the internship\nto list:ArrayList<Internship>
 IL --> AC
 deactivate IL
 
