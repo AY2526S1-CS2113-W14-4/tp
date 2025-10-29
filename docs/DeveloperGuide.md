@@ -220,8 +220,90 @@ The class diagram illustrates:
 ---
 
 ### Update feature
+**API:** `UpdateCommand.java`  
+
+The update mechanism lets users modify one or more fields of an existing internship entry. It keeps the list accurate as applications evolve, without forcing users to re-enter the whole record.
+
+#### Implementation
+`UpdateCommand` extends the abstract `Command` class. Users specify a 1-based index in the CLI, which is converted to a 0-based index during parsing. Any subset of fields can be provided. Only non-null fields are applied.
+
+**Key components involved**
+- `UpdateCommand` Encapsulates the multi-field update with guarded calls for each optional field and a final success message.  
+- `ArgumentParser.parseUpdateCommandArgs()` Parses `update INDEX [company/...] [role/...] [deadline/...] [pay/...] [status/...]`, converts 1-based index to 0-based, validates tags and formats, constructs `UpdateCommand`.  
+- `InternshipList.updateCompany()` Sets company after index bounds check.  
+- `InternshipList.updateRole()` Sets role after index bounds check.  
+- `InternshipList.updateDeadline()` Sets deadline after index bounds check.  
+- `InternshipList.updatePay()`Sets pay after index bounds check and non-negative parsing in the parser.  
+- `InternshipList.updateStatus()`Validates and normalizes status, then sets it after index bounds check.  
+- `Ui.printUpdateInternship()` Confirms a successful update to the user.  
+- `InternityManager.saveData()` → `InternshipList.saveToStorage()` → `Storage.save()` Automatically persists the updated list after command execution.  
+
+#### How the Update Operation Works
+Given below is an example usage scenario and how the update mechanism behaves at each step.
+
+- **Step 1.** The user launches the application with a populated `InternshipList`. The user executes:  
+  ```bash
+  update 1 company/Google role/Software Engineer pay/9000 status/Accepted
+  ```
+- **Step 2.** Parsing input
+`CommandParser` receives the input and splits it into command word `update` and the remaining arguments.
+
+- **Step 3.** Creating the command
+  `CommandFactory` delegates to `ArgumentParser.parseUpdateCommandArgs(...)`, which:
+
+  - Splits the arguments into the index token and a tagged fields segment.  
+  - Converts the 1-based index to 0-based.  
+  - Scans tagged parts for `company/`, `role/`, `deadline/`, `pay/`, `status/`.  
+  - Parses types and validates formats.  
+    - `deadline/` is parsed with `DateFormatter.parse(...)`.  
+    - `pay/` is parsed as a non-negative integer.  
+    - `status/` must be non-empty and is later normalized by `InternshipList.updateStatus`.  
+  - Ensures at least one update field is present.  
+  - Constructs and returns:  
+    ```java
+    new UpdateCommand(index, company, role, deadline, pay, status)
+    ```
+
+
+- **Step 4.** Executing the command
+  `InternityManager` calls `UpdateCommand.execute()`, which:
+
+  - Initializes `isUpdated = false`.  
+  - For each non-null field, calls the corresponding `InternshipList.updateX(...)`.  
+    Each update method checks index bounds and applies the new value.  
+    `updateStatus` additionally validates and canonicalizes the status string.  
+  - If no fields were provided, throws `InternityException` with a clear message.  
+  - On success, calls `Ui.printUpdateInternship()` to acknowledge the update.  
+
+- **Step 5.** Saving data
+  After the command completes, `InternityManager` automatically persists changes by calling `InternshipList.saveToStorage()`, which invokes `Storage.save(...)` to write the current username header and all internships to disk.
+
+#### Error Handling
+- Invalid format for `update` arguments → `ArgumentParser.invalidUpdateFormat()`  
+- Missing tagged fields → `InternityException.noUpdateFieldsProvided()`  
+- Invalid index token → `InternityException.invalidIndexForUpdate()`  
+- Unknown tag → `InternityException.unknownUpdateField(...)`  
+- Invalid `pay` → `InternityException.invalidPayFormat()`  
+- Out of bounds index when applying updates → `InternshipList.updateX` throws `InternityException.invalidInternshipIndex()`  
+- Invalid or empty `status` → `InternityException.invalidStatus(...)` or `InternityException.emptyField("status/")`  
 
 ---
+
+#### Example Commands
+```bash
+update 3 status/Interviewing           # Update only status
+update 2 company/Apple role/ML Engineer # Update company and role
+update 4 deadline/15-12-2025 pay/8500   # Update deadline and pay
+update 1                                # Invalid because no fields
+```
+
+#### Sequence Diagram
+![Update Command Sequence Diagram](diagrams/UpdateCommandSD.png)
+
+#### Design Notes
+- Fields not provided by the user are ignored, so updates can be partial and focused.  
+- Validation is split across parsing and model methods for clear responsibility.  
+- Success messaging is centralized in `Ui` for consistent output formatting.  
 
 ### Delete feature
 

@@ -1,0 +1,114 @@
+@startuml
+title Update Command - Sequence Diagram
+
+actor User
+participant ":InternityManager" as IM
+participant ":CommandParser" as CP
+participant ":CommandFactory" as CF
+participant "<<class>>\nArgumentParser" as AP
+participant ":UpdateCommand" as UC
+participant "<<class>>\nInternshipList" as IL
+participant ":Ui" as UI
+participant ":Storage" as S
+
+== Input and Command Creation ==
+User -> IM: input
+activate IM
+
+IM -> CP: parseInput()
+activate CP
+CP -> CP: split into commandWord and args
+
+CP -> CF: createCommand(commandWord, args)
+activate CF
+
+CF -> AP: parseUpdateCommandArgs()
+activate AP
+AP -> AP: parse index and optional fields\n(company, role, deadline, pay, status)
+
+AP -> UC: new UpdateCommand(index, company, role, deadline, pay, status)
+activate UC
+UC --> AP
+deactivate UC
+
+AP --> CF: return UpdateCommand
+deactivate AP
+
+CF --> CP: return UpdateCommand
+deactivate CF
+
+CP --> IM: return UpdateCommand
+deactivate CP
+
+== Command Execution ==
+IM -> UC: execute()
+activate UC
+
+opt company != null
+  UC -> IL: updateCompany(index, company)
+  activate IL
+  IL --> UC
+  deactivate IL
+end
+
+opt role != null
+  UC -> IL: updateRole(index, role)
+  activate IL
+  IL --> UC
+  deactivate IL
+end
+
+opt deadline != null
+  UC -> IL: updateDeadline(index, deadline)
+  activate IL
+  IL --> UC
+  deactivate IL
+end
+
+opt pay != null
+  UC -> IL: updatePay(index, pay)
+  activate IL
+  IL --> UC
+  deactivate IL
+end
+
+opt status != null
+  UC -> IL: updateStatus(index, status)
+  activate IL
+  IL --> UC
+  deactivate IL
+end
+
+alt no fields provided
+  UC --> IM: throw InternityException
+  deactivate UC
+  IM --> User: display error
+else at least one field updated
+  UC -> UI: printUpdateInternship()
+  activate UI
+  UI --> UC
+  deactivate UI
+
+  UC --> IM
+  deactivate UC
+
+  == Persist to Storage ==
+  IM -> IL: saveToStorage()
+  activate IL
+
+  IL -> S: save()
+  activate S
+  loop for each internship
+    S -> S: formatInternshipForFile()
+  end
+  S --> IL
+  deactivate S
+
+  IL --> IM
+  deactivate IL
+
+  IM --> User: display success message
+  deactivate IM
+end
+
+@enduml
