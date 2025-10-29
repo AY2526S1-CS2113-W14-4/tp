@@ -29,7 +29,7 @@ loop for each internship in list
     LI -> LI: check if company or role\ncontains keyword (case-insensitive)
 end
 
-LI -> IL: return new ArrayList of matching internships
+LI --> IL: return new ArrayList of matching internships
 deactivate LI
 
 IL -> Ui: print matching internships
