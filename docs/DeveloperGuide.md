@@ -886,6 +886,8 @@ Test case 2: Invalid username input
   - Error message is displayed indicating an invalid username command.
   - Username remains unchanged.
 
+---
+
 ### Displaying the Internity Dashboard
 Prerequisites: At least one internship has been added to the system.
 
