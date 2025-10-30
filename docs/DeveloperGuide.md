@@ -774,9 +774,47 @@ Given below are instructions to test the app manually.
 
 ### Adding an internship
 
+Test case 1: Add a valid internship
+- Action: `add company/Microsoft role/Intern deadline/15-12-2025 pay/5000`
+- Expected:
+  - Internship is added to the system.
+  - Confirmation message reflects details of the newly added internship.
+
+Test case 2: Add an internship with missing fields
+- Action: `add company/Microsoft role/Intern`
+- Expected:
+  - Error message indicates invalid add command.
+  - Internship is not added.
+
+Test case 3: Add an internship with invalid pay
+- Action: `add company/Bay Harbour role/Butcher deadline/15-12-2025 pay/-1000`
+- Expected:
+  - Error message indicates invalid add command.
+  - Internship is not added.
+
 ### Updating an internship
 
 ### Deleting an internship
+
+Prerequisites: At least one internship has been added.
+
+Test case 1: Delete an internship by index
+- Action: `delete 1`
+- Expected:
+  - The internship at index 1 is removed from the list.
+  - Confirmation message reflects removed internship details.
+
+Test case 2: Delete with invalid index (too high)
+- Action: `delete 1000`
+- Expected:
+  - Error message indicates invalid internship index.
+  - No internship is removed.
+
+Test case 3: Delete with index 0 or negative index
+- Action: `delete 0`, `delete -1`
+- Expected:
+  - Error message indicates invalid internship index.
+  - No internship is removed.
 
 ### Listing and sorting all internships
 
