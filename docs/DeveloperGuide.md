@@ -242,13 +242,217 @@ The class diagram illustrates:
 
 ### Add feature
 
+**API**: [`AddCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/AddCommand.java)
+
+The add mechanism allows users to record new internship entries in their tracking list. This feature ensures users can maintain a comprehensive and organized list of upcoming internship opportunities, along with key details such as company, role, deadline and pay.
+
+### Implementation
+
+The add mechanism is implemented by the `AddCommand` class, which extends the abstract `Command` class. It encapsulates the logic for validating user input, constructing an Internship object and inserting it into the internship list.
+
+**Key components involved:**
+
+* `AddCommand` — Encapsulates the creation and insertion of a new internship entry
+* `ArgumentParser.parseAddCommandArgs()` — Parses and validates raw user input into individual internship fields
+* `InternshipList.add()` — Inserts the constructed internship into the static internship list
+* `Ui.printAddInternship()` — Displays a confirmation message with internship details
+
+### How the add operation works
+
+The following sequence illustrates how the add command is processed from user input to data persistence.
+
+**Step 1.** The user launches the application and executes a command such as:
+```
+add company/Google role/Software Engineer Intern deadline/17-09-2025 pay/7000
+```
+
+**Step 2.** The `CommandParser` splits the input into command word `"add"` and the argument string
+`"company/Google role/Software Engineer deadline/17-09-2025 pay/120000"`.
+
+**Step 3.** The CommandFactory delegates parsing to `ArgumentParser.parseAddCommandArgs(args)`, which performs detailed extraction and validation of all fields.
+
+### Argument Parsing Logic
+
+The `ArgumentParser.parseAddCommandArgs()` method is responsible for transforming the raw argument string into a valid `AddCommand` instance.
+This step is critical to ensure input integrity and proper data representation.
+
+**Parsing process:**
+
+**1. Input Validation**
+* Checks if the argument string is null or blank.
+* Throws `InternityException.invalidAddCommand()` if input is missing.
+
+**2. Splitting Fields**
+* Splits the argument string using a predefined delimiter (`ADD_COMMAND_PARSE_LOGIC`) into 4 parts.
+* Each part is expected to start with a specific prefix and be in the following order:  
+  `company/`, `role/`, `deadline/`, and `pay/`. 
+* If any prefix is missing or out of order, parsing fails immediately.
+
+**3. Extracting Values**
+* Removes each prefix to isolate the user-provided values.
+* Trims whitespace from each field.
+* Example:  
+  ```
+  company/Google → "Google"
+  role/Software Engineer → "Software Engineer"
+  ```
+**4. Data Conversion**
+* The `deadline` string is parsed into a `Date` object via `DateFormatter.parse()`.
+* The `pay` field is converted into an integer using `Integer.parseInt()`.
+
+**5. Validation**
+* Ensures no fields are empty.
+* Ensures `pay` is non-negative.
+* Verifies that `company` and `role` do not exceed the maximum character limits defined in `Ui` (`COMPANY_MAXLEN` and `ROLE_MAXLEN`).
+* Logs detailed error messages if any validation fails.
+
+**6. Command Construction**
+* If all checks pass, a new `AddCommand` instance is created:  
+  ```
+  return new AddCommand(company, role, deadline, pay);
+  ```
+
+If any stage fails, the method logs the issue and throws an `InternityException.invalidAddCommand()` to provide consistent feedback to the user.
+
+### Command Execution Flow
+
+**Step 4.** When `InternityManager` calls `AddCommand.execute()`:
+* A new `Internship` object is created using the parsed details.
+* The `InternshipList.add(internship)` method adds the internship to the global static list.
+* The `Ui.printAddInternship()` method displays a formatted confirmation message to the user.
+
+**Step 5.** After execution, `InternityManager` triggers `InternshipList.saveToStorage()`, which internally calls `Storage.save()` to persist the updated internship list to disk.
+
+### Example Walkthrough
+
+| Step | Component      | Action                                                                                 |
+| ---- | -------------- |----------------------------------------------------------------------------------------|
+| 1    | User           | Inputs `add company/Google role/Software Engineer Intern deadline/17-09-2025 pay/7000` |
+| 2    | CommandParser  | Separates command and arguments                                                        |
+| 3    | ArgumentParser | Parses and validates all four fields                                                   |
+| 4    | AddCommand     | Creates `Internship` object and calls `InternshipList.add()`                           |
+| 5    | Ui             | Displays success message                                                               |
+
+The following sequence diagram illustrates the complete add operation flow:
+
 ![Add Command: Sequence Diagram](diagrams/AddCommandSD.png)
+
+#### Design considerations
+
+**Aspect: Inputting parameters by prefix**
+
+* **Alternative 1 (current choice):** Users provide prefix in words: `company/`, `role/`, `deadline/`, `pay/`
+    * Pros: Highly readable and self-explanatory for new users. 
+    * Pros: Reduces ambiguity between parameters — each prefix clearly indicates its purpose.
+    * Pros: Consistent with other natural-language command formats in the application.
+    * Cons: Slightly longer to type compared to abbreviated prefixes.
+    * Cons: Parsing logic requires string comparisons with longer literals, adding minor verbosity.
+
+* **Alternative 2:** Users provide prefix in short form: `c/`, `r/`, `d/`, `p/`
+    * Pros: Faster for experienced users to type.
+    * Pros: Compact input format improves command-line efficiency.
+    * Cons: Less intuitive for beginners unfamiliar with shorthand notation.
+    * Cons: Higher likelihood of user input errors due to short and similar-looking prefixes.
+
+**Aspect: Order of parameters**
+
+* **Alternative 1 (current choice):** Fixed order: company, role, deadline, then pay.
+    * Pros: Simplifies parsing logic and validation — no need for dynamic prefix searching.
+    * Pros: Guarantees consistent argument positions, reducing ambiguity.
+    * Pros: Easier to implement and debug, with predictable input format.
+    * Cons: Users must remember and follow the exact field order.
+    * Cons: Any deviation from the expected sequence causes command rejection.
+
+* **Alternative 2:** Flexible order.
+    * Pros: More user-friendly — fields can be entered in any sequence.
+    * Pros: Robust against user typing variations.
+    * Cons: Requires more complex parsing logic to detect and map prefixes dynamically.
+    * Cons: Increases risk of malformed input if prefixes are missing or repeated.
+    * Cons: Harder to maintain and debug due to variable argument positions.
 
 ---
 
 ### Update feature
+**API:** `UpdateCommand.java`  
+
+The update mechanism lets users modify one or more fields of an existing internship entry. It keeps the list accurate as applications evolve, without forcing users to re-enter the whole record.
+
+#### Implementation
+`UpdateCommand` extends the abstract `Command` class. Users specify a 1-based index in the CLI, which is converted to a 0-based index during parsing. Any subset of fields can be provided. Only non-null fields are applied.
+
+**Key components involved**
+- `UpdateCommand` Encapsulates the multi-field update with guarded calls for each optional field and a final success message.  
+- `ArgumentParser.parseUpdateCommandArgs()` Parses `update INDEX [company/...] [role/...] [deadline/...] [pay/...] [status/...]`, converts 1-based index to 0-based, validates tags and formats, constructs `UpdateCommand`.  
+- `InternshipList.updateCompany()` Sets company after index bounds check.  
+- `InternshipList.updateRole()` Sets role after index bounds check.  
+- `InternshipList.updateDeadline()` Sets deadline after index bounds check.  
+- `InternshipList.updatePay()`Sets pay after index bounds check and non-negative parsing in the parser.  
+- `InternshipList.updateStatus()`Validates and normalizes status, then sets it after index bounds check.  
+- `Ui.printUpdateInternship()` Confirms a successful update to the user.  
+
+#### How the Update Operation Works
+Given below is an example usage scenario and how the update mechanism behaves at each step.
+
+- **Step 1.** The user launches the application with a populated `InternshipList`. The user executes:  
+  ```bash
+  update 1 company/Google role/Software Engineer pay/9000 status/Accepted
+  ```
+- **Step 2.** Parsing input
+`CommandParser` receives the input and splits it into command word `update` and the remaining arguments.
+
+- **Step 3.** Creating the command
+  `CommandFactory` delegates to `ArgumentParser.parseUpdateCommandArgs(...)`, which:
+
+  - Splits the arguments into the index token and a tagged fields segment.  
+  - Converts the 1-based index to 0-based.  
+  - Scans tagged parts for `company/`, `role/`, `deadline/`, `pay/`, `status/`.  
+  - Parses types and validates formats.  
+    - `deadline/` is parsed with `DateFormatter.parse(...)`.  
+    - `pay/` is parsed as a non-negative integer.  
+    - `status/` must be non-empty and is later normalized by `InternshipList.updateStatus`.  
+  - Ensures at least one update field is present.  
+  - Constructs and returns:  
+    ```java
+    new UpdateCommand(index, company, role, deadline, pay, status)
+    ```
+
+
+- **Step 4.** Executing the command
+  `InternityManager` calls `UpdateCommand.execute()`, which:
+
+  - Initializes `isUpdated = false`.  
+  - For each non-null field, calls the corresponding `InternshipList.updateX(...)`.  
+    Each update method checks index bounds and applies the new value.  
+    `updateStatus` additionally validates and canonicalizes the status string.  
+  - If no fields were provided, throws `InternityException` with a clear message.  
+  - On success, calls `Ui.printUpdateInternship()` to acknowledge the update.  
+
+  ![Update Command Sequence Diagram](diagrams/UpdateCommandSD.png)
+  ![Update Command Class Diagram](diagrams/UpdateCommandCD.png)
+
+#### Error Handling
+- Invalid format for `update` arguments → `ArgumentParser.invalidUpdateFormat()`  
+- Missing tagged fields → `InternityException.noUpdateFieldsProvided()`  
+- Invalid index token → `InternityException.invalidIndexForUpdate()`  
+- Unknown tag → `InternityException.unknownUpdateField(...)`  
+- Invalid `pay` → `InternityException.invalidPayFormat()`  
+- Out of bounds index when applying updates → `InternshipList.updateX` throws `InternityException.invalidInternshipIndex()`  
+- Invalid or empty `status` → `InternityException.invalidStatus(...)` or `InternityException.emptyField("status/")`  
 
 ---
+
+#### Example Commands
+```bash
+update 3 status/Interviewing           # Update only status
+update 2 company/Apple role/ML Engineer # Update company and role
+update 4 deadline/15-12-2025 pay/8500   # Update deadline and pay
+update 1                                # Invalid because no fields
+```
+
+#### Design Considerations
+- Fields not provided by the user are ignored, so updates can be partial and focused.  
+- Validation is split across parsing and model methods for clear responsibility.  
+- Success messaging is centralized in `Ui` for consistent output formatting.  
 
 ### Delete feature
 
@@ -415,7 +619,7 @@ The search looks for matching company or role names.
 5. **Step 5**: `findInternship()` filters the internships, looking for the keyword in both the company and role fields.
 If any matches are found, they are displayed through the UI.
 
-6. **Step 6**: If no matches are found, the user sees the message printed in the Ui: "No internships with this Company or Role found."
+6. **Step 6**: If no matches are found, the user sees the message printed in the Ui: "No internships with this company or role found."
 
 ### Internals and Key Functions
 
@@ -438,13 +642,17 @@ for display. The UI is responsible for presenting the search results to the user
 - **Expected Output**:
     ```
     These are the matching internships in your list:
-      1.  Google - Software Engineer | Deadline: 10-12-2025 | Pay: 100000 | Status: Pending
-      2.  Alphabet - Googler | Deadline: 10-12-2025 | Pay: 150000 | Status: Pending
+    ______________________________________________________________________________________________
+    No. Company         Role                           Deadline        Pay        Status
+    ______________________________________________________________________________________________
+      1 Google          Software Engineer              17-09-2025      120000     Pending   
+      2 Alphabet        Googleerrr                     17-09-2025      120000     Pending    
+    ______________________________________________________________________________________________
     ```
 
   If no internships match:
     ```
-    No internships with this Company or Role found.
+    No internships with this company or role found.
     ```
 
 ### Edge Cases and Considerations
@@ -458,10 +666,37 @@ would all match the same internships.
 - **Performance**: The search mechanism uses a stream-based filter on the internship list, which is efficient
 for moderate-sized datasets but may require optimisation for larger datasets.
 
-### Persistence
+#### Design Considerations
 
-Since this is a search command and does not modify the underlying data, no changes are persisted to disk
-during the `find` operation. However, any modifications (such as deletion or addition of internships) will require a subsequent call to `Storage.save()` to persist the changes.
+**Aspect: Filtering criteria**
+
+* **Alternative 1 (current choice):** Match results if the keyword appears in either the `company` or `role` field.
+    * Pros: Provides broader and more flexible search results as users can find internships even if they only remember the company or the role.
+    * Pros: Simple and efficient to implement using basic string matching.
+    * Pros: Reduces the need for users to specify which field to search, improving ease of use.
+    * Cons: May return more results than intended if the keyword appears in both fields across many entries.
+    * Cons: Cannot distinguish whether a match came from the company name or the role field.
+
+* **Alternative 2:** Require users to specify the search field explicitly using prefixes (e.g. `find company/Google` or `find role/Engineer`).
+    * Pros: Provides greater precision and control as users can narrow down their searches more effectively.
+    * Pros: Reduces irrelevant matches when users are searching for specific fields.
+    * Cons: Increases command complexity and typing effort.
+    * Cons: Users must remember additional prefixes and syntax.
+    * Cons: Slightly more complex parsing logic is required to distinguish between field-based searches.
+
+**Aspect: Matching behavior**
+
+* **Alternative 1 (current choice):** Case-insensitive substring matching.
+    * Pros: Intuitive for casual users typing quick search terms.
+    * Pros: Users don’t need to remember exact capitalisation or full words.
+    * Pros: Easy to implement using standard string operations like `.toLowerCase().contains()`.
+    * Cons: May produce partial matches that are not meaningful (e.g. “Meta” matching “Metaverse”). 
+
+* **Alternative 2:** Exact or regex-based matching.
+    * Pros: Allows for precise control — users can specify exact matches or complex patterns.
+    * Pros: More suitable for power users who need fine-grained filtering.
+    * Cons: Less user-friendly for casual users unfamiliar with regex or strict syntax.
+    * Cons: Increased complexity compared to simple substring search due to more complex validation and greater likelihood of parsing errors.
 
 ---
 
@@ -554,6 +789,7 @@ The Storage mechanism uses a human-readable, pipe-delimited text file format tha
 
 **File format specification:**
 
+Data is stored in a single file at `./data/internships.txt` with both username and internships.
 ```
 Username (in line below):
 <username>
@@ -641,92 +877,42 @@ The save sequence diagram shows the straightforward serialization process. Note 
 **Aspect: File format choice**
 
 * **Alternative 1 (current choice):** Pipe-delimited text format.
-  * Pros: Human-readable, easy to debug and manually edit if needed.
-  * Pros: Simple parsing logic without external dependencies.
-  * Pros: Works across all platforms without binary compatibility issues.
-  * Cons: Slightly larger file size compared to binary formats.
+  * Pros: Human-readable, can be edited by a user, doubling up as an import/export function.
   * Cons: No built-in schema validation.
-  * Cons: Performance degrades with very large files (not an issue for target use case of ~1000 entries).
 
 * **Alternative 2:** JSON format using a library.
   * Pros: Structured format with built-in validation.
   * Pros: Easier to extend with new fields.
-  * Pros: Better for complex nested data structures.
   * Cons: Less human-readable due to verbose syntax.
-  * Cons: Overkill for simple tabular data.
 
 * **Alternative 3:** Binary serialization using Java's `ObjectOutputStream`.
   * Pros: Compact file size.
-  * Pros: Fast serialization/deserialization.
   * Cons: Not human-readable or editable.
   * Cons: Platform-dependent binary format could cause issues.
 
 **Aspect: Error handling strategy**
 
 * **Alternative 1 (current choice):** Skip corrupted lines with warnings, continue loading valid entries.
-  * Pros: Maximizes data recovery - users don't lose all data due to one corrupted line.
   * Pros: Application remains usable even with partial data corruption.
-  * Pros: Warnings inform users of data issues without blocking usage.
-  * Cons: Silent data loss is possible if users don't notice warnings.
-  * Cons: Corrupted data is permanently lost on next save.
   * Cons: Code complexity increases as edge cases need to be accounted for.
 
-* **Alternative 2:** Fail fast - throw exception and abort load on any corrupted line.
-  * Pros: No silent data loss - users are immediately aware of corruption.
-  * Pros: Forces users to fix or remove corrupted data.
-  * Cons: Users cannot access any data if even one line is corrupted.
-  * Cons: Poor user experience for a minor data issue.
-
-* **Alternative 3:** Load all lines (including corrupted ones) into a separate "invalid entries" list for user review.
-  * Pros: No data loss - even corrupted entries are preserved.
-  * Pros: Users can manually review and fix corrupted entries.
-  * Cons: Significantly more complex implementation.
-  * Cons: Requires additional UI for managing invalid entries.
-  * Cons: Invalid entries could accumulate over time.
+* **Alternative 2:** Fail and abort load if there is any corrupted line.
+  * Pros: Easy to code, no need to account for edge cases.
+  * Cons: Users cannot access any data if even one line is corrupted, resulting in poor user experience.
 
 **Aspect: When to save**
 
 * **Alternative 1 (current choice):** Auto-save after every command that modifies data.
-  * Pros: Minimizes data loss risk - data is never more than one command out of sync.
-  * Pros: Simple mental model for users - changes are always saved.
+  * Pros: Minimizes data loss risk.
   * Pros: No need for users to remember to save manually.
-  * Cons: Higher I/O overhead (mitigated by small file sizes).
-  * Cons: Performance impact if storage is slow (e.g., network drive).
+  * Cons: Performance impact if storage is slow.
 
-* **Alternative 2:** Save only on explicit "save" command or application exit.
-  * Pros: Better performance with fewer write operations.
-  * Pros: Users have control over when data is persisted.
-  * Cons: Risk of data loss if application crashes or user forgets to save.
-  * Cons: Inconsistent with modern application expectations.
-  * Cons: More complex implementation (need to track dirty state).
+* **Alternative 2:** Save only on application exit.
+  * Cons: Risk of data loss if application crashes.
 
 * **Alternative 3:** Periodic auto-save every N seconds or N operations.
   * Pros: Balances performance and data safety.
-  * Pros: Reduces risk of data loss compared to manual save.
   * Cons: More complex implementation (requires background thread or operation counter).
-  * Cons: Users could still lose up to N operations of data.
-  * Cons: Unpredictable save timing could confuse users.
-
-**Aspect: File location and structure**
-
-* **Alternative 1 (current choice):** Single file at `./data/internships.txt` with both username and internships.
-  * Pros: Simple file structure, easy to locate and backup.
-  * Pros: All data in one place for easy migration.
-  * Pros: Atomic writes ensure consistency (file is completely written or not at all).
-  * Cons: Single point of failure - if file is corrupted, all data is affected.
-
-* **Alternative 2:** Separate files for username and internships.
-  * Pros: Better separation of concerns.
-  * Pros: Reduces risk of username corruption affecting internship data.
-  * Cons: More complex file management.
-  * Cons: Two files must be kept in sync.
-
-* **Alternative 3:** User-home directory with platform-specific application data folder.
-  * Pros: Follows OS conventions for application data storage.
-  * Pros: Better for multi-user systems.
-  * Cons: Harder for users to locate and backup data.
-  * Cons: More complex path resolution logic.
-
 ---
 
 ## Appendix: Requirements
@@ -803,8 +989,71 @@ Given below are instructions to test the app manually.
 
 ### Updating an internship
 
+Test case 1: Update a single field (company name)
+
+- Action: Add an internship using `add company/Google role/Software Engineer deadline/10-12-2025 pay/8000 status/Pending`.  
+  Then, execute the command `update 1 company/Microsoft`.
+- Expected:
+  - The company field of the first internship changes from “Google” to “Microsoft”.
+  - All other fields (role, deadline, pay, status) remain unchanged.
+  - A success message such as `Internship status updated successfully!` is displayed.
+
+Test case 2: Update multiple fields (company, role, and pay)
+
+- Action: Add an internship using `add company/Amazon role/Data Analyst deadline/11-12-2025 pay/5000 status/Applied`.  
+  Then, execute the command `update 1 company/Tesla role/ML Engineer pay/10000`.
+- Expected:
+  - The internship’s company, role, and pay fields are updated to the new values.
+  - Deadline and status remain unchanged.
+  - The confirmation message indicates successful update and displays the new internship details.
+
+Test case 3: Invalid index
+
+- Action: Ensure only one internship exists in the list. Then, execute the command `update 5 company/Netflix`.
+- Expected:
+  - The command fails with the error message:  
+    `Invalid internship index.`
+  - No data is modified.
+
+Test case 4: Missing update fields
+
+- Action: Add an internship using `add company/Meta role/Designer deadline/05-11-2025 pay/6000 status/Pending`.  
+  Then, execute the command `update 1`.
+- Expected:
+  - The command fails with the error message:  
+    `Provide at least one field to update: company/, role/, deadline/, pay/, status/`
+  - No changes are made to the internship.
+
+Test case 5: Invalid pay or deadline format
+
+- Action: Execute the command `update 1 pay/abc` or `update 1 deadline/2025-10-10`.
+- Expected:
+  - For invalid pay:  
+    Error message `Invalid pay. Use a whole number (example: pay/8000)`
+  - For invalid date:  
+    Error message `Invalid date format. Expected dd-MM-yyyy (e.g. 08-10-2025)`
+  - No updates are applied.
+
+Test case 6: Persistence check after update
+
+- Action: Add and update an internship (e.g., `update 1 status/Accepted`).  
+  Exit and restart the application. Then, execute the command `list`.
+- Expected:
+  - The updated internship details remain reflected after restart.
+  - Confirms that updates are correctly saved to persistent storage.
+
+
 ### Deleting an internship
 
+Test case 1: Delete an internship at index 2
+- Actions: 
+  - Add 3 internships with varying details. Then, execute the command `list`.
+  - Then, execute the command `delete 2`.
+  - Then, execute the command `list`.
+- Expected:
+  - When `list` is executed for the first time, all 3 internships are displayed in the order they were added.
+  - When `list` is executed for the second time, only the first and third internship added are displayed in the order they were added. The second internship added is no longer displayed.
+    
 ### Listing and sorting all internships
 
 Test case 1: List all internships in the order they were added
@@ -869,3 +1118,25 @@ Test case 4: Dashboard reflects recent changes
   - Dashboard reflects the updated internship count, deadlines and statuses.
 
 ### Saving Data
+Prerequisites: The application has been launched at least once.
+
+Test case 1: Automatic data persistence after adding an internship
+- Actions:
+  - Launch the application.
+  - Add an internship.
+  - Execute `exit`.
+  - Relaunch the application.
+  - Execute `list`.
+- Expected:
+  - The internship added in the previous session is displayed in the list.
+  - Data file `./data/internships.txt` exists and contains the internship data in pipe-delimited format.
+
+Test case 2: Handling corrupted data file
+- Actions:
+  - Manually edit `./data/internships.txt` and add a malformed line: `Google | SWE | 25-12-2025` (missing pay and status fields).
+  - Launch the application.
+  - Execute `list`.
+- Expected:
+  - Warning message is displayed: `Warning: Skipped line with invalid number of fields: ...`
+  - Application continues to run normally.
+  - Other valid internships are loaded successfully.
