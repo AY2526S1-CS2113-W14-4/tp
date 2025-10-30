@@ -229,7 +229,6 @@ The add mechanism is implemented by the `AddCommand` class, which extends the ab
 * `ArgumentParser.parseAddCommandArgs()` — Parses and validates raw user input into individual internship fields
 * `InternshipList.add()` — Inserts the constructed internship into the static internship list
 * `Ui.printAddInternship()` — Displays a confirmation message with internship details
-* `Storage.save()` — Persists changes automatically after a successful addition
 
 ### How the add operation works
 
@@ -306,11 +305,43 @@ If any stage fails, the method logs the issue and throws an `InternityException.
 | 3    | ArgumentParser | Parses and validates all four fields                                                   |
 | 4    | AddCommand     | Creates `Internship` object and calls `InternshipList.add()`                           |
 | 5    | Ui             | Displays success message                                                               |
-| 6    | Storage        | Saves updated list to persistent storage                                               |
 
 The following sequence diagram illustrates the complete add operation flow:
 
 ![Add Command: Sequence Diagram](diagrams/AddCommandSD.png)
+
+#### Design considerations
+
+**Aspect: Inputting parameters by prefix**
+
+* **Alternative 1 (current choice):** Users provide prefix in words: `company/`, `role/`, `deadline/`, `pay/`
+    * Pros: Highly readable and self-explanatory for new users. 
+    * Pros: Reduces ambiguity between parameters — each prefix clearly indicates its purpose.
+    * Pros: Consistent with other natural-language command formats in the application.
+    * Cons: Slightly longer to type compared to abbreviated prefixes.
+    * Cons: Parsing logic requires string comparisons with longer literals, adding minor verbosity.
+
+* **Alternative 2:** Users provide prefix in short form: `c/`, `r/`, `d/`, `p/`
+    * Pros: Faster for experienced users to type.
+    * Pros: Compact input format improves command-line efficiency.
+    * Cons: Less intuitive for beginners unfamiliar with shorthand notation.
+    * Cons: Higher likelihood of user input errors due to short and similar-looking prefixes.
+
+**Aspect: Order of parameters**
+
+* **Alternative 1 (current choice):** Fixed order: company, role, deadline, then pay.
+    * Pros: Simplifies parsing logic and validation — no need for dynamic prefix searching.
+    * Pros: Guarantees consistent argument positions, reducing ambiguity.
+    * Pros: Easier to implement and debug, with predictable input format.
+    * Cons: Users must remember and follow the exact field order.
+    * Cons: Any deviation from the expected sequence causes command rejection.
+
+* **Alternative 2:** Flexible order.
+    * Pros: More user-friendly — fields can be entered in any sequence.
+    * Pros: Robust against user typing variations.
+    * Cons: Requires more complex parsing logic to detect and map prefixes dynamically.
+    * Cons: Increases risk of malformed input if prefixes are missing or repeated.
+    * Cons: Harder to maintain and debug due to variable argument positions.
 
 ---
 
