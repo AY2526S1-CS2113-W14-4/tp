@@ -1,0 +1,72 @@
+@startuml UpdateFeatureCD
+title Update Feature - Class Diagram
+
+class ArgumentParser {
+  + {static} parseUpdateCommandArgs(args: String): UpdateCommand
+  - {static} requireArgs(args: String): String
+  - {static} requireTagged(tagged: String): String
+  - {static} splitIndexAndTagged(trimmed: String): String[]
+  - {static} parseOneBasedIndex(indexToken: String): int
+  - {static} valueAfterTag(token: String, tag: String): String
+}
+
+class UpdateCommand {
+  - index: int
+  - company: String
+  - role: String
+  - deadline: Date
+  - pay: Integer
+  - status: String
+  __
+  + UpdateCommand(index: int, company: String, role: String, deadline: Date, pay: Integer, status: String)
+  + execute(): void
+  + isExit(): boolean
+}
+
+class InternshipList {
+  + {static} updateCompany(index: int, company: String): void
+  + {static} updateRole(index: int, role: String): void
+  + {static} updateDeadline(index: int, deadline: Date): void
+  + {static} updatePay(index: int, pay: int): void
+  + {static} updateStatus(index: int, status: String): void
+}
+
+class Date {
+  + Date(day: int, month: int, year: int)
+  + toString(): String
+}
+
+class DateFormatter {
+  + {static} parse(dateStr: String): Date
+}
+
+class Ui {
+  + {static} printUpdateInternship(): void
+}
+
+class InternityException {
+  + InternityException(message: String)
+}
+
+ArgumentParser ..> UpdateCommand : creates >
+ArgumentParser ..> DateFormatter : uses >
+ArgumentParser ..> InternityException : throws >
+UpdateCommand ..> InternshipList : updates >
+UpdateCommand ..> Ui : prints >
+UpdateCommand ..> Date : uses >
+UpdateCommand ..> InternityException : throws >
+
+note right of ArgumentParser
+  Responsible for parsing raw user input into
+  structured parameters for UpdateCommand.
+  Validates format, converts indices, and ensures
+  at least one field is provided.
+end note
+
+note bottom of UpdateCommand
+  Executes the update by calling InternshipList methods
+  for each non-null field, then confirms via Ui.
+  Throws InternityException if no valid updates.
+end note
+
+@enduml

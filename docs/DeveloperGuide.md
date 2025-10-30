@@ -852,6 +852,60 @@ Given below are instructions to test the app manually.
 
 ### Updating an internship
 
+Test case 1: Update a single field (company name)
+
+- Action: Add an internship using `add company/Google role/Software Engineer deadline/10-12-2025 pay/8000 status/Pending`.  
+  Then, execute the command `update 1 company/Microsoft`.
+- Expected:
+  - The company field of the first internship changes from “Google” to “Microsoft”.
+  - All other fields (role, deadline, pay, status) remain unchanged.
+  - A success message such as `Internship status updated successfully!` is displayed.
+
+Test case 2: Update multiple fields (company, role, and pay)
+
+- Action: Add an internship using `add company/Amazon role/Data Analyst deadline/11-12-2025 pay/5000 status/Applied`.  
+  Then, execute the command `update 1 company/Tesla role/ML Engineer pay/10000`.
+- Expected:
+  - The internship’s company, role, and pay fields are updated to the new values.
+  - Deadline and status remain unchanged.
+  - The confirmation message indicates successful update and displays the new internship details.
+
+Test case 3: Invalid index
+
+- Action: Ensure only one internship exists in the list. Then, execute the command `update 5 company/Netflix`.
+- Expected:
+  - The command fails with the error message:  
+    `Invalid internship index.`
+  - No data is modified.
+
+Test case 4: Missing update fields
+
+- Action: Add an internship using `add company/Meta role/Designer deadline/05-11-2025 pay/6000 status/Pending`.  
+  Then, execute the command `update 1`.
+- Expected:
+  - The command fails with the error message:  
+    `Provide at least one field to update: company/, role/, deadline/, pay/, status/`
+  - No changes are made to the internship.
+
+Test case 5: Invalid pay or deadline format
+
+- Action: Execute the command `update 1 pay/abc` or `update 1 deadline/2025-10-10`.
+- Expected:
+  - For invalid pay:  
+    Error message `Invalid pay. Use a whole number (example: pay/8000)`
+  - For invalid date:  
+    Error message `Invalid date format. Expected dd-MM-yyyy (e.g. 08-10-2025)`
+  - No updates are applied.
+
+Test case 6: Persistence check after update
+
+- Action: Add and update an internship (e.g., `update 1 status/Accepted`).  
+  Exit and restart the application. Then, execute the command `list`.
+- Expected:
+  - The updated internship details remain reflected after restart.
+  - Confirms that updates are correctly saved to persistent storage.
+
+
 ### Deleting an internship
 
 ### Listing and sorting all internships
