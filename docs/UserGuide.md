@@ -45,6 +45,7 @@ Tip: Type `help` to view a list of available commands at any time.
 <ul>
 <li>Words in <strong>UPPER_CASE</strong> are placeholders that must be supplied by you.<br>
 Example: <code>delete INDEX</code> → Please input <code>delete 1</code></li>
+<li>Commands that do not expect an argument, such as `dashboard`, `help` and `exit`, will ignore arguments. Command will still be valid.</li>
 <li>If using a PDF version, be careful when copying commands that span multiple lines as spaces surrounding line-breaks may be omitted.</li>
 </ul>
 </div>
