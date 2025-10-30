@@ -37,7 +37,7 @@ else file exists
         S -> BR: readLine()
         BR --> S: line (or null if EOF)
 
-        alt line is not null
+        opt line is not null
             S -> S: parseInternshipFromFile(line, internships)
             activate S
 
@@ -50,29 +50,29 @@ else file exists
                 S -> S: parseAndValidateFields(parts, line, internships)
                 activate S
 
-                alt company or role empty
+                opt company or role empty
                     S --> S: return error
                 end
 
-                alt company.length() > COMPANY_MAXLEN
+                opt company.length() > COMPANY_MAXLEN
                     S --> S: return error
                 end
 
-                alt role.length() > ROLE_MAXLEN
+                opt role.length() > ROLE_MAXLEN
                     S --> S: return error
                 end
 
-                alt pay not parseable as integer
+                opt pay not parseable as integer
                     S -> S: parse pay as Integer
                     S --> S: return "invalid pay format" error
                 end
 
-                alt pay < 0
+                opt pay < 0
                     S -> S: validate pay >= 0
                     S --> S: return "negative pay amount" error
                 end
 
-                alt status invalid
+                opt status invalid
                     S -> S: check isValidStatus(status)
                     S --> S: return error
                 end
@@ -91,6 +91,7 @@ else file exists
                 create ":Internship" as Intern
                 S -> Intern**: new Internship(company, role, deadline, pay)
                 activate Intern
+                return (created)
                 note right of Intern: Multiple instances created,\none per valid line in file
 
                 S -> Intern: setStatus(status)
