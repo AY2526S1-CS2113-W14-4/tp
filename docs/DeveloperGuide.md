@@ -215,6 +215,101 @@ The class diagram illustrates:
 
 ### Add feature
 
+**API**: [`AddCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/AddCommand.java)
+
+The add mechanism allows users to record new internship entries in their tracking list. This feature ensures users can maintain a comprehensive and organized list of upcoming internship opportunities, along with key details such as company, role, deadline and pay.
+
+### Implementation
+
+The add mechanism is implemented by the `AddCommand` class, which extends the abstract `Command` class. It encapsulates the logic for validating user input, constructing an Internship object and inserting it into the internship list.
+
+**Key components involved:**
+
+* `AddCommand` — Encapsulates the creation and insertion of a new internship entry
+* `ArgumentParser.parseAddCommandArgs()` — Parses and validates raw user input into individual internship fields
+* `InternshipList.add()` — Inserts the constructed internship into the static internship list
+* `Ui.printAddInternship()` — Displays a confirmation message with internship details
+* `Storage.save()` — Persists changes automatically after a successful addition
+
+### How the add operation works
+
+The following sequence illustrates how the add command is processed from user input to data persistence.
+
+**Step 1.** The user launches the application and executes a command such as:
+```
+add company/Google role/Software Engineer Intern deadline/17-09-2025 pay/7000
+```
+
+**Step 2.** The `CommandParser` splits the input into command word `"add"` and the argument string
+`"company/Google role/Software Engineer deadline/17-09-2025 pay/120000"`.
+
+**Step 3.** The CommandFactory delegates parsing to `ArgumentParser.parseAddCommandArgs(args)`, which performs detailed extraction and validation of all fields.
+
+### Argument Parsing Logic
+
+The `ArgumentParser.parseAddCommandArgs()` method is responsible for transforming the raw argument string into a valid `AddCommand` instance.
+This step is critical to ensure input integrity and proper data representation.
+
+**Parsing process:**
+
+**1. Input Validation**
+* Checks if the argument string is null or blank.
+* Throws `InternityException.invalidAddCommand()` if input is missing.
+
+**2. Splitting Fields**
+* Splits the argument string using a predefined delimiter (`ADD_COMMAND_PARSE_LOGIC`) into 4 parts.
+* Each part is expected to start with a specific prefix and be in the following order:  
+  `company/`, `role/`, `deadline/`, and `pay/`. 
+* If any prefix is missing or out of order, parsing fails immediately.
+
+**3. Extracting Values**
+* Removes each prefix to isolate the user-provided values.
+* Trims whitespace from each field.
+* Example:  
+  ```
+  company/Google → "Google"
+  role/Software Engineer → "Software Engineer"
+  ```
+**4. Data Conversion**
+* The `deadline` string is parsed into a `Date` object via `DateFormatter.parse()`.
+* The `pay` field is converted into an integer using `Integer.parseInt()`.
+
+**5. Validation**
+* Ensures no fields are empty.
+* Ensures `pay` is non-negative.
+* Verifies that `company` and `role` do not exceed the maximum character limits defined in `Ui` (`COMPANY_MAXLEN` and `ROLE_MAXLEN`).
+* Logs detailed error messages if any validation fails.
+
+**6. Command Construction**
+* If all checks pass, a new `AddCommand` instance is created:  
+  ```
+  return new AddCommand(company, role, deadline, pay);
+  ```
+
+If any stage fails, the method logs the issue and throws an `InternityException.invalidAddCommand()` to provide consistent feedback to the user.
+
+### Command Execution Flow
+
+**Step 4.** When `InternityManager` calls `AddCommand.execute()`:
+* A new `Internship` object is created using the parsed details.
+* The `InternshipList.add(internship)` method adds the internship to the global static list.
+* The `Ui.printAddInternship()` method displays a formatted confirmation message to the user.
+
+**Step 5.** After execution, `InternityManager` triggers `InternshipList.saveToStorage()`, which internally calls `Storage.save()` to persist the updated internship list to disk.
+
+### Example Walkthrough
+
+| Step | Component      | Action                                                                                 |
+| ---- | -------------- |----------------------------------------------------------------------------------------|
+| 1    | User           | Inputs `add company/Google role/Software Engineer Intern deadline/17-09-2025 pay/7000` |
+| 2    | CommandParser  | Separates command and arguments                                                        |
+| 3    | ArgumentParser | Parses and validates all four fields                                                   |
+| 4    | AddCommand     | Creates `Internship` object and calls `InternshipList.add()`                           |
+| 5    | Ui             | Displays success message                                                               |
+| 6    | Storage        | Saves updated list to persistent storage                                               |
+
+The following sequence diagram illustrates the complete add operation flow:
+
 ![Add Command: Sequence Diagram](diagrams/AddCommandSD.png)
 
 ---
