@@ -244,7 +244,133 @@ The class diagram illustrates:
 
 ### Add feature
 
+**API**: [`AddCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/AddCommand.java)
+
+The add mechanism allows users to record new internship entries in their tracking list. This feature ensures users can maintain a comprehensive and organized list of upcoming internship opportunities, along with key details such as company, role, deadline and pay.
+
+### Implementation
+
+The add mechanism is implemented by the `AddCommand` class, which extends the abstract `Command` class. It encapsulates the logic for validating user input, constructing an Internship object and inserting it into the internship list.
+
+**Key components involved:**
+
+* `AddCommand` — Encapsulates the creation and insertion of a new internship entry
+* `ArgumentParser.parseAddCommandArgs()` — Parses and validates raw user input into individual internship fields
+* `InternshipList.add()` — Inserts the constructed internship into the static internship list
+* `Ui.printAddInternship()` — Displays a confirmation message with internship details
+
+### How the add operation works
+
+The following sequence illustrates how the add command is processed from user input to data persistence.
+
+**Step 1.** The user launches the application and executes a command such as:
+```
+add company/Google role/Software Engineer Intern deadline/17-09-2025 pay/7000
+```
+
+**Step 2.** The `CommandParser` splits the input into command word `"add"` and the argument string
+`"company/Google role/Software Engineer deadline/17-09-2025 pay/120000"`.
+
+**Step 3.** The CommandFactory delegates parsing to `ArgumentParser.parseAddCommandArgs(args)`, which performs detailed extraction and validation of all fields.
+
+### Argument Parsing Logic
+
+The `ArgumentParser.parseAddCommandArgs()` method is responsible for transforming the raw argument string into a valid `AddCommand` instance.
+This step is critical to ensure input integrity and proper data representation.
+
+**Parsing process:**
+
+**1. Input Validation**
+* Checks if the argument string is null or blank.
+* Throws `InternityException.invalidAddCommand()` if input is missing.
+
+**2. Splitting Fields**
+* Splits the argument string using a predefined delimiter (`ADD_COMMAND_PARSE_LOGIC`) into 4 parts.
+* Each part is expected to start with a specific prefix and be in the following order:  
+  `company/`, `role/`, `deadline/`, and `pay/`. 
+* If any prefix is missing or out of order, parsing fails immediately.
+
+**3. Extracting Values**
+* Removes each prefix to isolate the user-provided values.
+* Trims whitespace from each field.
+* Example:  
+  ```
+  company/Google → "Google"
+  role/Software Engineer → "Software Engineer"
+  ```
+**4. Data Conversion**
+* The `deadline` string is parsed into a `Date` object via `DateFormatter.parse()`.
+* The `pay` field is converted into an integer using `Integer.parseInt()`.
+
+**5. Validation**
+* Ensures no fields are empty.
+* Ensures `pay` is non-negative.
+* Verifies that `company` and `role` do not exceed the maximum character limits defined in `Ui` (`COMPANY_MAXLEN` and `ROLE_MAXLEN`).
+* Logs detailed error messages if any validation fails.
+
+**6. Command Construction**
+* If all checks pass, a new `AddCommand` instance is created:  
+  ```
+  return new AddCommand(company, role, deadline, pay);
+  ```
+
+If any stage fails, the method logs the issue and throws an `InternityException.invalidAddCommand()` to provide consistent feedback to the user.
+
+### Command Execution Flow
+
+**Step 4.** When `InternityManager` calls `AddCommand.execute()`:
+* A new `Internship` object is created using the parsed details.
+* The `InternshipList.add(internship)` method adds the internship to the global static list.
+* The `Ui.printAddInternship()` method displays a formatted confirmation message to the user.
+
+**Step 5.** After execution, `InternityManager` triggers `InternshipList.saveToStorage()`, which internally calls `Storage.save()` to persist the updated internship list to disk.
+
+### Example Walkthrough
+
+| Step | Component      | Action                                                                                 |
+| ---- | -------------- |----------------------------------------------------------------------------------------|
+| 1    | User           | Inputs `add company/Google role/Software Engineer Intern deadline/17-09-2025 pay/7000` |
+| 2    | CommandParser  | Separates command and arguments                                                        |
+| 3    | ArgumentParser | Parses and validates all four fields                                                   |
+| 4    | AddCommand     | Creates `Internship` object and calls `InternshipList.add()`                           |
+| 5    | Ui             | Displays success message                                                               |
+
+The following sequence diagram illustrates the complete add operation flow:
+
 ![Add Command: Sequence Diagram](diagrams/AddCommandSD.png)
+
+#### Design considerations
+
+**Aspect: Inputting parameters by prefix**
+
+* **Alternative 1 (current choice):** Users provide prefix in words: `company/`, `role/`, `deadline/`, `pay/`
+    * Pros: Highly readable and self-explanatory for new users. 
+    * Pros: Reduces ambiguity between parameters — each prefix clearly indicates its purpose.
+    * Pros: Consistent with other natural-language command formats in the application.
+    * Cons: Slightly longer to type compared to abbreviated prefixes.
+    * Cons: Parsing logic requires string comparisons with longer literals, adding minor verbosity.
+
+* **Alternative 2:** Users provide prefix in short form: `c/`, `r/`, `d/`, `p/`
+    * Pros: Faster for experienced users to type.
+    * Pros: Compact input format improves command-line efficiency.
+    * Cons: Less intuitive for beginners unfamiliar with shorthand notation.
+    * Cons: Higher likelihood of user input errors due to short and similar-looking prefixes.
+
+**Aspect: Order of parameters**
+
+* **Alternative 1 (current choice):** Fixed order: company, role, deadline, then pay.
+    * Pros: Simplifies parsing logic and validation — no need for dynamic prefix searching.
+    * Pros: Guarantees consistent argument positions, reducing ambiguity.
+    * Pros: Easier to implement and debug, with predictable input format.
+    * Cons: Users must remember and follow the exact field order.
+    * Cons: Any deviation from the expected sequence causes command rejection.
+
+* **Alternative 2:** Flexible order.
+    * Pros: More user-friendly — fields can be entered in any sequence.
+    * Pros: Robust against user typing variations.
+    * Cons: Requires more complex parsing logic to detect and map prefixes dynamically.
+    * Cons: Increases risk of malformed input if prefixes are missing or repeated.
+    * Cons: Harder to maintain and debug due to variable argument positions.
 
 ---
 
@@ -506,7 +632,7 @@ The search looks for matching company or role names.
 5. **Step 5**: `findInternship()` filters the internships, looking for the keyword in both the company and role fields.
 If any matches are found, they are displayed through the UI.
 
-6. **Step 6**: If no matches are found, the user sees the message printed in the Ui: "No internships with this Company or Role found."
+6. **Step 6**: If no matches are found, the user sees the message printed in the Ui: "No internships with this company or role found."
 
 ### Internals and Key Functions
 
@@ -529,13 +655,17 @@ for display. The UI is responsible for presenting the search results to the user
 - **Expected Output**:
     ```
     These are the matching internships in your list:
-      1.  Google - Software Engineer | Deadline: 10-12-2025 | Pay: 100000 | Status: Pending
-      2.  Alphabet - Googler | Deadline: 10-12-2025 | Pay: 150000 | Status: Pending
+    ______________________________________________________________________________________________
+    No. Company         Role                           Deadline        Pay        Status
+    ______________________________________________________________________________________________
+      1 Google          Software Engineer              17-09-2025      120000     Pending   
+      2 Alphabet        Googleerrr                     17-09-2025      120000     Pending    
+    ______________________________________________________________________________________________
     ```
 
   If no internships match:
     ```
-    No internships with this Company or Role found.
+    No internships with this company or role found.
     ```
 
 ### Edge Cases and Considerations
@@ -549,10 +679,37 @@ would all match the same internships.
 - **Performance**: The search mechanism uses a stream-based filter on the internship list, which is efficient
 for moderate-sized datasets but may require optimisation for larger datasets.
 
-### Persistence
+#### Design Considerations
 
-Since this is a search command and does not modify the underlying data, no changes are persisted to disk
-during the `find` operation. However, any modifications (such as deletion or addition of internships) will require a subsequent call to `Storage.save()` to persist the changes.
+**Aspect: Filtering criteria**
+
+* **Alternative 1 (current choice):** Match results if the keyword appears in either the `company` or `role` field.
+    * Pros: Provides broader and more flexible search results as users can find internships even if they only remember the company or the role.
+    * Pros: Simple and efficient to implement using basic string matching.
+    * Pros: Reduces the need for users to specify which field to search, improving ease of use.
+    * Cons: May return more results than intended if the keyword appears in both fields across many entries.
+    * Cons: Cannot distinguish whether a match came from the company name or the role field.
+
+* **Alternative 2:** Require users to specify the search field explicitly using prefixes (e.g. `find company/Google` or `find role/Engineer`).
+    * Pros: Provides greater precision and control as users can narrow down their searches more effectively.
+    * Pros: Reduces irrelevant matches when users are searching for specific fields.
+    * Cons: Increases command complexity and typing effort.
+    * Cons: Users must remember additional prefixes and syntax.
+    * Cons: Slightly more complex parsing logic is required to distinguish between field-based searches.
+
+**Aspect: Matching behavior**
+
+* **Alternative 1 (current choice):** Case-insensitive substring matching.
+    * Pros: Intuitive for casual users typing quick search terms.
+    * Pros: Users don’t need to remember exact capitalisation or full words.
+    * Pros: Easy to implement using standard string operations like `.toLowerCase().contains()`.
+    * Cons: May produce partial matches that are not meaningful (e.g. “Meta” matching “Metaverse”). 
+
+* **Alternative 2:** Exact or regex-based matching.
+    * Pros: Allows for precise control — users can specify exact matches or complex patterns.
+    * Pros: More suitable for power users who need fine-grained filtering.
+    * Cons: Less user-friendly for casual users unfamiliar with regex or strict syntax.
+    * Cons: Increased complexity compared to simple substring search due to more complex validation and greater likelihood of parsing errors.
 
 ---
 
