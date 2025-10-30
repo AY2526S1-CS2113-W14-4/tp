@@ -141,8 +141,6 @@ The 2nd command updates the company of the internship application at index 2 to 
 <div style="background-color: #331c16; color: #c3b091; padding: 15px; border-radius: 8px; border-left: 5px solid #966919;">
 <h4>Notes</h4>
 <ul>
-<li>For v1.0, only the <code>status</code> field can be updated. Updating other fields (company, role, deadline, pay) will be added in
-future iterations.</li>
 <li>All field values must adhere to the constraints specified in the <code>add</code> feature.</li>
 </ul>
 </div>
