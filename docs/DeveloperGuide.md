@@ -282,6 +282,14 @@ The list mechanism is implemented by the `ListCommand` class, which allows users
 Below is the sequence diagram for a common usage of the list feature:
 ![List Feature: Sequence Diagram](diagrams/ListFeatureSD.png)
 
+#### Implementation
+1. `ListCommand` accesses the `InternshipList`, which contains the `ArrayList<Internship>` of all stored internships.
+2. If `sort/asc` is specified, the internships are sorted in ascending order of deadlines using `Collections.sort()` and
+the `Internship.compareTo()` method.
+3. If `sort/desc` is specified, the list is sorted in descending order by deadline.
+4. If no sort option is specified, the internships are listed in the order they were added, after the last sort.
+5. The internship list is iterated through and each internship's details are printed using `Ui.printList().
+
 #### Design considerations
 
 **Aspect: Index base convention**
