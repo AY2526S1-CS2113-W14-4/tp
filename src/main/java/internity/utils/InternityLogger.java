@@ -26,6 +26,7 @@ public class InternityLogger {
     private static final String LOG_FILE_PATH = "./logs/internity.log";
     private static final Logger logger = Logger.getLogger("internity");
     private static boolean isInitialized = false;
+    private static boolean isEnabled = false;
 
     /**
      * Returns the main logger for the application.
@@ -34,6 +35,10 @@ public class InternityLogger {
      * @return a configured Logger instance
      */
     public static Logger getLogger() {
+        if (!isEnabled) {
+            disableLogging();
+            return logger;
+        }
         if (!isInitialized) {
             setupLogging();
             isInitialized = true;
@@ -48,16 +53,21 @@ public class InternityLogger {
     private static void setupLogging() {
         try {
             java.nio.file.Files.createDirectories(java.nio.file.Paths.get("./logs"));
-
             FileHandler fileHandler = new FileHandler(LOG_FILE_PATH, true);
             fileHandler.setFormatter(new SimpleFormatter());
             logger.addHandler(fileHandler);
             logger.setUseParentHandlers(false);
-            logger.setLevel(Level.ALL);
+            logger.setLevel(Level.OFF);
 
         } catch (IOException e) {
             e.printStackTrace();
             System.err.println("Failed to initialize logger.");
         }
     }
+
+    private static void disableLogging() {
+        logger.setUseParentHandlers(false);
+        logger.setLevel(Level.ALL);
+    }
+
 }
