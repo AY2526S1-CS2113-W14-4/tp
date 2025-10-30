@@ -17,6 +17,9 @@ activate InternshipList
 InternshipList -> Internship: setStatus(...)
 activate Internship
 Internship -> Internship : Set Status
+activate Internship
+Internship --> Internship
+deactivate Internship
 Internship --> InternshipList
 deactivate Internship
 ' Persist change

@@ -174,7 +174,7 @@ This distinction is represented in the above sequence diagram's `alt` block, sho
 
 ### Model Component
 
-**API**: [`internity.core`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/core/) (exclude Storage.java)
+**API**: [`internity.core`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/core/)
 
 #### Overview
 
@@ -197,6 +197,7 @@ The class diagram above shows the main classes involved in manipulating `Interns
 #### Sequence Diagram
 
 The following sequence diagram illustrates how the Model Component processes an Add command:
+
 ![Model Component: Sequence Diagram (Adding a new Internship)](diagrams/ModelComponentSD_Add.png)
 
 The sequence diagram above shows how the `AddCommand` interacts with the `InternshipList` to add a new internship.
@@ -206,6 +207,7 @@ The sequence diagram above shows how the `AddCommand` interacts with the `Intern
 
 
 The following sequence diagram illustrates how the Model Component processes an Update command:
+
 ![Model Component: Sequence Diagram (Updating status of an existing internship)](diagrams/ModelComponentSD_Update.png)
 
 The sequence diagram above shows how the `UpdateCommand` interacts with the `InternshipList` to update an existing internship.
