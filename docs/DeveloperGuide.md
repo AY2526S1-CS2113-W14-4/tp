@@ -249,7 +249,7 @@ The class diagram illustrates:
 ---
 
 ### Update feature
-**API:** `UpdateCommand.java`  
+**API**: [`UpdateCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/UpdateCommand.java)
 
 The update mechanism lets users modify one or more fields of an existing internship entry. It keeps the list accurate as applications evolve, without forcing users to re-enter the whole record.
 
@@ -442,6 +442,8 @@ the `Internship.compareTo()` method.
 
 ### Find feature
 
+**API**: [`FindCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/FindCommand.java)
+
 ![Find Command: Sequence Diagram](diagrams/FindCommandSD.png)
 
 The find mechanism is implemented by the `FindCommand` class, which allows users to search for internships based on a
@@ -556,6 +558,8 @@ during the `find` operation. However, any modifications (such as deletion or add
 
 ### Username feature
 
+**API**: [`UsernameCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/UsernameCommand.java)
+
 The Username feature allows the user to set a personalized username that is stored within the application's
 persistent data model and displayed in future interactions.
 
@@ -580,6 +584,8 @@ persistent data model and displayed in future interactions.
 ---
 
 ### Dashboard feature
+
+**API**: [`DashboardCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/DashboardCommand.java)
 
 The Dashboard feature presents a comprehensive summary of the user's internship tracking data, including
 the username, total internships, status overview and nearest deadline.
@@ -608,6 +614,8 @@ the username, total internships, status overview and nearest deadline.
 
 ### Exit feature
 
+**API**: [`ExitCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/ExitCommand.java)
+
 The ExitCommand allows the user to gracefully terminate the Internity application. Upon execution, it ensures that the user is notified
 and the main command loop in InternityManager is stopped.
 
@@ -624,7 +632,7 @@ termination.
 
 ### Storage feature
 
-**API**: [`Storage.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/core/Storage.java)
+**API**: [`Storage.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/storage/Storage.java)
 
 The Storage feature provides persistent data storage for Internity, allowing users to save their internship data across application sessions. Without this feature, users would lose all their internship data when closing the application. This is a critical feature that transforms Internity from a temporary session-based tool to a reliable long-term tracking system.
 
@@ -919,6 +927,7 @@ Test case 6: Persistence check after update
   - The updated internship details remain reflected after restart.
   - Confirms that updates are correctly saved to persistent storage.
 
+---
 
 ### Deleting an internship
 
