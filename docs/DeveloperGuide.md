@@ -247,8 +247,86 @@ The class diagram illustrates:
 ---
 
 ### Update feature
+**API:** `UpdateCommand.java`  
+
+The update mechanism lets users modify one or more fields of an existing internship entry. It keeps the list accurate as applications evolve, without forcing users to re-enter the whole record.
+
+#### Implementation
+`UpdateCommand` extends the abstract `Command` class. Users specify a 1-based index in the CLI, which is converted to a 0-based index during parsing. Any subset of fields can be provided. Only non-null fields are applied.
+
+**Key components involved**
+- `UpdateCommand` Encapsulates the multi-field update with guarded calls for each optional field and a final success message.  
+- `ArgumentParser.parseUpdateCommandArgs()` Parses `update INDEX [company/...] [role/...] [deadline/...] [pay/...] [status/...]`, converts 1-based index to 0-based, validates tags and formats, constructs `UpdateCommand`.  
+- `InternshipList.updateCompany()` Sets company after index bounds check.  
+- `InternshipList.updateRole()` Sets role after index bounds check.  
+- `InternshipList.updateDeadline()` Sets deadline after index bounds check.  
+- `InternshipList.updatePay()`Sets pay after index bounds check and non-negative parsing in the parser.  
+- `InternshipList.updateStatus()`Validates and normalizes status, then sets it after index bounds check.  
+- `Ui.printUpdateInternship()` Confirms a successful update to the user.  
+
+#### How the Update Operation Works
+Given below is an example usage scenario and how the update mechanism behaves at each step.
+
+- **Step 1.** The user launches the application with a populated `InternshipList`. The user executes:  
+  ```bash
+  update 1 company/Google role/Software Engineer pay/9000 status/Accepted
+  ```
+- **Step 2.** Parsing input
+`CommandParser` receives the input and splits it into command word `update` and the remaining arguments.
+
+- **Step 3.** Creating the command
+  `CommandFactory` delegates to `ArgumentParser.parseUpdateCommandArgs(...)`, which:
+
+  - Splits the arguments into the index token and a tagged fields segment.  
+  - Converts the 1-based index to 0-based.  
+  - Scans tagged parts for `company/`, `role/`, `deadline/`, `pay/`, `status/`.  
+  - Parses types and validates formats.  
+    - `deadline/` is parsed with `DateFormatter.parse(...)`.  
+    - `pay/` is parsed as a non-negative integer.  
+    - `status/` must be non-empty and is later normalized by `InternshipList.updateStatus`.  
+  - Ensures at least one update field is present.  
+  - Constructs and returns:  
+    ```java
+    new UpdateCommand(index, company, role, deadline, pay, status)
+    ```
+
+
+- **Step 4.** Executing the command
+  `InternityManager` calls `UpdateCommand.execute()`, which:
+
+  - Initializes `isUpdated = false`.  
+  - For each non-null field, calls the corresponding `InternshipList.updateX(...)`.  
+    Each update method checks index bounds and applies the new value.  
+    `updateStatus` additionally validates and canonicalizes the status string.  
+  - If no fields were provided, throws `InternityException` with a clear message.  
+  - On success, calls `Ui.printUpdateInternship()` to acknowledge the update.  
+
+  ![Update Command Sequence Diagram](diagrams/UpdateCommandSD.png)
+  ![Update Command Class Diagram](diagrams/UpdateCommandCD.png)
+
+#### Error Handling
+- Invalid format for `update` arguments → `ArgumentParser.invalidUpdateFormat()`  
+- Missing tagged fields → `InternityException.noUpdateFieldsProvided()`  
+- Invalid index token → `InternityException.invalidIndexForUpdate()`  
+- Unknown tag → `InternityException.unknownUpdateField(...)`  
+- Invalid `pay` → `InternityException.invalidPayFormat()`  
+- Out of bounds index when applying updates → `InternshipList.updateX` throws `InternityException.invalidInternshipIndex()`  
+- Invalid or empty `status` → `InternityException.invalidStatus(...)` or `InternityException.emptyField("status/")`  
 
 ---
+
+#### Example Commands
+```bash
+update 3 status/Interviewing           # Update only status
+update 2 company/Apple role/ML Engineer # Update company and role
+update 4 deadline/15-12-2025 pay/8500   # Update deadline and pay
+update 1                                # Invalid because no fields
+```
+
+#### Design Considerations
+- Fields not provided by the user are ignored, so updates can be partial and focused.  
+- Validation is split across parsing and model methods for clear responsibility.  
+- Success messaging is centralized in `Ui` for consistent output formatting.  
 
 ### Delete feature
 
@@ -802,6 +880,60 @@ Given below are instructions to test the app manually.
 ### Adding an internship
 
 ### Updating an internship
+
+Test case 1: Update a single field (company name)
+
+- Action: Add an internship using `add company/Google role/Software Engineer deadline/10-12-2025 pay/8000 status/Pending`.  
+  Then, execute the command `update 1 company/Microsoft`.
+- Expected:
+  - The company field of the first internship changes from “Google” to “Microsoft”.
+  - All other fields (role, deadline, pay, status) remain unchanged.
+  - A success message such as `Internship status updated successfully!` is displayed.
+
+Test case 2: Update multiple fields (company, role, and pay)
+
+- Action: Add an internship using `add company/Amazon role/Data Analyst deadline/11-12-2025 pay/5000 status/Applied`.  
+  Then, execute the command `update 1 company/Tesla role/ML Engineer pay/10000`.
+- Expected:
+  - The internship’s company, role, and pay fields are updated to the new values.
+  - Deadline and status remain unchanged.
+  - The confirmation message indicates successful update and displays the new internship details.
+
+Test case 3: Invalid index
+
+- Action: Ensure only one internship exists in the list. Then, execute the command `update 5 company/Netflix`.
+- Expected:
+  - The command fails with the error message:  
+    `Invalid internship index.`
+  - No data is modified.
+
+Test case 4: Missing update fields
+
+- Action: Add an internship using `add company/Meta role/Designer deadline/05-11-2025 pay/6000 status/Pending`.  
+  Then, execute the command `update 1`.
+- Expected:
+  - The command fails with the error message:  
+    `Provide at least one field to update: company/, role/, deadline/, pay/, status/`
+  - No changes are made to the internship.
+
+Test case 5: Invalid pay or deadline format
+
+- Action: Execute the command `update 1 pay/abc` or `update 1 deadline/2025-10-10`.
+- Expected:
+  - For invalid pay:  
+    Error message `Invalid pay. Use a whole number (example: pay/8000)`
+  - For invalid date:  
+    Error message `Invalid date format. Expected dd-MM-yyyy (e.g. 08-10-2025)`
+  - No updates are applied.
+
+Test case 6: Persistence check after update
+
+- Action: Add and update an internship (e.g., `update 1 status/Accepted`).  
+  Exit and restart the application. Then, execute the command `list`.
+- Expected:
+  - The updated internship details remain reflected after restart.
+  - Confirms that updates are correctly saved to persistent storage.
+
 
 ### Deleting an internship
 

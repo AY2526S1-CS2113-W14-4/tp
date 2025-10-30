@@ -1,0 +1,95 @@
+@startuml UpdateFeatureCD
+title Update Feature - Class Diagram
+
+class InternityManager {
+  + InternityManager(storagePath: String)
+  + start(): void
+  - loadData(): void
+  - saveData(): void
+}
+
+class CommandParser {
+  + parseInput(input: String): Command
+}
+
+class CommandFactory {
+  + createCommand(commandWord: String, args: String): Command
+}
+
+abstract class Command {
+  + execute(): void
+  + isExit(): boolean
+}
+
+class ArgumentParser {
+  + {static} parseUpdateCommandArgs(args: String): UpdateCommand
+  - {static} requireArgs(args: String): String
+  - {static} splitIndexAndTagged(trimmed: String): String[]
+  - {static} requireTagged(tagged: String): String
+  - {static} parseOneBasedIndex(indexToken: String): int
+  - {static} valueAfterTag(token: String, tag: String): String
+}
+
+class UpdateCommand {
+  - index: int
+  - company: String
+  - role: String
+  - deadline: Date
+  - pay: Integer
+  - status: String
+  __
+  + UpdateCommand(index: int, company: String, role: String, deadline: Date, pay: Integer, status: String)
+  + execute(): void
+  + isExit(): boolean
+}
+
+class InternshipList {
+  + {static} updateCompany(index: int, company: String): void
+  + {static} updateRole(index: int, role: String): void
+  + {static} updateDeadline(index: int, deadline: Date): void
+  + {static} updatePay(index: int, pay: int): void
+  + {static} updateStatus(index: int, status: String): void
+  + {static} saveToStorage(): void
+  + {static} setStorage(storage: Storage): void
+}
+
+class Storage {
+  + save(internships: ArrayList<Internship>): void
+}
+
+class Ui {
+  + {static} printUpdateInternship(): void
+}
+
+class Date {
+  + Date(day: int, month: int, year: int)
+  + toString(): String
+}
+
+class DateFormatter {
+  + {static} parse(dateStr: String): Date
+}
+
+class InternityException {
+  + InternityException(message: String)
+}
+
+Command <|-- UpdateCommand
+
+InternityManager ..> CommandParser : uses >
+CommandParser ..> CommandFactory : uses >
+CommandFactory ..> ArgumentParser : uses >
+ArgumentParser ..> UpdateCommand : creates >
+ArgumentParser ..> DateFormatter : uses >
+ArgumentParser ..> InternityException : throws >
+
+InternityManager ..> UpdateCommand : calls execute() >
+UpdateCommand ..> InternshipList : updates >
+UpdateCommand ..> Ui : prints >
+UpdateCommand ..> InternityException : throws >
+UpdateCommand ..> Date : uses >
+
+InternityManager ..> InternshipList : saveToStorage() >
+InternshipList ..> Storage : save() >
+
+@enduml
