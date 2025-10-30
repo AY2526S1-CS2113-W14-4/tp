@@ -1,111 +1,73 @@
 @startuml
 title Update Command - Sequence Diagram
 
-actor User
-participant ":InternityManager" as IM
-participant ":CommandParser" as CP
-participant ":CommandFactory" as CF
-participant "<<class>>\nArgumentParser" as AP
-participant ":UpdateCommand" as UC
+participant Logic
+create ":UpdateCommand" as UC
 participant "<<class>>\nInternshipList" as IL
-participant "<<class>>\nUi" as UI
-participant ":Storage" as S
+participant ":Internship" as IN
+participant "<<class>>\nUi" as Ui
 
-User -> IM: input
-activate IM
-
-IM -> CP: parseInput()
-activate CP
-CP -> CP: split into commandWord and args
-
-CP -> CF: createCommand(commandWord, args)
-activate CF
-
-CF -> AP: parseUpdateCommandArgs()
-activate AP
-AP -> AP: parse index and optional fields\n(company, role, deadline, pay, status)
-
-AP -> UC: new UpdateCommand(index, company, role, deadline, pay, status)
+Logic -> UC**: new UpdateCommand(...)
 activate UC
-UC --> AP
+return (created)
+
+Logic -> UC: execute()
+activate UC
+
+alt at least one field to update
+    UC -> IL: get(index)
+    activate IL
+    IL -> IN: retrieve Internship
+    activate IN
+    return return Internship
+    deactivate IN
+    IL --> UC : return Internship
+    deactivate IL
+
+    opt company != null
+        UC -> IN: setCompany(company)
+        activate IN
+        IN --> UC
+        deactivate IN
+    end
+
+    opt role != null
+        UC -> IN: setRole(role)
+        activate IN
+        IN --> UC
+        deactivate IN
+    end
+
+    opt deadline != null
+        UC -> IN: setDeadline(deadline)
+        activate IN
+        IN --> UC
+        deactivate IN
+    end
+
+    opt pay != null
+        UC -> IN: setPay(pay)
+        activate IN
+        IN --> UC
+        deactivate IN
+    end
+
+    opt status != null
+        UC -> IN: setStatus(status)
+        activate IN
+        IN --> UC
+        deactivate IN
+    end
+
+    UC -> Ui: print updated internship
+    activate Ui
+    Ui --> UC
+    deactivate Ui
+
+else no fields provided
+    UC --> Logic: throw InternityException
+end
+
+UC --> Logic
 deactivate UC
-
-AP --> CF: return UpdateCommand
-deactivate AP
-
-CF --> CP: return UpdateCommand
-deactivate CF
-
-CP --> IM: return UpdateCommand
-deactivate CP
-
-IM -> UC: execute()
-activate UC
-
-opt company != null
-  UC -> IL: updateCompany(index, company)
-  activate IL
-  IL --> UC
-  deactivate IL
-end
-
-opt role != null
-  UC -> IL: updateRole(index, role)
-  activate IL
-  IL --> UC
-  deactivate IL
-end
-
-opt deadline != null
-  UC -> IL: updateDeadline(index, deadline)
-  activate IL
-  IL --> UC
-  deactivate IL
-end
-
-opt pay != null
-  UC -> IL: updatePay(index, pay)
-  activate IL
-  IL --> UC
-  deactivate IL
-end
-
-opt status != null
-  UC -> IL: updateStatus(index, status)
-  activate IL
-  IL --> UC
-  deactivate IL
-end
-
-alt no fields provided
-  UC --> IM: throw InternityException
-  deactivate UC
-  IM --> User: display error
-else at least one field updated
-  UC -> UI: printUpdateInternship()
-  activate UI
-  UI --> UC
-  deactivate UI
-
-  UC --> IM
-  deactivate UC
-
-  IM -> IL: saveToStorage()
-  activate IL
-
-  IL -> S: save()
-  activate S
-  loop for each internship
-    S -> S: formatInternshipForFile()
-  end
-  S --> IL
-  deactivate S
-
-  IL --> IM
-  deactivate IL
-
-  IM --> User: display success message
-  deactivate IM
-end
-
 @enduml
