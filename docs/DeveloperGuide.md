@@ -249,8 +249,86 @@ The class diagram illustrates:
 ---
 
 ### Update feature
+**API:** `UpdateCommand.java`  
+
+The update mechanism lets users modify one or more fields of an existing internship entry. It keeps the list accurate as applications evolve, without forcing users to re-enter the whole record.
+
+#### Implementation
+`UpdateCommand` extends the abstract `Command` class. Users specify a 1-based index in the CLI, which is converted to a 0-based index during parsing. Any subset of fields can be provided. Only non-null fields are applied.
+
+**Key components involved**
+- `UpdateCommand` Encapsulates the multi-field update with guarded calls for each optional field and a final success message.  
+- `ArgumentParser.parseUpdateCommandArgs()` Parses `update INDEX [company/...] [role/...] [deadline/...] [pay/...] [status/...]`, converts 1-based index to 0-based, validates tags and formats, constructs `UpdateCommand`.  
+- `InternshipList.updateCompany()` Sets company after index bounds check.  
+- `InternshipList.updateRole()` Sets role after index bounds check.  
+- `InternshipList.updateDeadline()` Sets deadline after index bounds check.  
+- `InternshipList.updatePay()`Sets pay after index bounds check and non-negative parsing in the parser.  
+- `InternshipList.updateStatus()`Validates and normalizes status, then sets it after index bounds check.  
+- `Ui.printUpdateInternship()` Confirms a successful update to the user.  
+
+#### How the Update Operation Works
+Given below is an example usage scenario and how the update mechanism behaves at each step.
+
+- **Step 1.** The user launches the application with a populated `InternshipList`. The user executes:  
+  ```bash
+  update 1 company/Google role/Software Engineer pay/9000 status/Accepted
+  ```
+- **Step 2.** Parsing input
+`CommandParser` receives the input and splits it into command word `update` and the remaining arguments.
+
+- **Step 3.** Creating the command
+  `CommandFactory` delegates to `ArgumentParser.parseUpdateCommandArgs(...)`, which:
+
+  - Splits the arguments into the index token and a tagged fields segment.  
+  - Converts the 1-based index to 0-based.  
+  - Scans tagged parts for `company/`, `role/`, `deadline/`, `pay/`, `status/`.  
+  - Parses types and validates formats.  
+    - `deadline/` is parsed with `DateFormatter.parse(...)`.  
+    - `pay/` is parsed as a non-negative integer.  
+    - `status/` must be non-empty and is later normalized by `InternshipList.updateStatus`.  
+  - Ensures at least one update field is present.  
+  - Constructs and returns:  
+    ```java
+    new UpdateCommand(index, company, role, deadline, pay, status)
+    ```
+
+
+- **Step 4.** Executing the command
+  `InternityManager` calls `UpdateCommand.execute()`, which:
+
+  - Initializes `isUpdated = false`.  
+  - For each non-null field, calls the corresponding `InternshipList.updateX(...)`.  
+    Each update method checks index bounds and applies the new value.  
+    `updateStatus` additionally validates and canonicalizes the status string.  
+  - If no fields were provided, throws `InternityException` with a clear message.  
+  - On success, calls `Ui.printUpdateInternship()` to acknowledge the update.  
+
+  ![Update Command Sequence Diagram](diagrams/UpdateCommandSD.png)
+  ![Update Command Class Diagram](diagrams/UpdateCommandCD.png)
+
+#### Error Handling
+- Invalid format for `update` arguments → `ArgumentParser.invalidUpdateFormat()`  
+- Missing tagged fields → `InternityException.noUpdateFieldsProvided()`  
+- Invalid index token → `InternityException.invalidIndexForUpdate()`  
+- Unknown tag → `InternityException.unknownUpdateField(...)`  
+- Invalid `pay` → `InternityException.invalidPayFormat()`  
+- Out of bounds index when applying updates → `InternshipList.updateX` throws `InternityException.invalidInternshipIndex()`  
+- Invalid or empty `status` → `InternityException.invalidStatus(...)` or `InternityException.emptyField("status/")`  
 
 ---
+
+#### Example Commands
+```bash
+update 3 status/Interviewing           # Update only status
+update 2 company/Apple role/ML Engineer # Update company and role
+update 4 deadline/15-12-2025 pay/8500   # Update deadline and pay
+update 1                                # Invalid because no fields
+```
+
+#### Design Considerations
+- Fields not provided by the user are ignored, so updates can be partial and focused.  
+- Validation is split across parsing and model methods for clear responsibility.  
+- Success messaging is centralized in `Ui` for consistent output formatting.  
 
 ### Delete feature
 
@@ -565,6 +643,7 @@ The Storage mechanism uses a human-readable, pipe-delimited text file format tha
 
 **File format specification:**
 
+Data is stored in a single file at `./data/internships.txt` with both username and internships.
 ```
 Username (in line below):
 <username>
@@ -652,91 +731,42 @@ The save sequence diagram shows the straightforward serialization process. Note 
 **Aspect: File format choice**
 
 * **Alternative 1 (current choice):** Pipe-delimited text format.
-  * Pros: Human-readable, easy to debug and manually edit if needed.
-  * Pros: Simple parsing logic without external dependencies.
-  * Pros: Works across all platforms without binary compatibility issues.
-  * Cons: Slightly larger file size compared to binary formats.
+  * Pros: Human-readable, can be edited by a user, doubling up as an import/export function.
   * Cons: No built-in schema validation.
-  * Cons: Performance degrades with very large files (not an issue for target use case of ~1000 entries).
 
 * **Alternative 2:** JSON format using a library.
   * Pros: Structured format with built-in validation.
   * Pros: Easier to extend with new fields.
-  * Pros: Better for complex nested data structures.
   * Cons: Less human-readable due to verbose syntax.
-  * Cons: Overkill for simple tabular data.
 
 * **Alternative 3:** Binary serialization using Java's `ObjectOutputStream`.
   * Pros: Compact file size.
-  * Pros: Fast serialization/deserialization.
   * Cons: Not human-readable or editable.
   * Cons: Platform-dependent binary format could cause issues.
 
 **Aspect: Error handling strategy**
 
 * **Alternative 1 (current choice):** Skip corrupted lines with warnings, continue loading valid entries.
-  * Pros: Maximizes data recovery - users don't lose all data due to one corrupted line.
   * Pros: Application remains usable even with partial data corruption.
-  * Pros: Warnings inform users of data issues without blocking usage.
-  * Cons: Silent data loss is possible if users don't notice warnings.
-  * Cons: Corrupted data is permanently lost on next save.
   * Cons: Code complexity increases as edge cases need to be accounted for.
 
-* **Alternative 2:** Fail fast - throw exception and abort load on any corrupted line.
-  * Pros: No silent data loss - users are immediately aware of corruption.
-  * Pros: Forces users to fix or remove corrupted data.
-  * Cons: Users cannot access any data if even one line is corrupted.
-  * Cons: Poor user experience for a minor data issue.
-
-* **Alternative 3:** Load all lines (including corrupted ones) into a separate "invalid entries" list for user review.
-  * Pros: No data loss - even corrupted entries are preserved.
-  * Pros: Users can manually review and fix corrupted entries.
-  * Cons: Significantly more complex implementation.
-  * Cons: Requires additional UI for managing invalid entries.
-  * Cons: Invalid entries could accumulate over time.
+* **Alternative 2:** Fail and abort load if there is any corrupted line.
+  * Pros: Easy to code, no need to account for edge cases.
+  * Cons: Users cannot access any data if even one line is corrupted, resulting in poor user experience.
 
 **Aspect: When to save**
 
 * **Alternative 1 (current choice):** Auto-save after every command that modifies data.
-  * Pros: Minimizes data loss risk - data is never more than one command out of sync.
-  * Pros: Simple mental model for users - changes are always saved.
+  * Pros: Minimizes data loss risk.
   * Pros: No need for users to remember to save manually.
-  * Cons: Higher I/O overhead (mitigated by small file sizes).
-  * Cons: Performance impact if storage is slow (e.g., network drive).
+  * Cons: Performance impact if storage is slow.
 
-* **Alternative 2:** Save only on explicit "save" command or application exit.
-  * Pros: Better performance with fewer write operations.
-  * Pros: Users have control over when data is persisted.
-  * Cons: Risk of data loss if application crashes or user forgets to save.
-  * Cons: Inconsistent with modern application expectations.
-  * Cons: More complex implementation (need to track dirty state).
+* **Alternative 2:** Save only on application exit.
+  * Cons: Risk of data loss if application crashes.
 
 * **Alternative 3:** Periodic auto-save every N seconds or N operations.
   * Pros: Balances performance and data safety.
-  * Pros: Reduces risk of data loss compared to manual save.
   * Cons: More complex implementation (requires background thread or operation counter).
-  * Cons: Users could still lose up to N operations of data.
-  * Cons: Unpredictable save timing could confuse users.
-
-**Aspect: File location and structure**
-
-* **Alternative 1 (current choice):** Single file at `./data/internships.txt` with both username and internships.
-  * Pros: Simple file structure, easy to locate and backup.
-  * Pros: All data in one place for easy migration.
-  * Pros: Atomic writes ensure consistency (file is completely written or not at all).
-  * Cons: Single point of failure - if file is corrupted, all data is affected.
-
-* **Alternative 2:** Separate files for username and internships.
-  * Pros: Better separation of concerns.
-  * Pros: Reduces risk of username corruption affecting internship data.
-  * Cons: More complex file management.
-  * Cons: Two files must be kept in sync.
-
-* **Alternative 3:** User-home directory with platform-specific application data folder.
-  * Pros: Follows OS conventions for application data storage.
-  * Pros: Better for multi-user systems.
-  * Cons: Harder for users to locate and backup data.
-  * Cons: More complex path resolution logic.
 
 ---
 
@@ -836,7 +866,59 @@ Test case 3: Add an internship with invalid pay
 
 ### Updating an internship
 
----
+Test case 1: Update a single field (company name)
+
+- Action: Add an internship using `add company/Google role/Software Engineer deadline/10-12-2025 pay/8000 status/Pending`.  
+  Then, execute the command `update 1 company/Microsoft`.
+- Expected:
+  - The company field of the first internship changes from “Google” to “Microsoft”.
+  - All other fields (role, deadline, pay, status) remain unchanged.
+  - A success message such as `Internship status updated successfully!` is displayed.
+
+Test case 2: Update multiple fields (company, role, and pay)
+
+- Action: Add an internship using `add company/Amazon role/Data Analyst deadline/11-12-2025 pay/5000 status/Applied`.  
+  Then, execute the command `update 1 company/Tesla role/ML Engineer pay/10000`.
+- Expected:
+  - The internship’s company, role, and pay fields are updated to the new values.
+  - Deadline and status remain unchanged.
+  - The confirmation message indicates successful update and displays the new internship details.
+
+Test case 3: Invalid index
+
+- Action: Ensure only one internship exists in the list. Then, execute the command `update 5 company/Netflix`.
+- Expected:
+  - The command fails with the error message:  
+    `Invalid internship index.`
+  - No data is modified.
+
+Test case 4: Missing update fields
+
+- Action: Add an internship using `add company/Meta role/Designer deadline/05-11-2025 pay/6000 status/Pending`.  
+  Then, execute the command `update 1`.
+- Expected:
+  - The command fails with the error message:  
+    `Provide at least one field to update: company/, role/, deadline/, pay/, status/`
+  - No changes are made to the internship.
+
+Test case 5: Invalid pay or deadline format
+
+- Action: Execute the command `update 1 pay/abc` or `update 1 deadline/2025-10-10`.
+- Expected:
+  - For invalid pay:  
+    Error message `Invalid pay. Use a whole number (example: pay/8000)`
+  - For invalid date:  
+    Error message `Invalid date format. Expected dd-MM-yyyy (e.g. 08-10-2025)`
+  - No updates are applied.
+
+Test case 6: Persistence check after update
+
+- Action: Add and update an internship (e.g., `update 1 status/Accepted`).  
+  Exit and restart the application. Then, execute the command `list`.
+- Expected:
+  - The updated internship details remain reflected after restart.
+  - Confirms that updates are correctly saved to persistent storage.
+
 
 ### Deleting an internship
 
@@ -947,7 +1029,9 @@ Test case 4: Dashboard reflects recent changes
 ---
 
 ### Saving Data
-Prerequisites: At least one internship has been added, updated or deleted.
+Prerequisites: 
+- The application has been launched at least once. 
+- At least one internship has been added, updated or deleted.
 
 Test case 1: Save after adding internships
 - Action: Add one or more internships, then exit the program.
