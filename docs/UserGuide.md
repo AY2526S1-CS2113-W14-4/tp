@@ -74,6 +74,7 @@ September 2025, and an annual salary of $100000.
 <li>The parameters should be entered in the specified order i.e. company, role, deadline, followed by pay.</li>
 <li>No duplicate parameter type, so only exactly one of each parameter type.</li>
 <li>By default, when an internship is added, the status is set to Pending. Use the update command to change the status.</li>
+<li>All index parameters are in 1-indexed format.</li>
 <li>Field character limits: <code>COMPANY</code> ≤ 15 characters, <code>ROLE</code> ≤ 30 characters.</li>
 <li><code>DEADLINE</code> must be in <code>dd-MM-yyyy</code> format.</li>
 <li><code>PAY_AMOUNT</code> must be a non-negative integer that fits within Java's 32-bit signed integer range (maximum 2,147,483,647).</li>
