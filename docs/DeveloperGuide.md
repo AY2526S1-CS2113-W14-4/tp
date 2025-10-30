@@ -514,7 +514,7 @@ The search looks for matching company or role names.
 5. **Step 5**: `findInternship()` filters the internships, looking for the keyword in both the company and role fields.
 If any matches are found, they are displayed through the UI.
 
-6. **Step 6**: If no matches are found, the user sees the message printed in the Ui: "No internships with this Company or Role found."
+6. **Step 6**: If no matches are found, the user sees the message printed in the Ui: "No internships with this company or role found."
 
 ### Internals and Key Functions
 
@@ -537,13 +537,17 @@ for display. The UI is responsible for presenting the search results to the user
 - **Expected Output**:
     ```
     These are the matching internships in your list:
-      1.  Google - Software Engineer | Deadline: 10-12-2025 | Pay: 100000 | Status: Pending
-      2.  Alphabet - Googler | Deadline: 10-12-2025 | Pay: 150000 | Status: Pending
+    ______________________________________________________________________________________________
+    No. Company         Role                           Deadline        Pay        Status
+    ______________________________________________________________________________________________
+      1 Google          Software Engineer              17-09-2025      120000     Pending   
+      2 Alphabet        Googleerrr                     17-09-2025      120000     Pending    
+    ______________________________________________________________________________________________
     ```
 
   If no internships match:
     ```
-    No internships with this Company or Role found.
+    No internships with this company or role found.
     ```
 
 ### Edge Cases and Considerations
@@ -557,10 +561,37 @@ would all match the same internships.
 - **Performance**: The search mechanism uses a stream-based filter on the internship list, which is efficient
 for moderate-sized datasets but may require optimisation for larger datasets.
 
-### Persistence
+#### Design Considerations
 
-Since this is a search command and does not modify the underlying data, no changes are persisted to disk
-during the `find` operation. However, any modifications (such as deletion or addition of internships) will require a subsequent call to `Storage.save()` to persist the changes.
+**Aspect: Filtering criteria**
+
+* **Alternative 1 (current choice):** Match results if the keyword appears in either the `company` or `role` field.
+    * Pros: Provides broader and more flexible search results as users can find internships even if they only remember the company or the role.
+    * Pros: Simple and efficient to implement using basic string matching.
+    * Pros: Reduces the need for users to specify which field to search, improving ease of use.
+    * Cons: May return more results than intended if the keyword appears in both fields across many entries.
+    * Cons: Cannot distinguish whether a match came from the company name or the role field.
+
+* **Alternative 2:** Require users to specify the search field explicitly using prefixes (e.g. `find company/Google` or `find role/Engineer`).
+    * Pros: Provides greater precision and control as users can narrow down their searches more effectively.
+    * Pros: Reduces irrelevant matches when users are searching for specific fields.
+    * Cons: Increases command complexity and typing effort.
+    * Cons: Users must remember additional prefixes and syntax.
+    * Cons: Slightly more complex parsing logic is required to distinguish between field-based searches.
+
+**Aspect: Matching behavior**
+
+* **Alternative 1 (current choice):** Case-insensitive substring matching.
+    * Pros: Intuitive for casual users typing quick search terms.
+    * Pros: Users don’t need to remember exact capitalisation or full words.
+    * Pros: Easy to implement using standard string operations like `.toLowerCase().contains()`.
+    * Cons: May produce partial matches that are not meaningful (e.g. “Meta” matching “Metaverse”). 
+
+* **Alternative 2:** Exact or regex-based matching.
+    * Pros: Allows for precise control — users can specify exact matches or complex patterns.
+    * Pros: More suitable for power users who need fine-grained filtering.
+    * Cons: Less user-friendly for casual users unfamiliar with regex or strict syntax.
+    * Cons: Increased complexity compared to simple substring search due to more complex validation and greater likelihood of parsing errors.
 
 ---
 
