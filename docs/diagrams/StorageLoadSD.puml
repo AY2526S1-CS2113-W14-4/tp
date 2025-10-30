@@ -95,6 +95,7 @@ else file exists
                 note right of Intern: Multiple instances created,\none per valid line in file
 
                 S -> Intern: setStatus(status)
+                activate Intern
                 Intern --> S:
                 deactivate Intern
 
