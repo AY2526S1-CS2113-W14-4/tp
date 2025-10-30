@@ -236,7 +236,6 @@ The update mechanism lets users modify one or more fields of an existing interns
 - `InternshipList.updatePay()`Sets pay after index bounds check and non-negative parsing in the parser.  
 - `InternshipList.updateStatus()`Validates and normalizes status, then sets it after index bounds check.  
 - `Ui.printUpdateInternship()` Confirms a successful update to the user.  
-- `InternityManager.saveData()` → `InternshipList.saveToStorage()` → `Storage.save()` Automatically persists the updated list after command execution.  
 
 #### How the Update Operation Works
 Given below is an example usage scenario and how the update mechanism behaves at each step.
@@ -275,8 +274,7 @@ Given below is an example usage scenario and how the update mechanism behaves at
   - If no fields were provided, throws `InternityException` with a clear message.  
   - On success, calls `Ui.printUpdateInternship()` to acknowledge the update.  
 
-- **Step 5.** Saving data
-  After the command completes, `InternityManager` automatically persists changes by calling `InternshipList.saveToStorage()`, which invokes `Storage.save(...)` to write the current username header and all internships to disk.
+  ![Update Command Sequence Diagram](diagrams/UpdateCommandSD.png)
 
 #### Error Handling
 - Invalid format for `update` arguments → `ArgumentParser.invalidUpdateFormat()`  
@@ -297,10 +295,7 @@ update 4 deadline/15-12-2025 pay/8500   # Update deadline and pay
 update 1                                # Invalid because no fields
 ```
 
-#### Sequence Diagram
-![Update Command Sequence Diagram](diagrams/UpdateCommandSD.png)
-
-#### Design Notes
+#### Design Considerations
 - Fields not provided by the user are ignored, so updates can be partial and focused.  
 - Validation is split across parsing and model methods for clear responsibility.  
 - Success messaging is centralized in `Ui` for consistent output formatting.  
