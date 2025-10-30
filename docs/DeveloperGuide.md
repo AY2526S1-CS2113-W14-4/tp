@@ -280,6 +280,7 @@ The sequence diagram shows how the delete command flows through multiple layers:
 The list mechanism is implemented by the `ListCommand` class, which allows users to view all internships in their list.
 
 Below is the sequence diagram for a common usage of the list feature:
+
 ![List Feature: Sequence Diagram](diagrams/ListFeatureSD.png)
 
 #### Implementation
@@ -598,7 +599,7 @@ The save operation occurs automatically after every command that modifies data (
 **Step 2.** `InternshipList.saveToStorage()` calls `Storage.save(List)`, passing the static ArrayList.
 
 **Step 3.** Inside `Storage.save()`:
-* Check if the parent directory exists. If not, create it using `Files.createDirectories()`.
+* Check if the specified parent directory exists.
 * Open a `PrintWriter` to write to the file (overwrites existing content).
 * Write the username header (`"Username (in line below):"`).
 * Retrieve and write the username via `InternshipList.getUsername()`.
