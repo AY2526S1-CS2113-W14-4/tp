@@ -174,7 +174,7 @@ This distinction is represented in the above sequence diagram's `alt` block, sho
 
 ### Model Component
 
-**API**: [`internity.core`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/core/) (exclude Storage.java)
+**API**: [`internity.core`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/core/)
 
 #### Overview
 
@@ -197,6 +197,7 @@ The class diagram above shows the main classes involved in manipulating `Interns
 #### Sequence Diagram
 
 The following sequence diagram illustrates how the Model Component processes an Add command:
+
 ![Model Component: Sequence Diagram (Adding a new Internship)](diagrams/ModelComponentSD_Add.png)
 
 The sequence diagram above shows how the `AddCommand` interacts with the `InternshipList` to add a new internship.
@@ -206,6 +207,7 @@ The sequence diagram above shows how the `AddCommand` interacts with the `Intern
 
 
 The following sequence diagram illustrates how the Model Component processes an Update command:
+
 ![Model Component: Sequence Diagram (Updating status of an existing internship)](diagrams/ModelComponentSD_Update.png)
 
 The sequence diagram above shows how the `UpdateCommand` interacts with the `InternshipList` to update an existing internship.
@@ -387,7 +389,7 @@ The following sequence diagram illustrates the complete add operation flow:
 ---
 
 ### Update feature
-**API:** `UpdateCommand.java`  
+**API**: [`UpdateCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/UpdateCommand.java)
 
 The update mechanism lets users modify one or more fields of an existing internship entry. It keeps the list accurate as applications evolve, without forcing users to re-enter the whole record.
 
@@ -409,7 +411,7 @@ Given below is an example usage scenario and how the update mechanism behaves at
 
 - **Step 1.** The user launches the application with a populated `InternshipList`. The user executes:  
   ```bash
-  update 1 company/Google role/Software Engineer pay/9000 status/Accepted
+  update 1 company/Google role/Software Engineer pay/9000
   ```
 - **Step 2.** Parsing input
 `CommandParser` receives the input and splits it into command word `update` and the remaining arguments.
@@ -525,7 +527,16 @@ The sequence diagram shows how the delete command flows through multiple layers:
 The list mechanism is implemented by the `ListCommand` class, which allows users to view all internships in their list.
 
 Below is the sequence diagram for a common usage of the list feature:
+
 ![List Command: Sequence Diagram](diagrams/ListCommandSD.png)
+
+#### Implementation
+1. `ListCommand` accesses the `InternshipList`, which contains the `ArrayList<Internship>` of all stored internships.
+2. If `sort/asc` is specified, the internships are sorted in ascending order of deadlines using `Collections.sort()` and
+the `Internship.compareTo()` method.
+3. If `sort/desc` is specified, the list is sorted in descending order by deadline.
+4. If no sort option is specified, the internships are listed in the order they were added, after the last sort.
+5. The internship list is iterated through and each internship's details are printed using `Ui.printList().
 
 #### Design considerations
 
@@ -570,6 +581,8 @@ Below is the sequence diagram for a common usage of the list feature:
 ---
 
 ### Find feature
+
+**API**: [`FindCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/FindCommand.java)
 
 ![Find Command: Sequence Diagram](diagrams/FindCommandSD.png)
 
@@ -716,6 +729,8 @@ for moderate-sized datasets but may require optimisation for larger datasets.
 
 ### Username feature
 
+**API**: [`UsernameCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/UsernameCommand.java)
+
 The Username feature allows the user to set a personalized username that is stored within the application's
 persistent data model and displayed in future interactions.
 
@@ -740,6 +755,8 @@ persistent data model and displayed in future interactions.
 ---
 
 ### Dashboard feature
+
+**API**: [`DashboardCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/DashboardCommand.java)
 
 The Dashboard feature presents a comprehensive summary of the user's internship tracking data, including
 the username, total internships, status overview and nearest deadline.
@@ -768,6 +785,8 @@ the username, total internships, status overview and nearest deadline.
 
 ### Exit feature
 
+**API**: [`ExitCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/ExitCommand.java)
+
 The ExitCommand allows the user to gracefully terminate the Internity application. Upon execution, it ensures that the user is notified
 and the main command loop in InternityManager is stopped.
 
@@ -784,7 +803,7 @@ termination.
 
 ### Storage feature
 
-**API**: [`Storage.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/core/Storage.java)
+**API**: [`Storage.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/storage/Storage.java)
 
 The Storage feature provides persistent data storage for Internity, allowing users to save their internship data across application sessions. Without this feature, users would lose all their internship data when closing the application. This is a critical feature that transforms Internity from a temporary session-based tool to a reliable long-term tracking system.
 
@@ -867,7 +886,7 @@ The save operation occurs automatically after every command that modifies data (
 **Step 2.** `InternshipList.saveToStorage()` calls `Storage.save(List)`, passing the static ArrayList.
 
 **Step 3.** Inside `Storage.save()`:
-* Check if the parent directory exists. If not, create it using `Files.createDirectories()`.
+* Check if the specified parent directory exists.
 * Open a `PrintWriter` to write to the file (overwrites existing content).
 * Write the username header (`"Username (in line below):"`).
 * Retrieve and write the username via `InternshipList.getUsername()`.
@@ -927,6 +946,7 @@ The save sequence diagram shows the straightforward serialization process. Note 
 * **Alternative 3:** Periodic auto-save every N seconds or N operations.
   * Pros: Balances performance and data safety.
   * Cons: More complex implementation (requires background thread or operation counter).
+
 ---
 
 ## Appendix: Requirements
@@ -995,27 +1015,43 @@ or unpaid, part-time or full-time, and can occur during or after academic study.
 
 Given below are instructions to test the app manually.
 
-### Launch and shutdown
-1. Initial launch
-   1. Download the jar file and copy it into an empty folder.
-
 ### Adding an internship
+
+Test case 1: Add a valid internship
+- Action: `add company/Microsoft role/Intern deadline/15-12-2025 pay/5000`
+- Expected:
+  - Internship is added to the system.
+  - Confirmation message reflects details of the newly added internship.
+
+Test case 2: Add an internship with missing fields
+- Action: `add company/Microsoft role/Intern`
+- Expected:
+  - Error message indicates invalid add command.
+  - Internship is not added.
+
+Test case 3: Add an internship with invalid pay
+- Action: `add company/Bay Harbour role/Butcher deadline/15-12-2025 pay/-1000`
+- Expected:
+  - Error message indicates invalid add command.
+  - Internship is not added.
+
+---
 
 ### Updating an internship
 
+Prerequisite: Have one internship added to the list.
+
 Test case 1: Update a single field (company name)
 
-- Action: Add an internship using `add company/Google role/Software Engineer deadline/10-12-2025 pay/8000 status/Pending`.  
-  Then, execute the command `update 1 company/Microsoft`.
+- Action: `update 1 company/Microsoft`.
 - Expected:
-  - The company field of the first internship changes from “Google” to “Microsoft”.
+  - The company field of the first internship changes to “Microsoft”.
   - All other fields (role, deadline, pay, status) remain unchanged.
-  - A success message such as `Internship status updated successfully!` is displayed.
+  - A success message will be displayed.
 
 Test case 2: Update multiple fields (company, role, and pay)
 
-- Action: Add an internship using `add company/Amazon role/Data Analyst deadline/11-12-2025 pay/5000 status/Applied`.  
-  Then, execute the command `update 1 company/Tesla role/ML Engineer pay/10000`.
+- Action: `update 1 company/Tesla role/ML Engineer pay/10000`
 - Expected:
   - The internship’s company, role, and pay fields are updated to the new values.
   - Deadline and status remain unchanged.
@@ -1023,51 +1059,45 @@ Test case 2: Update multiple fields (company, role, and pay)
 
 Test case 3: Invalid index
 
-- Action: Ensure only one internship exists in the list. Then, execute the command `update 5 company/Netflix`.
+- Action: `update 1000 company/Netflix`
 - Expected:
-  - The command fails with the error message:  
-    `Invalid internship index.`
+  - The command fails with the error message indicating invalid index.
   - No data is modified.
 
 Test case 4: Missing update fields
 
-- Action: Add an internship using `add company/Meta role/Designer deadline/05-11-2025 pay/6000 status/Pending`.  
+- Action: Add an internship using `add company/Meta role/Designer deadline/05-11-2025 pay/6000`.  
   Then, execute the command `update 1`.
 - Expected:
-  - The command fails with the error message:  
-    `Provide at least one field to update: company/, role/, deadline/, pay/, status/`
+  - The command fails with an error message indicating an invalid update command.
   - No changes are made to the internship.
 
-Test case 5: Invalid pay or deadline format
-
-- Action: Execute the command `update 1 pay/abc` or `update 1 deadline/2025-10-10`.
-- Expected:
-  - For invalid pay:  
-    Error message `Invalid pay. Use a whole number (example: pay/8000)`
-  - For invalid date:  
-    Error message `Invalid date format. Expected dd-MM-yyyy (e.g. 08-10-2025)`
-  - No updates are applied.
-
-Test case 6: Persistence check after update
-
-- Action: Add and update an internship (e.g., `update 1 status/Accepted`).  
-  Exit and restart the application. Then, execute the command `list`.
-- Expected:
-  - The updated internship details remain reflected after restart.
-  - Confirms that updates are correctly saved to persistent storage.
-
+---
 
 ### Deleting an internship
 
-Test case 1: Delete an internship at index 2
-- Actions: 
-  - Add 3 internships with varying details. Then, execute the command `list`.
-  - Then, execute the command `delete 2`.
-  - Then, execute the command `list`.
+Prerequisites: At least one internship has been added.
+
+Test case 1: Delete an internship by index
+- Action: `delete 1`
 - Expected:
-  - When `list` is executed for the first time, all 3 internships are displayed in the order they were added.
-  - When `list` is executed for the second time, only the first and third internship added are displayed in the order they were added. The second internship added is no longer displayed.
-    
+  - The internship at index 1 is removed from the list.
+  - Confirmation message reflects removed internship details.
+
+Test case 2: Delete with invalid index (too high)
+- Action: `delete 1000`
+- Expected:
+  - Error message indicates invalid internship index.
+  - No internship is removed.
+
+Test case 3: Delete with index 0 or negative index
+- Action: `delete 0`, `delete -1`
+- Expected:
+  - Error message indicates invalid internship index.
+  - No internship is removed.
+
+---
+
 ### Listing and sorting all internships
 
 Test case 1: List all internships in the order they were added
@@ -1087,7 +1117,24 @@ Test case 3: List all internships sorted by deadline descending
 - Expected:
   - All internships are displayed sorted by their deadlines in descending order (latest deadline first).
 
+---
+
 ### Finding an internship by keyword
+Prerequisites: At least one internship has been added.
+
+Test case 1: Find by company name
+- Action: `find Microsoft`
+- Expected:
+  - All internships whose company name contains `Microsoft` (case-insensitive) are displayed.
+  - Each matching internship shows all details.
+
+Test case 2: Find by role name
+- Action: `find Intern`
+- Expected:
+  - All internships whose role contains `Intern` (case-insensitive) are displayed.
+  - Each matching internship shows all details.
+
+---
 
 ### Changing username
 Prerequisites: The application has been launched and the user is at the command prompt.
@@ -1103,6 +1150,8 @@ Test case 2: Invalid username input
 - Expected:
   - Error message is displayed indicating an invalid username command.
   - Username remains unchanged.
+
+---
 
 ### Displaying the Internity Dashboard
 Prerequisites: At least one internship has been added to the system.
@@ -1131,26 +1180,27 @@ Test case 4: Dashboard reflects recent changes
 - Expected:
   - Dashboard reflects the updated internship count, deadlines and statuses.
 
+---
+
 ### Saving Data
-Prerequisites: The application has been launched at least once.
+Prerequisites: 
+- The application has been launched at least once. 
+- At least one internship has been added, updated or deleted.
 
-Test case 1: Automatic data persistence after adding an internship
-- Actions:
-  - Launch the application.
-  - Add an internship.
-  - Execute `exit`.
-  - Relaunch the application.
-  - Execute `list`.
+Test case 1: Save after adding internships
+- Action: Add one or more internships, then exit the program.
 - Expected:
-  - The internship added in the previous session is displayed in the list.
-  - Data file `./data/internships.txt` exists and contains the internship data in pipe-delimited format.
+  - Internships are written to the data file.
+  - When program is restarted, all added and valid internships are loaded correctly.
 
-Test case 2: Handling corrupted data file
-- Actions:
-  - Manually edit `./data/internships.txt` and add a malformed line: `Google | SWE | 25-12-2025` (missing pay and status fields).
-  - Launch the application.
-  - Execute `list`.
+Test case 2: Save after updating an internship
+- Action: Update one or more internships, then exit the program.
 - Expected:
-  - Warning message is displayed: `Warning: Skipped line with invalid number of fields: ...`
-  - Application continues to run normally.
-  - Other valid internships are loaded successfully.
+  - Changes to internships are saved to the storage file.
+  - After restarting, updated details are correctly loaded.
+
+Test case 3: Save after deleting an internship
+- Action: Delete one or more internships, then exit the program.
+- Expected:
+  - Deleted internships are removed from the storage file.
+  - After restarting, deleted internships do not appear.

@@ -1,90 +1,45 @@
 @startuml
 title Delete Command - Sequence Diagram
 
-actor User
-participant ":InternityManager" as IM
-participant ":CommandParser" as CP
-participant ":CommandFactory" as CF
-participant "<<class>>\nArgumentParser" as AP
-participant ":DeleteCommand" as DC
+participant Logic
+create ":DeleteCommand" as DC
 participant "<<class>>\nInternshipList" as IL
 participant ":Internship" as Intern
-participant ":Ui" as UI
-participant ":Storage" as S
+participant "<<class>>\nUi" as UI
 
-User -> IM: input
-activate IM
-
-IM -> CP: parseInput()
-activate CP
-
-CP -> CP: split into commandWord and args
-
-CP -> CF: createCommand(commandWord, args)
-activate CF
-
-CF -> AP: parseDeleteCommandArgs()
-activate AP
-
-AP -> AP: parse index and convert\n1-based to 0-based
-AP -> DC: new DeleteCommand()
+Logic -> DC**: new DeleteCommand(index)
 activate DC
-DC --> AP:
+return (created)
 deactivate DC
 
-AP --> CF: return DeleteCommand
-deactivate AP
-
-CF --> CP: return DeleteCommand
-deactivate CF
-
-CP --> IM: return DeleteCommand
-deactivate CP
-
-IM -> DC: execute()
+Logic -> DC: execute()
 activate DC
 
-DC -> IL: get()
+DC -> IL: get(index)
 activate IL
-IL --> DC: return Internship
+IL -> Intern: retrieve internship
+activate Intern
+Intern --> IL: return internship
+deactivate Intern
+IL --> DC: return internship
 deactivate IL
 
-DC -> IL: delete()
+DC -> IL: delete(index)
 activate IL
-IL -> IL: List.remove()
-IL --> DC:
+IL -> IL:  remove internship
+activate IL
+IL --> IL
 deactivate IL
-
-DC -> IL: size()
-activate IL
-IL --> DC: return new size
+IL --> DC
 deactivate IL
 
 DC -> UI: printRemoveInternship()
 activate UI
-UI --> DC:
+UI --> DC
 deactivate UI
 
-DC --> IM:
+
+DC --> Logic
 deactivate DC
-
-IM -> IL: saveToStorage()
-activate IL
-
-IL -> S: save()
-activate S
-
-loop for each internship
-    S -> S: formatInternshipForFile()
-end
-
-S --> IL:
-deactivate S
-
-IL --> IM:
-deactivate IL
-
-IM --> User: display success message
-deactivate IM
 
 @enduml
