@@ -213,6 +213,8 @@ Example:
 username Yoshikage Kira
 ```
 
+This command changes the username to `Yoshikage Kira` and notifies the user.
+
 ---
 
 ### Displaying dashboard: `dashboard`
