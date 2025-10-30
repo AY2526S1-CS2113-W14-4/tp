@@ -944,8 +944,10 @@ The save sequence diagram shows the straightforward serialization process. Note 
   * Cons: Risk of data loss if application crashes.
 
 * **Alternative 3:** Periodic auto-save every N seconds or N operations.
-  * Pros: Balances performance and data safety.
-  * Cons: More complex implementation (requires background thread or operation counter).
+  - Pros: Balances performance and data safety.
+  - Cons: More complex implementation (requires background thread or operation counter).
+
+
 
 ---
 
