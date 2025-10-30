@@ -772,6 +772,8 @@ Given below are instructions to test the app manually.
 1. Initial launch
    1. Download the jar file and copy it into an empty folder.
 
+---
+
 ### Adding an internship
 
 Test case 1: Add a valid internship
@@ -792,7 +794,11 @@ Test case 3: Add an internship with invalid pay
   - Error message indicates invalid add command.
   - Internship is not added.
 
+---
+
 ### Updating an internship
+
+---
 
 ### Deleting an internship
 
@@ -816,6 +822,8 @@ Test case 3: Delete with index 0 or negative index
   - Error message indicates invalid internship index.
   - No internship is removed.
 
+---
+
 ### Listing and sorting all internships
 
 Test case 1: List all internships in the order they were added
@@ -835,7 +843,24 @@ Test case 3: List all internships sorted by deadline descending
 - Expected:
   - All internships are displayed sorted by their deadlines in descending order (latest deadline first).
 
+---
+
 ### Finding an internship by keyword
+Prerequisites: At least one internship has been added.
+
+Test case 1: Find by company name
+- Action: `find Microsoft`
+- Expected:
+  - All internships whose company name contains `Microsoft` (case-insensitive) are displayed.
+  - Each matching internship shows all details.
+
+Test case 2: Find by role name
+- Action: `find Intern`
+- Expected:
+  - All internships whose role contains `Intern` (case-insensitive) are displayed.
+  - Each matching internship shows all details.
+
+---
 
 ### Changing username
 Prerequisites: The application has been launched and the user is at the command prompt.
@@ -879,4 +904,25 @@ Test case 4: Dashboard reflects recent changes
 - Expected:
   - Dashboard reflects the updated internship count, deadlines and statuses.
 
+---
+
 ### Saving Data
+Prerequisites: At least one internship has been added, updated or deleted.
+
+Test case 1: Save after adding internships
+- Action: Add one or more internships, then exit the program.
+- Expected:
+  - Internships are written to the data file.
+  - When program is restarted, all added and valid internships are loaded correctly.
+
+Test case 2: Save after updating an internship
+- Action: Update one or more internships, then exit the program.
+- Expected:
+  - Changes to internships are saved to the storage file.
+  - After restarting, updated details are correctly loaded.
+
+Test case 3: Save after deleting an internship
+- Action: Delete one or more internships, then exit the program.
+- Expected:
+  - Deleted internships are removed from the storage file.
+  - After restarting, deleted internships do not appear.
