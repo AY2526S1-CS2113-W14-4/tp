@@ -632,6 +632,7 @@ The Storage mechanism uses a human-readable, pipe-delimited text file format tha
 
 **File format specification:**
 
+Data is stored in a single file at `./data/internships.txt` with both username and internships.
 ```
 Username (in line below):
 <username>
@@ -719,92 +720,42 @@ The save sequence diagram shows the straightforward serialization process. Note 
 **Aspect: File format choice**
 
 * **Alternative 1 (current choice):** Pipe-delimited text format.
-  * Pros: Human-readable, easy to debug and manually edit if needed.
-  * Pros: Simple parsing logic without external dependencies.
-  * Pros: Works across all platforms without binary compatibility issues.
-  * Cons: Slightly larger file size compared to binary formats.
+  * Pros: Human-readable, can be edited by a user, doubling up as an import/export function.
   * Cons: No built-in schema validation.
-  * Cons: Performance degrades with very large files (not an issue for target use case of ~1000 entries).
 
 * **Alternative 2:** JSON format using a library.
   * Pros: Structured format with built-in validation.
   * Pros: Easier to extend with new fields.
-  * Pros: Better for complex nested data structures.
   * Cons: Less human-readable due to verbose syntax.
-  * Cons: Overkill for simple tabular data.
 
 * **Alternative 3:** Binary serialization using Java's `ObjectOutputStream`.
   * Pros: Compact file size.
-  * Pros: Fast serialization/deserialization.
   * Cons: Not human-readable or editable.
   * Cons: Platform-dependent binary format could cause issues.
 
 **Aspect: Error handling strategy**
 
 * **Alternative 1 (current choice):** Skip corrupted lines with warnings, continue loading valid entries.
-  * Pros: Maximizes data recovery - users don't lose all data due to one corrupted line.
   * Pros: Application remains usable even with partial data corruption.
-  * Pros: Warnings inform users of data issues without blocking usage.
-  * Cons: Silent data loss is possible if users don't notice warnings.
-  * Cons: Corrupted data is permanently lost on next save.
   * Cons: Code complexity increases as edge cases need to be accounted for.
 
-* **Alternative 2:** Fail fast - throw exception and abort load on any corrupted line.
-  * Pros: No silent data loss - users are immediately aware of corruption.
-  * Pros: Forces users to fix or remove corrupted data.
-  * Cons: Users cannot access any data if even one line is corrupted.
-  * Cons: Poor user experience for a minor data issue.
-
-* **Alternative 3:** Load all lines (including corrupted ones) into a separate "invalid entries" list for user review.
-  * Pros: No data loss - even corrupted entries are preserved.
-  * Pros: Users can manually review and fix corrupted entries.
-  * Cons: Significantly more complex implementation.
-  * Cons: Requires additional UI for managing invalid entries.
-  * Cons: Invalid entries could accumulate over time.
+* **Alternative 2:** Fail and abort load if there is any corrupted line.
+  * Pros: Easy to code, no need to account for edge cases.
+  * Cons: Users cannot access any data if even one line is corrupted, resulting in poor user experience.
 
 **Aspect: When to save**
 
 * **Alternative 1 (current choice):** Auto-save after every command that modifies data.
-  * Pros: Minimizes data loss risk - data is never more than one command out of sync.
-  * Pros: Simple mental model for users - changes are always saved.
+  * Pros: Minimizes data loss risk.
   * Pros: No need for users to remember to save manually.
-  * Cons: Higher I/O overhead (mitigated by small file sizes).
-  * Cons: Performance impact if storage is slow (e.g., network drive).
+  * Cons: Performance impact if storage is slow.
 
-* **Alternative 2:** Save only on explicit "save" command or application exit.
-  * Pros: Better performance with fewer write operations.
-  * Pros: Users have control over when data is persisted.
-  * Cons: Risk of data loss if application crashes or user forgets to save.
-  * Cons: Inconsistent with modern application expectations.
-  * Cons: More complex implementation (need to track dirty state).
+* **Alternative 2:** Save only on application exit.
+  * Cons: Risk of data loss if application crashes.
 
 * **Alternative 3:** Periodic auto-save every N seconds or N operations.
   * Pros: Balances performance and data safety.
-  * Pros: Reduces risk of data loss compared to manual save.
   * Cons: More complex implementation (requires background thread or operation counter).
-  * Cons: Users could still lose up to N operations of data.
-  * Cons: Unpredictable save timing could confuse users.
-
-**Aspect: File location and structure**
-
-* **Alternative 1 (current choice):** Single file at `./data/internships.txt` with both username and internships.
-  * Pros: Simple file structure, easy to locate and backup.
-  * Pros: All data in one place for easy migration.
-  * Pros: Atomic writes ensure consistency (file is completely written or not at all).
-  * Cons: Single point of failure - if file is corrupted, all data is affected.
-
-* **Alternative 2:** Separate files for username and internships.
-  * Pros: Better separation of concerns.
-  * Pros: Reduces risk of username corruption affecting internship data.
-  * Cons: More complex file management.
-  * Cons: Two files must be kept in sync.
-
-* **Alternative 3:** User-home directory with platform-specific application data folder.
-  * Pros: Follows OS conventions for application data storage.
-  * Pros: Better for multi-user systems.
-  * Cons: Harder for users to locate and backup data.
-  * Cons: More complex path resolution logic.
-
 ---
 
 ## Appendix: Requirements
@@ -937,6 +888,15 @@ Test case 6: Persistence check after update
 
 ### Deleting an internship
 
+Test case 1: Delete an internship at index 2
+- Actions: 
+  - Add 3 internships with varying details. Then, execute the command `list`.
+  - Then, execute the command `delete 2`.
+  - Then, execute the command `list`.
+- Expected:
+  - When `list` is executed for the first time, all 3 internships are displayed in the order they were added.
+  - When `list` is executed for the second time, only the first and third internship added are displayed in the order they were added. The second internship added is no longer displayed.
+    
 ### Listing and sorting all internships
 
 Test case 1: List all internships in the order they were added
@@ -1001,3 +961,25 @@ Test case 4: Dashboard reflects recent changes
   - Dashboard reflects the updated internship count, deadlines and statuses.
 
 ### Saving Data
+Prerequisites: The application has been launched at least once.
+
+Test case 1: Automatic data persistence after adding an internship
+- Actions:
+  - Launch the application.
+  - Add an internship.
+  - Execute `exit`.
+  - Relaunch the application.
+  - Execute `list`.
+- Expected:
+  - The internship added in the previous session is displayed in the list.
+  - Data file `./data/internships.txt` exists and contains the internship data in pipe-delimited format.
+
+Test case 2: Handling corrupted data file
+- Actions:
+  - Manually edit `./data/internships.txt` and add a malformed line: `Google | SWE | 25-12-2025` (missing pay and status fields).
+  - Launch the application.
+  - Execute `list`.
+- Expected:
+  - Warning message is displayed: `Warning: Skipped line with invalid number of fields: ...`
+  - Application continues to run normally.
+  - Other valid internships are loaded successfully.
