@@ -1,0 +1,60 @@
+@startuml
+title List Command - Sequence Diagram
+
+participant Logic
+create ":ListCommand" as LC
+participant "<<class>>\nInternshipList" as IL
+participant "<<class>>\nUi" as Ui
+participant ":Internship" as Intern
+
+Logic -> LC**: new ListCommand(order)
+activate LC
+return (created)
+deactivate LC
+
+Logic -> LC: execute()
+activate LC
+
+LC -> IL : isEmpty()
+activate IL
+IL --> LC : return boolean
+deactivate IL
+
+alt internship list is empty
+
+
+    LC -> Ui: printInternshipListEmpty()
+    activate Ui
+    Ui --> LC
+    deactivate Ui
+
+else internship list is not empty
+
+    LC -> IL: sortInternships(order)
+    activate IL
+
+    IL --> LC
+    deactivate IL
+
+    loop for each internship
+        LC -> IL: get Internship at index
+        activate IL
+        IL --> LC: return Internship
+        deactivate IL
+
+        LC -> Intern: get attributes
+        activate Intern
+        Intern --> LC: return attributes
+        deactivate Intern
+
+        LC -> Ui: print Internship attributes
+        activate Ui
+        Ui --> LC
+        deactivate Ui
+
+    end
+end
+
+LC --> Logic
+deactivate LC
+@enduml

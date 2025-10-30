@@ -281,7 +281,7 @@ The list mechanism is implemented by the `ListCommand` class, which allows users
 
 Below is the sequence diagram for a common usage of the list feature:
 
-![List Feature: Sequence Diagram](diagrams/ListFeatureSD.png)
+![List Command: Sequence Diagram](diagrams/ListCommandSD.png)
 
 #### Implementation
 1. `ListCommand` accesses the `InternshipList`, which contains the `ArrayList<Internship>` of all stored internships.
