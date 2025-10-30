@@ -1001,12 +1001,6 @@ or unpaid, part-time or full-time, and can occur during or after academic study.
 
 Given below are instructions to test the app manually.
 
-### Launch and shutdown
-1. Initial launch
-   1. Download the jar file and copy it into an empty folder.
-
----
-
 ### Adding an internship
 
 Test case 1: Add a valid internship
