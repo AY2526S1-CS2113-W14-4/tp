@@ -13,10 +13,10 @@ manage hundreds of applications. This guide explains how to install and use Inte
   - [Deleting an application : `delete`](#deleting-an-application-delete)
   - [Updating an application : `update`](#updating-an-application-update)
   - [Viewing all applications: `list`](#listing-all-applications-list)
-  - [Finding by keyword : `find`](#finding-by-keyword)
+  - [Finding by keyword: `find`](#finding-by-keyword-find)
   - [Setting/Changing username : `username`](#settingchanging-username-username)
   - [Displaying dashboard : `dashboard`](#displaying-dashboard-dashboard)
-  - [Help : `help`](#help)
+  - [Help : `help`](#help-help)
   - [Exiting the program : `exit`](#exit-internity-exit)
 - [FAQ](#faq)
 - [Command Summary](#command-summary)
@@ -108,7 +108,7 @@ This command deletes the internship application at index 2 from the list.
 Use this command to update any field (company, role, deadline, pay, status) of an internship application.  
 
 
-<div style="background-color: #331c16; color: #c3b091; padding: 15px; border-radius: 8px; border-left: 5px solid #966919;">
+<div style="background-color: #333446; color: #EAEFEF; padding: 15px; border-radius: 8px; border-left: 5px solid #7F8CAA;">
 <h4><strong>Valid <code>STATUS</code> values</strong></h4>
 <ul>
 <li><code>Pending</code> - You’re considering the internship but haven’t applied yet.</li>
@@ -142,6 +142,9 @@ The 2nd command updates the company of the internship application at index 2 to 
 <h4>Notes</h4>
 <ul>
 <li>All field values must adhere to the constraints specified in the <code>add</code> feature.</li>
+<li>If duplicate field values are given, only the last field will be used.
+<br>
+Example: <code>update 1 company/ABC company/XYZ</code> will update the company of the internship application at index 1 to "XYZ".</li>
 </ul>
 </div>
 
@@ -149,8 +152,7 @@ The 2nd command updates the company of the internship application at index 2 to 
 
 ### Listing all applications: `list`
 
-Use this command to view all internship applications.  
-By default, the list shows applications in the **order they were added**.
+Use this command to view all internship applications.
 You can optionally sort them by deadline in ascending or descending order.
 
 Format:
@@ -171,6 +173,15 @@ list sort/desc
 - `list` → shows all applications in the order they were added
 - `list sort/asc` → sorts applications by deadline ascending
 - `list sort/desc` → sorts applications by deadline descending
+
+<div style="background-color: #331c16; color: #c3b091; padding: 15px; border-radius: 8px; border-left: 5px solid #966919;">
+<h4>Notes</h4>
+<ul>
+<li>If two applications have the same deadline, they are further sorted by the order they were added.</li>
+<li>The <code>sort/ORDER</code> parameter is optional. If omitted, the default listing order is by addition time.</li>
+<li>When sorting is applied, the selected order will persist for subsequent listings.</li>
+</ul>
+</div>
 
 ---
 
@@ -226,6 +237,14 @@ Format:
 dashboard
 ```
 
+<div style="background-color: #331c16; color: #c3b091; padding: 15px; border-radius: 8px; border-left: 5px solid #966919;">
+<h4>Notes</h4>
+<ul>
+<li>This command is still valid if extra parameters are given
+<br>Example: <code>dashboard cs2113</code></li>
+</ul>
+</div>
+
 ---
 
 ### Help: `help`
@@ -247,6 +266,14 @@ Format:
 ```
 exit
 ```
+
+<div style="background-color: #331c16; color: #c3b091; padding: 15px; border-radius: 8px; border-left: 5px solid #966919;">
+<h4>Notes</h4>
+<ul>
+<li>This command is still valid if extra parameters are given
+<br>Example: <code>exit now</code></li>
+</ul>
+</div>
 
 ---
 
@@ -274,6 +301,10 @@ exit
   <br> A: Close the app and delete or rename the `data/internships.txt` file. On next start, the app will create a new empty data file. Be careful: this deletes all saved internships.
 
 
+* **Q: I see warnings about corrupted lines being deleted when I start Internity — what happened?**
+  <br> A: On startup, Internity scans the save file (`data/internships.txt`) for malformed or corrupted lines. If any problematic lines are found, the program automatically detects and removes those lines to keep the data consistent and prints a warning for each deleted line. These warnings appear before the welcome message.
+  <br>*Important*: the deletions are staged in memory and are NOT written back to the save file immediately. The cleaned data is only persisted to disk when the program executes a command. If you force-quit the program (for example, pressing Ctrl+C) before typing any command, the program exits without saving and the original save file will remain unchanged.
+
 ---
 
 ## Command Summary
@@ -289,5 +320,3 @@ exit
 | **Display Dashboard**   | `dashboard` | `dashboard`                                                                                                                                                 | `dashboard`                                                                       |
 | **Help**                | `help`      | `help`                                                                                                                                                      | `help`                                                                            |
 | **Exit Internity**      | `exit`      | `exit`                                                                                                                                                      | `exit`                                                                            |
-
-

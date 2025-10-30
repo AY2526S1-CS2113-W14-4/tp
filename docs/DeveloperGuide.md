@@ -2,7 +2,7 @@
 
 1. [Acknowledgements](#acknowledgements)
 2. [Design](#design)
-    - [Architecture](#Architecture)
+    - [Architecture](#architecture)
     - [UI Component](#ui-component)
     - [Logic Component](#logic-component)
     - [Model Component](#model-component)
@@ -176,15 +176,42 @@ This distinction is represented in the above sequence diagram's `alt` block, sho
 
 **API**: [`internity.core`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/core/) (exclude Storage.java)
 
-![Model Component: Class Diagram](diagrams/ModelComponentCD.png)
+#### Overview
 
 The `Model` component:
 * stores internship data i.e. all `Internship` objects in an `InternshipList` object
 * provides operations to manipulate that data e.g. `add`, `delete`, `update`, `find`, `list` internships
 * does not depend on the other three components (i.e. `UI`, `Logic`, `Storage`)
 
+#### Class Diagram
+
+![Model Component: Class Diagram](diagrams/ModelComponentCD.png)<br>
+The class diagram above shows the main classes involved in manipulating `Internship` objects.
+* InternshipList is a singleton class that manages a static ArrayList of Internship objects. It provides methods to add, delete, update, find and list internships. It also allows
+* Internship represents a single internship application with attributes like company, role, deadline, pay and status.
+* Date encapsulates date-related functionality, including parsing and formatting dates in dd-MM-yyyy format.
+* Status is an enum representing the possible statuses of an internship application (Pending, Applied, Interview, Offer, Rejected).
+
+*Getters and setters have been omitted from Class Diagram for clarity.*
+
+#### Sequence Diagram
+
 The following sequence diagram illustrates how the Model Component processes an Add command:
-*coming soon*
+![Model Component: Sequence Diagram (Adding a new Internship)](diagrams/ModelComponentSD_Add.png)
+
+The sequence diagram above shows how the `AddCommand` interacts with the `InternshipList` to add a new internship.
+1. The `InternshipList.add()` method is called with the necessary parameters (company, role, deadline, pay).
+2. `InternshipList` creates a new `Internship` object with those parameters.
+3. `InternshipList` calls `add()` to add the new internship to the static list.
+
+
+The following sequence diagram illustrates how the Model Component processes an Update command:
+![Model Component: Sequence Diagram (Updating status of an existing internship)](diagrams/ModelComponentSD_Update.png)
+
+The sequence diagram above shows how the `UpdateCommand` interacts with the `InternshipList` to update an existing internship.
+1. The `InternshipList.update()` method is called with the index of the internship to update and the new status.
+2. `InternshipList` retrieves the existing `Internship` object at that index.
+3. `InternshipList` calls the `setStatus()` method on the `Internship` object to update its status.
 
 ---
 

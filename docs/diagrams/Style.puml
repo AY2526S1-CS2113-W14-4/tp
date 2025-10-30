@@ -1,4 +1,9 @@
+' Define colors for different components in class diagrams
 !define LOGIC_COLOR #FF8F8F
 !define UI_COLOR #C2E2FA
 !define MODEL_COLOR #FFF1CB
 !define STORAGE_COLOR #B7A3E3
+
+' define colors for specific component explanations (e.g. implementation)
+!define FOCUSED_COLOR #FFBDBD
+!define DEFAULT_COLOR #F3F2EC

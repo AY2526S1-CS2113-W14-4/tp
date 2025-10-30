@@ -7,14 +7,29 @@ import internity.core.InternityException;
 import internity.core.InternshipList;
 import internity.ui.Ui;
 
+/**
+ * Represents a command to delete an internship entry from the list.
+ * The internship is identified by its index in the list.
+ */
 public class DeleteCommand extends Command {
     private static final Logger logger = Logger.getLogger(DeleteCommand.class.getName());
     private final int index;
 
+    /**
+     * Constructs a DeleteCommand with the specified index.
+     *
+     * @param index The zero-based index of the internship to delete.
+     */
     public DeleteCommand(int index) {
         this.index = index;
     }
 
+    /**
+     * Executes the delete command by removing the internship at the specified index.
+     * Displays the deleted internship information and the updated total count.
+     *
+     * @throws InternityException If the index is out of bounds or deletion fails.
+     */
     @Override
     public void execute() throws InternityException {
         logger.info("Executing delete command for index: " + index);
@@ -38,6 +53,11 @@ public class DeleteCommand extends Command {
         logger.info("Delete command executed successfully. Remaining items: " + totalItems);
     }
 
+    /**
+     * Indicates whether this command should exit the application.
+     *
+     * @return {@code false}, as the delete command does not exit the application.
+     */
     @Override
     public boolean isExit() {
         return false;

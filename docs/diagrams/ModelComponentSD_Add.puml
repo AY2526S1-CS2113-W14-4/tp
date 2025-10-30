@@ -1,0 +1,49 @@
+@startuml
+title Model Component - Sequence Diagram (Adding a new Internship)
+' Model Component Sequence Diagram
+' Shows interactions between Logic, Model, InternshipList, Internship, Date and Status
+' Additional abstract components: Logic (parses commands) and Storage (persists data)
+'
+participant Logic as "Logic"
+
+
+box Model
+participant InternshipList as "<<class>>\nInternshipList"
+participant Internship as ":Internship"
+participant Date as "Date"
+endbox
+
+' --- Scenario 1: Adding a new internship ---
+' User types an `add` command; Logic parses and hands off a semantic request to Model
+' Model validates high-level constraints then delegates to the list component
+Logic -> InternshipList: add(...)
+activate InternshipList
+' InternshipList constructs a new Internship object (calls constructor)
+create Internship
+InternshipList -> Internship: new Internship(...)
+activate Internship
+' Internship object parses and stores a Date and Status internally
+create Date
+Internship -> Date: parse(deadline) : Date
+activate Date
+Date --> Internship: (created)
+deactivate Date
+
+Internship -> Internship : set Status to Pending
+' Construction returns the Internship instance to InternshipList
+Internship --> InternshipList: (created)
+deactivate Internship
+
+' InternshipList appends to internal collection
+
+InternshipList -> InternshipList: add(Internship)
+activate InternshipList
+
+' After mutation, Model requests Storage to persist the updated list
+InternshipList --> InternshipList
+deactivate InternshipList
+
+Logic <-- InternshipList
+deactivate InternshipList
+
+@enduml
