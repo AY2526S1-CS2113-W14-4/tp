@@ -397,7 +397,7 @@ Given below is an example usage scenario and how the update mechanism behaves at
 
 - **Step 1.** The user launches the application with a populated `InternshipList`. The user executes:  
   ```bash
-  update 1 company/Google role/Software Engineer pay/9000 status/Accepted
+  update 1 company/Google role/Software Engineer pay/9000
   ```
 - **Step 2.** Parsing input
 `CommandParser` receives the input and splits it into command word `update` and the remaining arguments.
@@ -1031,19 +1031,19 @@ Test case 3: Add an internship with invalid pay
 
 ### Updating an internship
 
+Prerequisite: Have one internship added to the list.
+
 Test case 1: Update a single field (company name)
 
-- Action: Add an internship using `add company/Google role/Software Engineer deadline/10-12-2025 pay/8000`.  
-  Then, execute the command `update 1 company/Microsoft`.
+- Action: `update 1 company/Microsoft`.
 - Expected:
-  - The company field of the first internship changes from “Google” to “Microsoft”.
+  - The company field of the first internship changes to “Microsoft”.
   - All other fields (role, deadline, pay, status) remain unchanged.
-  - A success message such as `Internship status updated successfully!` is displayed.
+  - A success message will be displayed.
 
 Test case 2: Update multiple fields (company, role, and pay)
 
-- Action: Add an internship using `add company/Amazon role/Data Analyst deadline/11-12-2025 pay/5000`.  
-  Then, execute the command `update 1 company/Tesla role/ML Engineer pay/10000`.
+- Action: `update 1 company/Tesla role/ML Engineer pay/10000`
 - Expected:
   - The internship’s company, role, and pay fields are updated to the new values.
   - Deadline and status remain unchanged.
@@ -1051,10 +1051,9 @@ Test case 2: Update multiple fields (company, role, and pay)
 
 Test case 3: Invalid index
 
-- Action: Ensure only one internship exists in the list. Then, execute the command `update 5 company/Netflix`.
+- Action: `update 1000 company/Netflix`
 - Expected:
-  - The command fails with the error message:  
-    `Invalid internship index.`
+  - The command fails with the error message indicating invalid index.
   - No data is modified.
 
 Test case 4: Missing update fields
