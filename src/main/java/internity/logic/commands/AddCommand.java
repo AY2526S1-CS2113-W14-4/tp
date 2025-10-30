@@ -13,7 +13,7 @@ import internity.ui.Ui;
  * <p>
  * The command parses a user input string in the following format:
  * <pre>
- *     add company/COMPANY_NAME role/ROLE_NAME deadline/DD-MM-YYYY pay/PAY_AMOUNT
+ *     add company/COMPANY_NAME role/ROLE_NAME deadline/DEADLINE pay/PAY_AMOUNT
  * </pre>
  * Example:
  * <pre>
@@ -38,8 +38,8 @@ public class AddCommand extends Command {
      *
      * @param company  the name of the company offering the internship
      * @param role     the internship role or position
-     * @param deadline the application deadline for the internship
-     * @param pay      the monthly pay or stipend for the internship
+     * @param deadline the application deadline for the internship in dd-MM-yyyy
+     * @param pay      the monthly pay for the internship
      */
     public AddCommand(String company, String role, Date deadline, int pay) {
         this.company = company;

@@ -86,11 +86,7 @@ public class DateFormatter {
      * @return {@code true} if the date is valid, {@code false} otherwise
      */
     private static boolean isValidDate(int day, int month, int year) {
-        if (month < 1 || month > 12) {
-            return false;
-        }
-
-        if (day < 1) {
+        if (day < 1 || month < 1 || month > 12) {
             return false;
         }
 

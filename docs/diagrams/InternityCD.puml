@@ -15,6 +15,7 @@ class UpdateCommand
 class ListCommand
 class UsernameCommand
 class DashboardCommand
+class HelpCommand
 class ExitCommand
 class ArgumentParser
 
@@ -51,6 +52,7 @@ Command <|-- UpdateCommand
 Command <|-- ListCommand
 Command <|-- UsernameCommand
 Command <|-- DashboardCommand
+Command <|-- HelpCommand
 Command <|-- ExitCommand
 
 ' All commands interact with InternshipList
@@ -65,6 +67,12 @@ ExitCommand --> InternshipList
 
 ' Dashboard uses DashboardUi
 DashboardCommand --> DashboardUi
+
+' Help uses Ui
+HelpCommand -up-> Ui
+
+' force helpcommand to be there
+HelpCommand -left[hidden]-> ExitCommand
 
 ' InternshipList relationships
 InternshipList --> Storage

@@ -30,16 +30,16 @@ activate CF
 alt Command requires argument parsing
     CF -> AP: parseAddCommandArgs(args)
     activate AP
-    AP -> AddC: new AddCommand(company, role, deadline, pay)
+    AP -> AddC**: new AddCommand(company, role, deadline, pay)
     activate AddC
-    AddC --> AP: return AddCommand instance
+    return (created)
     deactivate AddC
     AP --> CF: return AddCommand
     deactivate AP
 else Command does not require args (exit/dashboard)
-    CF -> ExitC: new ExitCommand()
+    CF -> ExitC**: new ExitCommand()
     activate ExitC
-    ExitC --> CF: return ExitCommand instance
+    return (created)
     deactivate ExitC
 end
 

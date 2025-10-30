@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import internity.ui.Ui;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -139,14 +140,14 @@ class ArgumentParserTest {
 
     @Test
     void parseAddCommandArgs_companyNameTooLong_throwsException() {
-        String longCompany = "A".repeat(InternshipList.COMPANY_MAXLEN + 1);
+        String longCompany = "A".repeat(Ui.COMPANY_MAXLEN + 1);
         String args = String.format("company/%s role/Intern deadline/15-12-2025 pay/5000", longCompany);
         assertThrows(InternityException.class, () -> ArgumentParser.parseAddCommandArgs(args));
     }
 
     @Test
     void parseAddCommandArgs_roleTooLong_throwsException() {
-        String longRole = "B".repeat(InternshipList.ROLE_MAXLEN + 1);
+        String longRole = "B".repeat(Ui.ROLE_MAXLEN + 1);
         String args = String.format("company/Microsoft role/%s deadline/15-12-2025 pay/5000", longRole);
         assertThrows(InternityException.class, () -> ArgumentParser.parseAddCommandArgs(args));
     }

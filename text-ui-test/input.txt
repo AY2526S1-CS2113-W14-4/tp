@@ -31,4 +31,5 @@ list
 delete 2
 list
 delete 3
+help
 exit

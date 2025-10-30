@@ -3,20 +3,10 @@ title Storage Component - Class Diagram
 
 class Storage {
     - filePath: Path
-    - {static} logger: Logger
-    - {static} IDX_COMPANY: int = 0
-    - {static} IDX_ROLE: int = 1
-    - {static} IDX_DEADLINE: int = 2
-    - {static} IDX_PAY: int = 3
-    - {static} IDX_STATUS: int = 4
-    - {static} LEN_REQUIRED_FIELDS: int = 5
     __
     + Storage(filePath: String)
     + load(): ArrayList<Internship>
     + save(internships: ArrayList<Internship>): void
-    - parseInternshipFromFile(line: String, internships: ArrayList<Internship>): String
-    - parseAndValidateFields(parts: String[], line: String, internships: ArrayList<Internship>): String
-    - formatInternshipForFile(internship: Internship): String
 }
 
 class InternshipList {

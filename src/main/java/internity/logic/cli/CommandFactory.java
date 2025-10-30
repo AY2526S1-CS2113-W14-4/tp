@@ -5,9 +5,11 @@ import internity.logic.commands.Command;
 import internity.logic.commands.DashboardCommand;
 import internity.logic.commands.DeleteCommand;
 import internity.logic.commands.ExitCommand;
+import internity.logic.commands.FindCommand;
 import internity.logic.commands.ListCommand;
 import internity.logic.commands.UpdateCommand;
 import internity.logic.commands.UsernameCommand;
+import internity.logic.commands.HelpCommand;
 import internity.core.InternityException;
 
 /**
@@ -24,9 +26,12 @@ import internity.core.InternityException;
  * <ul>
  *   <li>{@link AddCommand}</li>
  *   <li>{@link DeleteCommand}</li>
+ *   <li>{@link FindCommand}</li>
  *   <li>{@link UpdateCommand}</li>
  *   <li>{@link ListCommand}</li>
  *   <li>{@link UsernameCommand}</li>
+ *   <li>{@link DashboardCommand}</li>
+ *   <li>{@link HelpCommand}</li>
  *   <li>{@link ExitCommand}</li>
  * </ul>
  */
@@ -61,6 +66,8 @@ public class CommandFactory {
             return ArgumentParser.parseUsernameCommandArgs(args);
         case "dashboard":
             return new DashboardCommand();
+        case "help":
+            return new HelpCommand();
         case "exit":
             return new ExitCommand();
         default:

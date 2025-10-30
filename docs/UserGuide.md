@@ -16,6 +16,8 @@ manage hundreds of applications. This guide explains how to install and use Inte
   - [Finding by keyword : `find`](#finding-by-keyword)
   - [Setting/Changing username : `username`](#settingchanging-username-username)
   - [Displaying dashboard : `dashboard`](#displaying-dashboard-dashboard)
+  - [Help : `help`](#help)
+  - [Exiting the program : `exit`](#exit-internity-exit)
 - [FAQ](#faq)
 - [Command Summary](#command-summary)
 
@@ -31,6 +33,8 @@ manage hundreds of applications. This guide explains how to install and use Inte
    ```java -jar Internity.jar```
 5. **Start using Internity!** You can now start adding, deleting, updating and viewing your internship applications.  
    You may refer to the Features below for details of each command.
+
+Tip: Type `help` to view a list of available commands at any time.
 
 ---
 
@@ -71,7 +75,7 @@ September 2025, and an annual salary of $100000.
 <li>No duplicate parameter type, so only exactly one of each parameter type.</li>
 <li>By default, when an internship is added, the status is set to Pending. Use the update command to change the status.</li>
 <li>Field character limits: <code>COMPANY</code> ≤ 15 characters, <code>ROLE</code> ≤ 30 characters.</li>
-<li><code>DEADLINE</code> must be in <code>DD-MM-YYYY</code> format.</li>
+<li><code>DEADLINE</code> must be in <code>dd-MM-yyyy</code> format.</li>
 <li><code>PAY_AMOUNT</code> must be a non-negative integer that fits within Java's 32-bit signed integer range (maximum 2,147,483,647).</li>
 </ul>
 </div>
@@ -223,9 +227,19 @@ dashboard
 
 ---
 
+### Help: `help`
+
+Use this command to display a help message with a list of available commands.
+
+Format:
+
+```
+help
+```
+
 ### Exit Internity: `exit`
 
-Quit the program. Your data is saved.
+Use this command to quit the program. Your data is saved.
 
 Format:
 
@@ -272,6 +286,7 @@ exit
 | **Find Application**    | `find`      | `find KEYWORD`                                                                                                                                              | `find Software Engineer`                                                          |
 | **Set/Change username** | `username`  | `username USERNAME`                                                                                                                                         | `username Yoshikage Kira`                                                         |
 | **Display Dashboard**   | `dashboard` | `dashboard`                                                                                                                                                 | `dashboard`                                                                       |
+| **Help**                | `help`      | `help`                                                                                                                                                      | `help`                                                                            |
 | **Exit Internity**      | `exit`      | `exit`                                                                                                                                                      | `exit`                                                                            |
 
 

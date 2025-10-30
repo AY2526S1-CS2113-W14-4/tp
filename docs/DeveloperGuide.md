@@ -7,14 +7,22 @@
     - [Logic Component](#logic-component)
     - [Model Component](#model-component)
     - [Storage Component](#storage-component)
-    - [Common Classes](#common-classes)
 3. [Implementation](#implementation)
+    - [Feature: Add](#add-feature)
+    - [Feature: Update](#update-feature)
+    - [Feature: Delete](#delete-feature)
+    - [Feature: List](#list-feature)
+    - [Feature: Find](#find-feature)
+    - [Feature: Username](#username-feature)
+    - [Feature: Dashboard](#dashboard-feature)
+    - [Feature: Exit](#exit-feature)
+    - [Feature: Storage](#storage-feature)
 4. [Appendix: Requirements](#appendix-requirements)
    - [Product Scope](#product-scope)
    - [User Stories](#user-stories)
    - [Non-Functional Requirements](#non-functional-requirements)
    - [Glossary](#glossary)
-5. [Instructions for Manual Testing](#instructions-for-manual-testing)
+5. [Appendix: Instructions for Manual Testing](#appendix-instructions-for-manual-testing)
 
 
 ## Acknowledgements
@@ -28,7 +36,7 @@ components. It also follows the Command Pattern for handling user actions. This 
 clearly, allowing for modular, maintainable and extensible code.
 
 The **Architecture Diagram** below explains the high-level design of the Internity application.\
-![Architecture Diagram](diagrams/ArchitectureOverview.png)\
+![Architecture Diagram](diagrams/ArchitectureOverview.png)<br>
 
 The diagram below shows a simplified **Class Diagram** of all of Internity's classes and their relationships.
 ![Internity Class Diagram](diagrams/InternityCD.png)
@@ -74,6 +82,8 @@ The Sequence Diagram below shows a simplified version of how the components inte
 `delete 1`.
 ![User Interaction: Sequence Diagram](diagrams/UserInteractionSD.png)
 
+---
+
 ### UI Component
 #### Overview
 The UI component is responsible for all interactions between the user and the application.
@@ -101,7 +111,9 @@ For example:
 - Loose coupling
   - The UI does not directly modify model or logic components. 
   - It only displays results based on data passed to it.
- 
+
+---
+
 ### Logic Component
 
 #### Overview
@@ -150,13 +162,15 @@ The following sequence diagram illustrates how the Logic Component processes an 
      - `update` needs an index and fields to update.
      - `find` needs a search keyword.
 2. Commands that **do not require** arguments
-   - `exit`, `dashboard`
+   - `exit`, `dashboard`, `help`
    - These commands operate independently of data supplied by the user.
    - `CommandFactory` directly constructs the corresponding `Command` object (e.g. `ExitCommand` or `DashboardCommand`) without invoking `ArgumentParser`.
 
 This distinction is represented in the above sequence diagram's `alt` block, showing the two conditional flows:
 - Top path (commands requiring arguments) -> parsed via `ArgumentParser`.
 - Bottom path (commands not requiring arguments) -> instantiated directly.
+
+---
 
 ### Model Component
 
@@ -172,9 +186,11 @@ The `Model` component:
 The following sequence diagram illustrates how the Model Component processes an Add command:
 *coming soon*
 
+---
+
 ### Storage Component
 
-**API**: [`Storage.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/core/Storage.java)
+**API**: [`Storage.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/storage/Storage.java)
 
 The `Storage` component:
 * can save internship data in a pipe-delimited text format, and read it back into corresponding objects.
@@ -193,7 +209,7 @@ The class diagram illustrates:
 * **DateFormatter** provides date parsing utilities used during the load operation
 * **InternityException** is thrown when storage operations encounter errors
 
-### Common Classes
+---
 
 ## Implementation
 
@@ -201,10 +217,15 @@ The class diagram illustrates:
 
 ![Add Command: Sequence Diagram](diagrams/AddCommandSD.png)
 
+---
+
+### Update feature
+
+---
 
 ### Delete feature
 
-**API**: [`DeleteCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/commands/DeleteCommand.java)
+**API**: [`DeleteCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/DeleteCommand.java)
 
 The delete mechanism allows users to remove internship entries from their tracking list. This feature is essential for maintaining an up-to-date list of relevant internship applications by removing entries that are no longer needed.
 
@@ -252,6 +273,8 @@ The sequence diagram shows how the delete command flows through multiple layers:
 3. **Execution Layer**: `DeleteCommand` interacts with `InternshipList` and `Ui`
 4. **Persistence Layer**: Changes are automatically saved via `Storage`
 
+---
+
 ### List feature
 
 The list mechanism is implemented by the `ListCommand` class, which allows users to view all internships in their list.
@@ -298,6 +321,8 @@ Below is the sequence diagram for a common usage of the list feature:
 * **Alternative 2:** Validate index only in `ArgumentParser` before creating `DeleteCommand`.
   * Pros: Early validation could provide faster feedback
   * Cons: Violates encapsulation - the model layer should protect its own invariants
+
+---
 
 ### Find feature
 
@@ -410,6 +435,76 @@ for moderate-sized datasets but may require optimisation for larger datasets.
 
 Since this is a search command and does not modify the underlying data, no changes are persisted to disk
 during the `find` operation. However, any modifications (such as deletion or addition of internships) will require a subsequent call to `Storage.save()` to persist the changes.
+
+---
+
+### Username feature
+
+The Username feature allows the user to set a personalized username that is stored within the application's
+persistent data model and displayed in future interactions.
+
+![Username Command: Sequence Diagram](diagrams/UsernameCommandSD.png)
+
+
+#### Implementation
+1. The `UsernameCommand` is created by the `CommandParser` after recognizing the `username` keyword from user input.
+    ```sh
+    username Jane Doe
+    ```
+2. The `UsernameCommand` constructor validates that the argument is non-null and non-blank.
+3. When `execute()` is called:
+   - The provided username is stored via `InternshipList.setUSername(username)`.
+   - The UI is updated through `Ui.printSetUsername(username)` to show the change.
+4. The command does not modify any internship data and does not terminate the application.
+
+#### Design Considerations
+1. Single Responsibility: The command only handles username updates.
+2. User feedback: `Ui.printSetUsername()` provides clear confirmation of a successful command execution.
+
+---
+
+### Dashboard feature
+
+The Dashboard feature presents a comprehensive summary of the user's internship tracking data, including
+the username, total internships, status overview and nearest deadline.
+
+![Dashboard Command: Sequence Diagram](diagrams/DashboardCommandSD.png)
+
+#### Implementation
+1. The `DashboardCommand` serves as a simple trigger to call the UI layer.
+      ```sh
+      dashboard
+      ```
+2. The `DashboardUi` class handles all the logic for displaying information retrieved from `InternshipList`.
+3. Inside `DashboardUi.printDashboard()`, the following occurs:
+   - User display: Prints the current username using `InternshipList.getUsername()`.
+   - Internship count: Fetches and displays total internships via `InternshipList.size()`.
+   - Nearest deadline: Iterates through internships to find the one with the earliest `Date`.
+   - Status overview: Aggregates internship statuses into categories (Pending, Applied, etc.) and displays a summary.
+4. If no internships exist, a meaningful fallback message is shown (e.g. "No internships found.").
+
+#### Design Considerations
+1. Separation of concerns: `DashboardCommand` delegates all display logic to `DashboardUi`.
+2. Read-only operation: The dashboard performs only data retrieval, ensuring no side effects.
+3. Extensibility: The `DashboardUi` class can easily be expanded to include additional statistics in the future.
+
+---
+
+### Exit feature
+
+The ExitCommand allows the user to gracefully terminate the Internity application. Upon execution, it ensures that the user is notified
+and the main command loop in InternityManager is stopped.
+
+![Exit Command: Sequence Diagram](diagrams/ExitCommandSD.png)
+
+#### Implementation
+1. When the user enters `exit`, the `CommandParser` returns an `ExitCommand` instance.
+2. `InternityManager` calls `execute()` on the command, which triggers an interaction with the `Ui` class to display a friendly exit message before
+termination.
+3. Since `isExit()` returns true, the main loop breaks, ending the program.
+4. ExitCommand is the only `Command` subclass that returns true for `isExit()`.
+
+---
 
 ### Storage feature
 
@@ -605,6 +700,8 @@ The save sequence diagram shows the straightforward serialization process. Note 
   * Cons: Harder for users to locate and backup data.
   * Cons: More complex path resolution logic.
 
+---
+
 ## Appendix: Requirements
 
 ## Product scope
@@ -619,10 +716,13 @@ Internity provides a centralized and efficient way to manage internship applicat
 It allows users to:
 - Store and organize internships along with key attributes such as company name, role, deadline, pay and
 application status
-- Find internships by keyword
+- Edit or delete existing internships to keep records accurate and up-to-date.
+- Find internships quickly by searching for company or role keywords.
 - Sort internships by date in ascending or descending order.
 - View an automatically generated dashboard showing key statistics such as total applications, nearest deadlines and
 status breakdowns.
+- Store internship data persistently, ensuring progress is retained between sessions.
+
 
 ## User Stories
 
@@ -639,6 +739,7 @@ status breakdowns.
 | v2.0    | user     | find internships based on the company or role                          | easily view my applications to specific companies or positions I'm interested in |
 | v2.0    | user     | set or change my username                                              | personalize my internship tracker experience                                     |
 | v2.0    | user     | view a condensed dashboard                                             | to see the current status of my applications                                     |
+| v2.0    | new user | I can view an overview of the list of commands                         | so that I can access the possible commands more conveniently                     |
 
 
 ## Non-Functional Requirements
@@ -648,20 +749,22 @@ status breakdowns.
 for typical usage.
 3. A user with above average typing speed for regular English text (i.e. not code, not system admin commands) 
 should be able to accomplish most of the tasks faster using commands than using the mouse.
-4. User data should not be shared or transmitted externally. All storage is local to the user's system.
-5. The architecture should allow easy addition of new commands without breaking existing functionality.
+4. User data should not be shared or transmitted externally. 
+5. All user data shall be stored locally on the user's device.
+6. The architecture should allow easy addition of new commands without breaking existing functionality.
+7. New commands should follow a consistent Command Pattern (`execute()`, `isExit()`).
+8. The application shall handle invalid user inputs gracefully without crashing.
 
 
 ## Glossary
-**Internship**\
+**Internship**<br>
 A temporary work experience offered by a company or organization that allows a student or early-career individual
 to gain practical skills, industry knowledge and professional exposure in a specific field. Internships may be paid
 or unpaid, part-time or full-time, and can occur during or after academic study.
 
+---
 
-## Instructions for manual testing
-
-{Give instructions on how to do a manual product testing e.g., how to load sample data to be used for testing}
+## Appendix: Instructions for manual testing
 
 Given below are instructions to test the app manually.
 

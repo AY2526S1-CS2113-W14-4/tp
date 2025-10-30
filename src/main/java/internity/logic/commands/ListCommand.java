@@ -13,16 +13,16 @@ import internity.core.InternshipList;
  * {@code list [sort/asc|sort/desc]}
  */
 public class ListCommand extends Command {
-    public enum orderType {
+    public enum OrderType {
         DEFAULT,
         ASCENDING,
         DESCENDING
     }
 
     private static final Logger logger = Logger.getLogger(ListCommand.class.getName());
-    orderType order;
+    OrderType order;
 
-    public ListCommand(orderType o) {
+    public ListCommand(OrderType o) {
         order = o;
     }
 

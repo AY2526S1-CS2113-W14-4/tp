@@ -1,0 +1,28 @@
+@startuml
+title Username Command - Sequence Diagram
+
+participant Logic
+create ":UsernameCommand" as UC
+participant "<<class>>\nInternshipList" as IL
+participant "<<class>>\nUi" as Ui
+
+Logic -> UC** : new UsernameCommand(username)
+activate UC
+return (created)
+
+Logic -> UC : execute()
+activate UC
+
+UC -> IL : setUsername(username)
+activate IL
+IL --> UC
+deactivate IL
+
+UC -> Ui : printSetUsername(username)
+activate Ui
+Ui --> UC
+deactivate Ui
+
+UC --> Logic
+deactivate UC
+@enduml

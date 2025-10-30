@@ -67,15 +67,15 @@ class InternshipListTest {
 
     @Test
     public void listAll_whenEmpty_expectedOutcome() throws InternityException {
-        InternshipList.listAll(ListCommand.orderType.DEFAULT);
-        assertTrue(outContent.toString().contains("No internships found. Please add an internship first."));
+        InternshipList.listAll(ListCommand.OrderType.DEFAULT);
+        assertTrue(outContent.toString().contains("Your internship list is currently empty."));
     }
 
     @Test
     public void listAll_withEntry_doesNotOutputNoInternshipsFound() throws Exception {
         Internship internship = new Internship("Company A", "Developer", new Date(1,1,2025), 5000);
         InternshipList.add(internship);
-        InternshipList.listAll(ListCommand.orderType.DEFAULT);
+        InternshipList.listAll(ListCommand.OrderType.DEFAULT);
 
         String output = outContent.toString();
         assertFalse(output.contains("No internships found. Please add an internship first."));
@@ -200,7 +200,7 @@ class InternshipListTest {
         InternshipList.add(newer);
         InternshipList.add(older);
 
-        InternshipList.sortInternships(ListCommand.orderType.ASCENDING); // ascending
+        InternshipList.sortInternships(ListCommand.OrderType.ASCENDING); // ascending
 
         assertEquals("OlderCo", InternshipList.get(0).getCompany());
         assertEquals("NewerCo", InternshipList.get(1).getCompany());
@@ -214,7 +214,7 @@ class InternshipListTest {
         InternshipList.add(older);
         InternshipList.add(newer);
 
-        InternshipList.sortInternships(ListCommand.orderType.DESCENDING); // descending
+        InternshipList.sortInternships(ListCommand.OrderType.DESCENDING); // descending
 
         assertEquals("NewerCo", InternshipList.get(0).getCompany());
         assertEquals("OlderCo", InternshipList.get(1).getCompany());

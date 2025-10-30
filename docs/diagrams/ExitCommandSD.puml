@@ -1,0 +1,49 @@
+@startuml
+title Exit Command - Sequence Diagram
+
+actor User
+participant ":InternityManager" as IM
+participant ":CommandParser" as CP
+participant ":CommandFactory" as CF
+participant ":ExitCommand" as EC
+participant ":Ui" as Ui
+
+User -> IM: enter "exit" command
+activate IM
+
+IM -> CP: parseInput("exit")
+activate CP
+
+CP -> CF: createCommand("exit", "")
+activate CF
+CF -> EC**: new ExitCommand()
+activate EC
+return (created)
+deactivate EC
+CF --> CP: return ExitCommand
+deactivate CF
+
+CP --> IM: return ExitCommand
+deactivate CP
+
+IM -> EC: execute()
+activate EC
+EC -> Ui: printExitMessage()
+activate Ui
+Ui --> EC
+deactivate Ui
+EC --> IM
+deactivate EC
+
+IM -> EC: isExit()
+activate EC
+EC --> IM: return true
+deactivate EC
+IM --> User
+
+note right of IM
+  Main command loop breaks
+  and program terminates
+end note
+deactivate IM
+@enduml

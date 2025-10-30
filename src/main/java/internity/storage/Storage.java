@@ -17,6 +17,7 @@ import internity.core.Date;
 import internity.core.InternityException;
 import internity.core.Internship;
 import internity.core.InternshipList;
+import internity.ui.Ui;
 import internity.utils.DateFormatter;
 
 /**
@@ -155,6 +156,16 @@ public class Storage {
         if (company.isEmpty() || role.isEmpty()) {
             logger.warning("Empty company or role in line: " + line);
             return "Warning: Skipped line with empty company or role: " + line;
+        }
+
+        // Validate company and role length does not exceed limits
+        if (company.length() > Ui.COMPANY_MAXLEN) {
+            logger.warning("Company name too long in line: " + line);
+            return "Warning: Skipped line with company name exceeding "+ Ui.COMPANY_MAXLEN + " characters: " + line;
+        }
+        if (role.length() > Ui.ROLE_MAXLEN) {
+            logger.warning("Role name too long in line: " + line);
+            return "Warning: Skipped line with role name exceeding "+ Ui.ROLE_MAXLEN + " characters: " + line;
         }
 
         // Parse pay

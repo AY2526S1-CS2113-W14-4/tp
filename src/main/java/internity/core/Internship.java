@@ -2,6 +2,7 @@ package internity.core;
 
 import java.util.Set;
 
+// @@author {V1T0bh}
 /**
  * Represents an internship entry in the Internity application.
  *
@@ -156,6 +157,7 @@ public class Internship implements Comparable<Internship> {
         return this.deadline.compareTo(o.getDeadline());
     }
 
+    // @@author {BenyAlbatross}
     /**
      * Checks if the given status is valid.
      *

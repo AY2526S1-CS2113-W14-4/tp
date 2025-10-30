@@ -10,12 +10,23 @@ import internity.logic.commands.UpdateCommand;
 import internity.logic.commands.UsernameCommand;
 import internity.core.Date;
 import internity.core.InternityException;
-import internity.core.InternshipList;
+import internity.ui.Ui;
 import internity.utils.DateFormatter;
 
+
 /**
- * A utility class responsible for parsing command-line arguments for various commands
+ * The {@code ArgumentParser} class is responsible for parsing command-line arguments for various commands
  * such as Add, Delete, Find, Update and List.
+ *
+ * <p>Supported commands include:
+ * <ul>
+ *      <li>{@link AddCommand}</li>
+ *      <li>{@link DeleteCommand}</li>
+ *      <li>{@link FindCommand}</li>
+ *      <li>{@link UpdateCommand}</li>
+ *      <li>{@link ListCommand}</li>
+ *      <li>{@link UsernameCommand}</li>
+ * </ul>
  */
 public final class ArgumentParser {
     private static final int ADD_COMMAND_PARTS = 4;
@@ -23,6 +34,7 @@ public final class ArgumentParser {
     private static final int IDX_ROLE = 1;
     private static final int IDX_DEADLINE = 2;
     private static final int IDX_PAY = 3;
+    private static final String ADD_COMMAND_PARSE_LOGIC = "\\s+(?=company/|role/|deadline/|pay/)";
 
     private static final Logger logger = Logger.getLogger(ArgumentParser.class.getName());
 
@@ -33,11 +45,60 @@ public final class ArgumentParser {
     }
 
     /**
-     * Parses the arguments for Add Command to create an {@link AddCommand} instance.
+     * Parses the arguments provided for the {@link AddCommand} and constructs
+     * a corresponding {@code AddCommand} instance.
      *
-     * @param args arguments for {@link AddCommand}
-     * @return an instance of {@link AddCommand} constructed from the parsed arguments.
-     * @throws InternityException if the arguments are missing or invalid.
+     * <p>
+     * This method expects a single string containing all required fields of the
+     * add command in the following format:
+     * <pre>
+     * company/COMPANY_NAME role/ROLE_NAME deadline/DEADLINE pay/PAY_AMOUNT
+     * </pre>
+     * The fields must appear in this order and be separated by whitespace.
+     * </p>
+     *
+     * <p>
+     * The parsing process includes:
+     * <ul>
+     *     <li>Splitting the arguments string using a predefined delimiter
+     *         {@code ADD_COMMAND_PARSE_LOGIC}.</li>
+     *     <li>Verifying that all required fields are present and in the correct order.</li>
+     *     <li>Extracting the actual values for company, role, deadline and pay by removing the
+     *         respective prefixes ("company/", "role/", "deadline/", "pay/").</li>
+     *     <li>Trimming whitespace from all extracted values.</li>
+     *     <li>Parsing the deadline string into a {@link Date} object
+     *         using {@link DateFormatter#parse(String)}.</li>
+     *     <li>Parsing the pay string into an integer.</li>
+     * </ul>
+     * </p>
+     *
+     * <p>
+     * After extraction, the method performs several validations:
+     * <ul>
+     *     <li>Ensures none of the extracted values are empty or missing.</li>
+     *     <li>Ensures the pay amount is a non-negative integer.</li>
+     *     <li>Ensures that the length of the company and role strings does not exceed the
+     *         maximum allowed lengths defined in {@link Ui} constants
+     *         ({@code COMPANY_MAXLEN} and {@code ROLE_MAXLEN}).</li>
+     * </ul>
+     * </p>
+     *
+     * <p>
+     * If any of the above validations fail, an {@link InternityException} is thrown with a
+     * message indicating an invalid add command. Logging is performed at key stages for
+     * debugging purposes.
+     * </p>
+     *
+     * @param args the raw argument string provided by the user for the add command
+     * @return a new {@link AddCommand} instance constructed from the parsed and validated arguments
+     * @throws InternityException if:
+     *     <ul>
+     *         <li>The argument string is null or blank.</li>
+     *         <li>One or more required fields are missing, empty or in the wrong order.</li>
+     *         <li>Any field exceeds its maximum allowed length.</li>
+     *         <li>The pay amount is invalid (negative or non-numeric).</li>
+     *         <li>Parsing of the deadline fails.</li>
+     *     </ul>
      */
     public static AddCommand parseAddCommandArgs(String args) throws InternityException {
         if (args == null || args.isBlank()) {
@@ -47,7 +108,7 @@ public final class ArgumentParser {
         assert !args.isBlank() : "Arguments cannot be blank after validation";
 
         try {
-            String[] parts = args.split("\\s+(?=company/|role/|deadline/|pay/)");
+            String[] parts = args.split(ADD_COMMAND_PARSE_LOGIC);
             if (parts.length != ADD_COMMAND_PARTS ||
                     !parts[IDX_COMPANY].startsWith("company/") ||
                     !parts[IDX_ROLE].startsWith("role/") ||
@@ -71,10 +132,13 @@ public final class ArgumentParser {
             }
 
             // throw exception on exceeding max length
-            if (company.length() > InternshipList.COMPANY_MAXLEN ||
-                    role.length() > InternshipList.ROLE_MAXLEN) {
-                logger.severe("One or more arguments exceeded max length.");
-                throw InternityException.invalidAddCommand();
+            if (company.length() > Ui.COMPANY_MAXLEN) {
+                logger.severe("Company name exceeded max length.");
+                throw InternityException.exceedFieldLength("Company", Ui.COMPANY_MAXLEN, company.length());
+            }
+            if (role.length() > Ui.ROLE_MAXLEN) {
+                logger.severe("Role exceeded max length.");
+                throw InternityException.exceedFieldLength("Role", Ui.ROLE_MAXLEN, role.length());
             }
 
             return new AddCommand(company, role, deadline, pay);
@@ -108,11 +172,17 @@ public final class ArgumentParser {
     }
 
     /**
-     * Parses the arguments for Find Command to create a {@link FindCommand} instance.
+     * Parses the arguments provided for the {@link FindCommand} and constructs a corresponding
+     *  {@code FindCommand} instance.
      *
-     * @param args arguments for {@link FindCommand}
-     * @return an instance of {@link FindCommand} constructed from the parsed arguments.
-     * @throws InternityException if the arguments are missing.
+     * <p>
+     * This method expects a non-empty string representing the keyword to search for in the
+     * company name or role of internships. The search is case-insensitive.
+     * </p>
+     *
+     * @param args the search keyword provided by the user for the find command
+     * @return a new {@link FindCommand} instance constructed from the parsed keyword
+     * @throws InternityException if the argument string is {@code null} or blank
      */
     public static FindCommand parseFindCommandArgs(String args) throws InternityException {
         if (args == null || args.isBlank()) {
@@ -150,12 +220,24 @@ public final class ArgumentParser {
                 if (p.startsWith("company/")) {
                     company = valueAfterTag(p, "company/");
                     if (company.isEmpty()) {
+                        logger.severe("Company name is empty.");
                         throw InternityException.emptyField("company/");
+                    }
+                    if (company.length() > Ui.COMPANY_MAXLEN) {
+                        logger.severe("Company name exceeded max length.");
+                        throw InternityException.exceedFieldLength("Company",
+                                Ui.COMPANY_MAXLEN,
+                                company.length());
                     }
                 } else if (p.startsWith("role/")) {
                     role = valueAfterTag(p, "role/");
                     if (role.isEmpty()) {
+                        logger.severe("Role is empty.");
                         throw InternityException.emptyField("role/");
+                    }
+                    if (role.length() > Ui.ROLE_MAXLEN) {
+                        logger.severe("Role exceeded max length.");
+                        throw InternityException.exceedFieldLength("Role", Ui.ROLE_MAXLEN, role.length());
                     }
                 } else if (p.startsWith("deadline/")) {
                     String d = valueAfterTag(p, "deadline/");
@@ -197,7 +279,7 @@ public final class ArgumentParser {
      */
     public static ListCommand parseListCommandArgs(String args) throws InternityException {
         if (args == null || args.isBlank()) {
-            return new ListCommand(ListCommand.orderType.DEFAULT); // Default order
+            return new ListCommand(ListCommand.OrderType.DEFAULT); // Default order
         }
 
         if (!args.startsWith("sort/")) {
@@ -211,9 +293,9 @@ public final class ArgumentParser {
 
         String order = splitArgs[0].substring("sort/".length()).trim();
         if (order.equals("asc")) {
-            return new ListCommand(ListCommand.orderType.ASCENDING);
+            return new ListCommand(ListCommand.OrderType.ASCENDING);
         } else if (order.equals("desc")) {
-            return new ListCommand(ListCommand.orderType.DESCENDING);
+            return new ListCommand(ListCommand.OrderType.DESCENDING);
         } else {
             throw InternityException.invalidListCommand();
         }
@@ -255,6 +337,13 @@ public final class ArgumentParser {
         return token.substring(tag.length()).trim();
     }
 
+    /**
+     * Parses the arguments for Username Command to create an {@link UsernameCommand} instance.
+     *
+     * @param args arguments for {@link UsernameCommand}
+     * @return an instance of {@link UsernameCommand} constructed from the parsed arguments.
+     * @throws InternityException if the arguments are missing or invalid.
+     */
     public static UsernameCommand parseUsernameCommandArgs(String args) throws InternityException {
         if (args == null || args.isBlank()) {
             throw InternityException.invalidUsernameCommand();

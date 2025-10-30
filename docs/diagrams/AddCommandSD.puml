@@ -16,7 +16,7 @@ activate AC
 
 AC -> IN**: new Internship(...)
 activate IN
-IN --> AC: (created)
+return (created)
 deactivate IN
 
 AC -> IL: add(...)
@@ -32,5 +32,4 @@ deactivate Ui
 
 AC --> Logic
 deactivate AC
-
 @enduml

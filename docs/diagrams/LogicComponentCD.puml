@@ -31,6 +31,7 @@ class ListCommand
 class UsernameCommand
 class DashboardCommand
 class ExitCommand
+class HelpCommand
 
 CommandParser --> CommandFactory : uses
 CommandFactory --> ArgumentParser : delegates parsing
@@ -43,6 +44,7 @@ Command <|-- UpdateCommand
 Command <|-- ListCommand
 Command <|-- UsernameCommand
 Command <|-- DashboardCommand
+Command <|-- HelpCommand
 Command <|-- ExitCommand
 
 @enduml

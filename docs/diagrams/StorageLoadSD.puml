@@ -4,9 +4,7 @@ title Storage Load Operation - Sequence Diagram
 participant ":InternityManager" as IM
 participant "<<class>>\nInternshipList" as IL
 participant ":Storage" as S
-participant ":BufferedReader" as BR
 participant "<<class>>\nDateFormatter" as DF
-participant ":Internship" as Intern
 
 IM -> IL: loadFromStorage()
 activate IL
@@ -18,7 +16,8 @@ S -> S: check if file exists
 alt file does not exist
     S --> IL: return empty ArrayList
 else file exists
-    S -> BR: new BufferedReader(filePath)
+    create ":BufferedReader" as BR
+    S -> BR**: new BufferedReader(filePath)
     activate BR
 
     S -> BR: readLine()
@@ -42,44 +41,67 @@ else file exists
             S -> S: parseInternshipFromFile(line, internships)
             activate S
 
-            S -> S: split line by "|"
+            S -> S: split line by "|" into parts[]
             S -> S: trim all parts
-            S -> S: validate field count
 
-            alt valid field count
+            alt parts.length != 5
+                S --> S: return error
+            else parts.length == 5
                 S -> S: parseAndValidateFields(parts, line, internships)
                 activate S
 
-                S -> S: validate company and role not empty
-                S -> S: parse and validate pay
-                S -> S: validate status
+                alt company or role empty
+                    S --> S: return error
+                end
+
+                alt company.length() > COMPANY_MAXLEN
+                    S --> S: return error
+                end
+
+                alt role.length() > ROLE_MAXLEN
+                    S --> S: return error
+                end
+
+                alt pay not parseable as integer
+                    S -> S: parse pay as Integer
+                    S --> S: return "invalid pay format" error
+                end
+
+                alt pay < 0
+                    S -> S: validate pay >= 0
+                    S --> S: return "negative pay amount" error
+                end
+
+                alt status invalid
+                    S -> S: check isValidStatus(status)
+                    S --> S: return error
+                end
 
                 S -> DF: parse(deadlineStr)
                 activate DF
-                alt valid date format
-                    DF --> S: return Date
-                    deactivate DF
-
-                    S -> Intern: new Internship(company, role, deadline, pay)
-                    activate Intern
-                    Intern --> S: return internship
-                    deactivate Intern
-
-                    S -> Intern: setStatus(status)
-                    activate Intern
-                    Intern --> S:
-                    deactivate Intern
-
-                    S -> S: add internship to list
-                else invalid date
+                alt date format invalid
                     DF --> S: throw InternityException
                     deactivate DF
-                    S -> S: log warning and skip line
+                    S --> S: return error
+                else date valid
+                    DF --> S: return Date
+                    deactivate DF
                 end
+
+                create ":Internship" as Intern
+                S -> Intern**: new Internship(company, role, deadline, pay)
+                activate Intern
+                note right of Intern: Multiple instances created,\none per valid line in file
+
+                S -> Intern: setStatus(status)
+                Intern --> S:
+                deactivate Intern
+
+                S -> S: add internship to list
+                S --> S: return null (success)
 
                 deactivate S
             else invalid field count
-                S -> S: log warning and skip line
             end
 
             deactivate S
@@ -88,6 +110,7 @@ else file exists
 
     S -> BR: close()
     deactivate BR
+    destroy BR
 end
 
 S --> IL: return ArrayList<Internship>

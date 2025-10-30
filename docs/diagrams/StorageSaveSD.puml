@@ -4,7 +4,6 @@ title Storage Save Operation - Sequence Diagram
 participant ":InternityManager" as IM
 participant "<<class>>\nInternshipList" as IL
 participant ":Storage" as S
-participant ":PrintWriter" as PW
 participant ":Internship" as Intern
 
 IM -> IL: saveToStorage()
@@ -18,7 +17,8 @@ alt parent directory does not exist
     S -> S: Files.createDirectories(parent)
 end
 
-S -> PW: new PrintWriter(filePath)
+create ":PrintWriter" as PW
+S -> PW**: new PrintWriter(filePath)
 activate PW
 
 S -> PW: println("Username (in line below):")
@@ -71,6 +71,7 @@ end
 
 S -> PW: close()
 deactivate PW
+destroy PW
 
 S --> IL:
 deactivate S
