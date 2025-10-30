@@ -267,6 +267,7 @@ The following sequence illustrates how the add command is processed from user in
 ```
 add company/Google role/Software Engineer Intern deadline/17-09-2025 pay/7000
 ```
+- Note that by default, the status is set to Pending when a new internship is added. Users may use the `update` command to change the status.  
 
 **Step 2.** The `CommandParser` splits the input into command word `"add"` and the argument string
 `"company/Google role/Software Engineer deadline/17-09-2025 pay/120000"`.
@@ -340,6 +341,19 @@ The following sequence diagram illustrates the complete add operation flow:
 ![Add Command: Sequence Diagram](diagrams/AddCommandSD.png)
 
 #### Design considerations
+
+**Aspect: Status field**
+
+* **Alternative 1 (current choice):** Default the internship status to Pending when adding.
+    * Pros: Reflects the most common initial state of an internship application.
+    * Pros: Reduces the number of parameters users must input when adding an internship, improving usability.
+    * Pros: Users can update the status later using the `update` command.
+    * Cons: Users cannot set a different status at the time of creation; must perform an additional step to update.
+
+* **Alternative 2:** Require users to input the status explicitly when adding an internship.
+    * Pros: Provides complete control over the status at creation time.
+    * Cons: Increases user effort for the common case of adding a pending internship. 
+    * Cons: May cause confusion or errors if users are unfamiliar with valid status options.
 
 **Aspect: Inputting parameters by prefix**
 
