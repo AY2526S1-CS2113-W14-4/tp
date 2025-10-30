@@ -1,11 +1,31 @@
 @startuml UpdateFeatureCD
 title Update Feature - Class Diagram
 
+class InternityManager {
+  + InternityManager(storagePath: String)
+  + start(): void
+  - loadData(): void
+  - saveData(): void
+}
+
+class CommandParser {
+  + parseInput(input: String): Command
+}
+
+class CommandFactory {
+  + createCommand(commandWord: String, args: String): Command
+}
+
+abstract class Command {
+  + execute(): void
+  + isExit(): boolean
+}
+
 class ArgumentParser {
   + {static} parseUpdateCommandArgs(args: String): UpdateCommand
   - {static} requireArgs(args: String): String
-  - {static} requireTagged(tagged: String): String
   - {static} splitIndexAndTagged(trimmed: String): String[]
+  - {static} requireTagged(tagged: String): String
   - {static} parseOneBasedIndex(indexToken: String): int
   - {static} valueAfterTag(token: String, tag: String): String
 }
@@ -29,6 +49,16 @@ class InternshipList {
   + {static} updateDeadline(index: int, deadline: Date): void
   + {static} updatePay(index: int, pay: int): void
   + {static} updateStatus(index: int, status: String): void
+  + {static} saveToStorage(): void
+  + {static} setStorage(storage: Storage): void
+}
+
+class Storage {
+  + save(internships: ArrayList<Internship>): void
+}
+
+class Ui {
+  + {static} printUpdateInternship(): void
 }
 
 class Date {
@@ -40,33 +70,26 @@ class DateFormatter {
   + {static} parse(dateStr: String): Date
 }
 
-class Ui {
-  + {static} printUpdateInternship(): void
-}
-
 class InternityException {
   + InternityException(message: String)
 }
 
+Command <|-- UpdateCommand
+
+InternityManager ..> CommandParser : uses >
+CommandParser ..> CommandFactory : uses >
+CommandFactory ..> ArgumentParser : uses >
 ArgumentParser ..> UpdateCommand : creates >
 ArgumentParser ..> DateFormatter : uses >
 ArgumentParser ..> InternityException : throws >
+
+InternityManager ..> UpdateCommand : calls execute() >
 UpdateCommand ..> InternshipList : updates >
 UpdateCommand ..> Ui : prints >
-UpdateCommand ..> Date : uses >
 UpdateCommand ..> InternityException : throws >
+UpdateCommand ..> Date : uses >
 
-note right of ArgumentParser
-  Responsible for parsing raw user input into
-  structured parameters for UpdateCommand.
-  Validates format, converts indices, and ensures
-  at least one field is provided.
-end note
-
-note bottom of UpdateCommand
-  Executes the update by calling InternshipList methods
-  for each non-null field, then confirms via Ui.
-  Throws InternityException if no valid updates.
-end note
+InternityManager ..> InternshipList : saveToStorage() >
+InternshipList ..> Storage : save() >
 
 @enduml

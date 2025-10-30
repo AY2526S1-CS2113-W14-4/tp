@@ -275,6 +275,7 @@ Given below is an example usage scenario and how the update mechanism behaves at
   - On success, calls `Ui.printUpdateInternship()` to acknowledge the update.  
 
   ![Update Command Sequence Diagram](diagrams/UpdateCommandSD.png)
+  ![Update Command Class Diagram](diagrams/UpdateCommandCD.png)
 
 #### Error Handling
 - Invalid format for `update` arguments → `ArgumentParser.invalidUpdateFormat()`  

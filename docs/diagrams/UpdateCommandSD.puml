@@ -8,10 +8,9 @@ participant ":CommandFactory" as CF
 participant "<<class>>\nArgumentParser" as AP
 participant ":UpdateCommand" as UC
 participant "<<class>>\nInternshipList" as IL
-participant ":Ui" as UI
+participant "<<class>>\nUi" as UI
 participant ":Storage" as S
 
-== Input and Command Creation ==
 User -> IM: input
 activate IM
 
@@ -40,7 +39,6 @@ deactivate CF
 CP --> IM: return UpdateCommand
 deactivate CP
 
-== Command Execution ==
 IM -> UC: execute()
 activate UC
 
@@ -92,7 +90,6 @@ else at least one field updated
   UC --> IM
   deactivate UC
 
-  == Persist to Storage ==
   IM -> IL: saveToStorage()
   activate IL
 
