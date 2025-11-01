@@ -878,6 +878,12 @@ The following sequence diagram illustrates the load operation:
 
 ![Storage Load Sequence Diagram](diagrams/StorageLoadSD.png)
 
+![Storage Load Sequence Diagram A](diagrams/StorageLoadSD_A.png)
+
+![Storage Load Sequence Diagram B](diagrams/StorageLoadSD_B.png)
+
+![Storage Load Sequence Diagram C](diagrams/StorageLoadSD_C.png)
+
 The load sequence diagram demonstrates the robust error-handling approach: corrupted lines are skipped with warnings rather than causing the entire load operation to fail. This design choice prioritizes availability over strict consistency, ensuring users can still access their valid data even if some entries are corrupted.
 
 ##### Save Operation
