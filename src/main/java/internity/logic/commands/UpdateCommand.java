@@ -69,7 +69,7 @@ public class UpdateCommand extends Command {
      * </p>
      *
      * <p>
-     * After performing the update, a confirmation message is displayed through {@link Ui#printUpdateInternship()}.
+     * After performing the update, a confirmation message is displayed through {@link Ui#printUpdateSummary()}.
      * </p>
      *
      * @throws InternityException if the index is invalid or no fields are provided.
@@ -77,7 +77,13 @@ public class UpdateCommand extends Command {
     @Override
     public void execute() throws InternityException {
         boolean isUpdated = false;
-        Internship OldInternship = InternshipList.get(index);
+        Internship internship = InternshipList.get(index);
+        Internship oldInternship = new Internship(
+                internship.getCompany(),
+                internship.getRole(),
+                internship.getDeadline(),
+                internship.getPay());
+        oldInternship.setStatus(internship.getStatus());
         if (company != null) {
             InternshipList.updateCompany(index, company);
             isUpdated = true;
@@ -103,7 +109,7 @@ public class UpdateCommand extends Command {
                 "Provide at least one field to update: company/, role/, deadline/, pay/, status/"
             );
         }
-        Ui.printUpdateSummary(index, OldInternship, InternshipList.get(index));
+        Ui.printUpdateSummary(index, oldInternship, internship);
     }
 
     /**

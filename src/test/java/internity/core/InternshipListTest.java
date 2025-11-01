@@ -91,8 +91,6 @@ class InternshipListTest {
         InternshipList.updateCompany(0, "NewCo");
 
         assertEquals("NewCo", InternshipList.get(0).getCompany());
-        String out = outContent.toString();
-        assertTrue(out.contains("Internship company at index 1 successfully updated to: NewCo"));
     }
 
     @Test
@@ -105,8 +103,6 @@ class InternshipListTest {
         InternshipList.updateRole(0, "NewRole");
 
         assertEquals("NewRole", InternshipList.get(0).getRole());
-        String out = outContent.toString();
-        assertTrue(out.contains("Internship role at index 1 successfully updated to: NewRole"));
     }
 
     @Test
@@ -120,8 +116,6 @@ class InternshipListTest {
         InternshipList.updateDeadline(0, newDeadline);
 
         assertEquals("17-09-2025", InternshipList.get(0).getDeadline().toString());
-        String out = outContent.toString();
-        assertTrue(out.contains("Internship deadline at index 1 successfully updated to: 17-09-2025"));
     }
 
     @Test
@@ -134,8 +128,6 @@ class InternshipListTest {
         InternshipList.updatePay(0, 9000);
 
         assertEquals(9000, InternshipList.get(0).getPay());
-        String out = outContent.toString();
-        assertTrue(out.contains("Internship pay at index 1 successfully updated to: 9000"));
     }
 
     @Test
@@ -148,8 +140,6 @@ class InternshipListTest {
         InternshipList.updateStatus(0, "Accepted");
 
         assertEquals("Accepted", InternshipList.get(0).getStatus());
-        String out = outContent.toString();
-        assertTrue(out.contains("Internship status at index 1 successfully updated to: Accepted"));
     }
 
     @Test
