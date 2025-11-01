@@ -96,6 +96,10 @@ public class Ui {
         System.out.println("Your internship list is currently empty.");
     }
 
+    public static void printNoInternshipFound() {
+        System.out.println("No internships with this company or role found.");
+    }
+
     /**
      * Prints the header for the internship list with a custom message.
      *
@@ -137,30 +141,6 @@ public class Ui {
                 internship.getPay(),
                 internship.getStatus()
         );
-    }
-
-    /**
-     * Prints a formatted list of internships that match the user's search keyword.
-     *
-     * <p>
-     * This method first prints a header row and horizontal lines for clear table formatting.
-     * It then iterates through the provided list of {@link Internship} objects, displaying each
-     * internship's details in a tabular format. The internship details are obtained via the
-     * {@link Internship#getCompany()}, {@link Internship#getRole()},
-     * {@link Internship#getDeadline()}, {@link Internship#getPay()}
-     * and {@link Internship#getStatus()} methods.
-     * </p>
-     *
-     * @param list the list of matching {@code Internship} objects to display
-     */
-    public static void printFindInternship(ArrayList<Internship> list) {
-        printInternshipListHeader("These are the matching internships in your list:");
-
-        int i;
-        for (i = 0; i < list.size(); i++) {
-            Internship internship = list.get(i);
-            printInternshipListContent(i, internship);
-        }
     }
 
     public static void printAskUsername() {
