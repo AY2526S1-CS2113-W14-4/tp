@@ -76,8 +76,8 @@ September 2025, and an annual salary of $100000.
 <li>No duplicate parameter type is allowed, so input exactly <b>ONE</b> of each parameter type.</li>
 <li>By default, when an internship is added, the status is set to Pending. Use the update command to change the status.</li>
 <li>All index parameters are in 1-indexed format.</li>
-<li>Field character limits: <code>COMPANY</code> ≤ 15 characters, <code>ROLE</code> ≤ 30 characters.</li>
-<li><code>COMPANY</code> and <code>ROLE</code> must be alphanumerical.</li>
+<li>Field character limits: <code>COMPANY_NAME<</code> ≤ 15 characters, <code>ROLE_NAME</code> ≤ 30 characters.</li>
+<li><code>COMPANY_NAME</code> and <code>ROLE_NAME</code> must be alphanumerical.</li>
 <li><code>DEADLINE</code> must be in <code>dd-MM-yyyy</code> format. Any valid past, present or future deadline can be added. </li>
 <li><code>PAY_AMOUNT</code> must be a non-negative integer that fits within Java's 32-bit signed integer range (maximum 2,147,483,647).</li>
 </ul>
@@ -215,7 +215,7 @@ Use this command to set or change the username for the Internity application.
 Format:
 
 ```
-username USERNAME
+username NEW_USERNAME
 ```
 
 Example:
@@ -320,7 +320,7 @@ exit
 | **Update Application**  | `update`    | `update INDEX FIELD/VALUE`                                                                                                                                  | `update 1 status/Interviewing`                                                    |
 | **List Applications**   | `list`      | `list` → list all applications in the order they were added <br> `list sort/ORDER` → sort applications by deadline ascending (`asc`) or descending (`desc`) | `list` <br> `list sort/asc` <br> `list sort/desc`                                 |
 | **Find Application**    | `find`      | `find KEYWORD`                                                                                                                                              | `find Software Engineer`                                                          |
-| **Set/Change username** | `username`  | `username USERNAME`                                                                                                                                         | `username Yoshikage Kira`                                                         |
+| **Set/Change username** | `username`  | `username NEW_USERNAME`                                                                                                                                     | `username Yoshikage Kira`                                                         |
 | **Display Dashboard**   | `dashboard` | `dashboard`                                                                                                                                                 | `dashboard`                                                                       |
 | **Help**                | `help`      | `help`                                                                                                                                                      | `help`                                                                            |
 | **Exit Internity**      | `exit`      | `exit`                                                                                                                                                      | `exit`                                                                            |
