@@ -28,7 +28,13 @@ class DashboardUiTest {
     }
 
     @Test
-    void printDashboard_withInternships_printsExpectedInfo() throws InternityException {
+    void printDashboard_withPastDeadlineInternships_printsExpectedInfo() throws InternityException {
+        InternshipList.clear();
+        Date date1 = new Date(1, 1, 2010); //past
+        Date date2 = new Date(15, 12, 2010); // past, nearest
+        InternshipList.add(new Internship("Google", "SWE", date1, 8000));
+        InternshipList.add(new Internship("Microsoft", "Intern", date2, 5000));
+
         DashboardUi.printDashboard();
 
         String output = outContent.toString();
@@ -36,7 +42,47 @@ class DashboardUiTest {
         assertTrue(output.contains("User: TestUser"), "Should print username");
         assertTrue(output.contains("Total Internships: 2"), "Should print correct count");
         assertTrue(output.contains("Nearest Deadline:")
-                && output.contains("01-01-2025"), "Should show earliest deadline");
+                && output.contains("15-12-2010"), "Should show nearest (latest) deadline");
+        assertTrue(output.contains("Applied")
+                && output.contains("Pending"), "Should show status overview");
+    }
+
+    @Test
+    void printDashboard_withFutureDeadlineInternships_printsExpectedInfo() throws InternityException {
+        InternshipList.clear();
+        Date date1 = new Date(1, 1, 2099); // future
+        Date date2 = new Date(15, 12, 2099); // future, nearest
+        InternshipList.add(new Internship("Google", "SWE", date1, 8000));
+        InternshipList.add(new Internship("Microsoft", "Intern", date2, 5000));
+
+        DashboardUi.printDashboard();
+
+        String output = outContent.toString();
+
+        assertTrue(output.contains("User: TestUser"), "Should print username");
+        assertTrue(output.contains("Total Internships: 2"), "Should print correct count");
+        assertTrue(output.contains("Nearest Deadline:")
+                && output.contains("01-01-2099"), "Should show nearest (earliest) deadline");
+        assertTrue(output.contains("Applied")
+                && output.contains("Pending"), "Should show status overview");
+    }
+
+    @Test
+    void printDashboard_withMixDeadlineInternships_printsExpectedInfo() throws InternityException {
+        InternshipList.clear();
+        Date date1 = new Date(1, 1, 2025); // past
+        Date date2 = new Date(15, 12, 2099); // future
+        InternshipList.add(new Internship("Google", "SWE", date1, 8000));
+        InternshipList.add(new Internship("Microsoft", "Intern", date2, 5000));
+
+        DashboardUi.printDashboard();
+
+        String output = outContent.toString();
+
+        assertTrue(output.contains("User: TestUser"), "Should print username");
+        assertTrue(output.contains("Total Internships: 2"), "Should print correct count");
+        assertTrue(output.contains("Nearest Deadline:")
+                && output.contains("15-12-2099"), "Should show future deadline");
         assertTrue(output.contains("Applied")
                 && output.contains("Pending"), "Should show status overview");
     }

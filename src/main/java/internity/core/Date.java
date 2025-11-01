@@ -1,5 +1,7 @@
 package internity.core;
 
+import java.util.Calendar;
+
 /**
  * Represents a simple calendar date consisting of a day, month and year.
  *
@@ -86,6 +88,18 @@ public class Date implements Comparable<Date> {
         this.year = year;
     }
 
+    /**
+     * Returns a {@code Date} object representing today's date.
+     *
+     * @return a {@code Date} object set to the current day, month, and year
+     */
+    public static Date getToday() {
+        Calendar cal = Calendar.getInstance();
+        int day = cal.get(Calendar.DAY_OF_MONTH);
+        int month = cal.get(Calendar.MONTH) + 1; // Calendar.MONTH is 0-based
+        int year = cal.get(Calendar.YEAR);
+        return new Date(day, month, year);
+    }
 
     @Override
     public int compareTo(Date other) {

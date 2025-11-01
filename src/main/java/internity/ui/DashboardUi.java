@@ -124,42 +124,23 @@ public class DashboardUi {
             return;
         }
 
-        Internship nearest = findNearestDeadlineInternship();
+        Internship nearest = InternshipList.findNearestDeadlineInternship();
         if (nearest == null) {
             System.out.println("\nNearest Deadline: No valid deadlines found.");
             return;
         }
 
         System.out.println("\nNearest Deadline:");
-        System.out.printf("  %s | %s @ %s%n",
+        System.out.printf("  %s | %s @ %s",
                 nearest.getDeadline().toString(),
                 nearest.getRole(),
                 nearest.getCompany());
+        boolean isDeadlineInPast = nearest.getDeadline().compareTo(internity.core.Date.getToday()) < 0;
+        if (isDeadlineInPast) {
+            System.out.println(" (OVERDUE!)");
+        }
 
         logger.fine("Nearest deadline displayed: " + nearest);
     }
 
-    /**
-     * Finds the internship with the earliest deadline.
-     * <p>
-     * Assumes the internship list is non-empty.
-     * </p>
-     *
-     * @return the internship with the nearest upcoming deadline
-     * @throws InternityException if an error occurs while accessing internship data
-     */
-    private static Internship findNearestDeadlineInternship() throws InternityException {
-        assert InternshipList.size() > 0 : "Cannot find nearest deadline in empty list";
-        Internship nearest = null;
-
-        for (int i = 0; i < InternshipList.size(); i++) {
-            Internship internship = InternshipList.get(i);
-
-            if (nearest == null || internship.getDeadline().compareTo(nearest.getDeadline()) < 0) {
-                nearest = internship;
-            }
-        }
-        logger.fine("Found nearest deadline internship: " + nearest);
-        return nearest;
-    }
 }
