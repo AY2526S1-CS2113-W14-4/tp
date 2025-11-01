@@ -55,8 +55,8 @@ code reuse.
 
 ### Enhancements to existing features
 - Wrote additional tests for existing features to increase branch coverage from 55% to 72% and line coverage from
-70% to 83% (Pull Request [#95](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/95))
-- 
+70% to 83% (PR [#95](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/95))
+- Fixed 19 User/Developer Guide documentation issues from PE-D (PR [#175](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/175))
 
 ### Documentation
 - User Guide:
@@ -70,6 +70,9 @@ code reuse.
       - UI Component Diagram
       - Logic Component Class Diagram
       - Logic Component Sequence Diagram
+      - Storage Load Sequence Diagram and associated ref diagrams
+      - DashboardCommand Sequence Diagram
+      - UsernameCommand Sequence Diagram
     - Added details of product scope, user stories and non-functional requirements.
 
 ### Community
