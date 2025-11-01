@@ -72,8 +72,8 @@ September 2025, and an annual salary of $100000.
 <div style="background-color: #331c16; color: #c3b091; padding: 15px; border-radius: 8px; border-left: 5px solid #966919;">
 <h4>Notes</h4>
 <ul>
-<li>The parameters should be entered in the specified order i.e. company, role, deadline, followed by pay.</li>
-<li>No duplicate parameter type, so only exactly one of each parameter type.</li>
+<li>The parameters <b>MUST</b> be entered in the specified order: company, role, deadline, followed by pay.</li>
+<li>No duplicate parameter type is allowed, so input exactly <b>ONE</b> of each parameter type.</li>
 <li>By default, when an internship is added, the status is set to Pending. Use the update command to change the status.</li>
 <li>All index parameters are in 1-indexed format.</li>
 <li>Field character limits: <code>COMPANY</code> ≤ 15 characters, <code>ROLE</code> ≤ 30 characters.</li>
