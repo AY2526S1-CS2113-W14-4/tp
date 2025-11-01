@@ -174,9 +174,6 @@ public class InternshipList {
         if (index < 0 || index >= size()) {
             throw InternityException.invalidInternshipIndex();
         }
-        if (newStatus == null || !Status.isValid(newStatus)) {
-            throw InternityException.invalidStatus(String.valueOf(newStatus));
-        }
         final String normalized = Status.canonical(newStatus);
         Internship internship = internshipList.get(index);
         internship.setStatus(normalized);

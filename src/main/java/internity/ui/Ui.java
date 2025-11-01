@@ -18,6 +18,7 @@ public class Ui {
     public static final int PAY_MAXLEN = 10;
     public static final int STATUS_MAXLEN = 10;
 
+    //table formatting strings
     static final String FORMAT_HEADER = "%" + INDEX_MAXLEN + "s %-" + COMPANY_MAXLEN + "s %-" + ROLE_MAXLEN
             + "s %-" + DEADLINE_MAXLEN + "s %-" + PAY_MAXLEN + "s %-" + STATUS_MAXLEN + "s%n";
     static final String FORMAT_CONTENT = "%" + INDEX_MAXLEN + "d %-" + COMPANY_MAXLEN + "s %-" + ROLE_MAXLEN

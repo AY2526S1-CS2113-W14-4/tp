@@ -2,6 +2,7 @@ package internity.logic.cli;
 
 import java.util.logging.Logger;
 
+import internity.core.Status;
 import internity.logic.commands.AddCommand;
 import internity.logic.commands.DeleteCommand;
 import internity.logic.commands.FindCommand;
@@ -253,6 +254,9 @@ public final class ArgumentParser {
                     status = valueAfterTag(p, "status/");
                     if (status.isEmpty()) {
                         throw InternityException.emptyField("status/");
+                    }
+                    if (!Status.isValid(status)) {
+                        throw InternityException.invalidStatus(status);
                     }
                 } else {
                     throw InternityException.unknownUpdateField(p);
