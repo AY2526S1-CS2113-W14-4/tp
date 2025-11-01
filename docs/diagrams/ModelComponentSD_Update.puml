@@ -4,7 +4,7 @@ title Model Component - Sequence Diagram (Updating status of an existing interns
 ' Shows interactions between Logic, Model, InternshipList, Internship, Date and Status
 ' Additional abstract components: Logic (parses commands) and Storage (persists data)
 '
-participant Logic as "Logic"
+participant Logic as ":UpdateCommand"
 
 box Model
 participant InternshipList as "<<class>>\nInternshipList"

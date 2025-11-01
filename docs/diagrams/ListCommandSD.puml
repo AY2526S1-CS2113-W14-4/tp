@@ -3,7 +3,7 @@
 title List Command - Sequence Diagram
 
 'abstracted Logic components
-participant "Logic" as Logic
+participant ":InternityManager" as Logic
 participant ":ListCommand" as Command
 
 ' Model components
@@ -13,12 +13,6 @@ participant ":Internship" as internship
 ' Ui component
 participant "<<class>>\nUi" as Ui
 
-' creation of ListCommand
-create Command
-Logic -> Command : new ListCommand(OrderType)
-activate Command
-Command --> Logic
-deactivate Command
 
 ' execution of ListCommand
 Logic -> Command : execute()

@@ -1,15 +1,12 @@
 @startuml
 title Delete Command - Sequence Diagram
 
-participant Logic
-create ":DeleteCommand" as DC
+participant ":InternityManager" as Logic
+participant ":DeleteCommand" as DC
 participant "<<class>>\nInternshipList" as IL
 participant "<<class>>\nUi" as UI
 
-Logic -> DC**: new DeleteCommand(index)
-activate DC
-return
-deactivate DC
+
 
 Logic -> DC: execute()
 activate DC

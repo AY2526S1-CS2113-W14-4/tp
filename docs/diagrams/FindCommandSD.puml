@@ -1,15 +1,12 @@
 @startuml
 title Find Command - Sequence Diagram
 
-participant Logic
+participant ":InternityManager" as Logic
 participant ":FindCommand" as FC
 participant "<<class>>\nInternshipList" as IL
 participant ":Internship" as IN
 participant "<<class>>\nUi" as Ui
 
-Logic -> FC**: create new FindCommand
-activate FC
-return
 
 Logic -> FC: execute
 activate FC

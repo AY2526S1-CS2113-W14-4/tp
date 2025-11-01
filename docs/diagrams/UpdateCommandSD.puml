@@ -1,15 +1,13 @@
 @startuml
 title Update Command - Sequence Diagram
 
-participant Logic
-create ":UpdateCommand" as UC
+participant Logic as ":InternityManager"
+participant ":UpdateCommand" as UC
 participant "<<class>>\nInternshipList" as IL
 participant ":Internship" as IN
 participant "<<class>>\nUi" as Ui
 
-Logic -> UC**: new UpdateCommand(...)
-activate UC
-return
+
 
 Logic -> UC: execute()
 activate UC

@@ -1,15 +1,11 @@
 @startuml
 title Add Command - Sequence Diagram
 
-participant Logic
+participant ":InternityManager" as Logic
 participant ":AddCommand" as AC
 participant ":Internship" as IN
 participant "<<class>>\nInternshipList" as IL
 participant "<<class>>\nUi" as Ui
-
-Logic -> AC**: new AddCommand(...)
-activate AC
-return
 
 Logic -> AC: execute()
 activate AC
