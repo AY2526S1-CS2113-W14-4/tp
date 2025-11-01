@@ -381,6 +381,14 @@ allowing duplicates supports flexibility.
 - It aligns with the goal of Internity as a personal tracking tool rather than a strict database system.
 
 
+**Aspect: Allowing any deadline for internship entries**
+
+Rationale:
+- Users may want to record past, current, or future internship opportunities, 
+so restricting deadlines could reduce usability.
+- Flexibility in deadlines ensures that the system remains a personal organizational tool 
+rather than enforcing business rules that may not apply to all users.
+
 ---
 
 ### Update feature
@@ -439,7 +447,7 @@ Given below is an example usage scenario and how the update mechanism behaves at
   - On success, calls `Ui.printUpdateInternship()` to acknowledge the update.  
 
   ![Update Command Sequence Diagram](diagrams/UpdateCommandSD.png)
-  ![Update Command Class Diagram](diagrams/UpdateCommandCD.png)
+
 
 #### Error Handling
 - Invalid format for `update` arguments → `ArgumentParser.invalidUpdateFormat()`  
