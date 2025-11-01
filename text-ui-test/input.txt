@@ -2,11 +2,16 @@ Homeless SoC Student
 HELLO
 hElLo
 HELLO WORLD
+list
+add company/Goooooooooooooooooooooooooooooooooooooooogle role/Janitor deadline/10-10-2025 pay/100
+list
 add company/Google role/Janitor deadline/10-10-2025 pay/100
 list
 add company/Meta role/Dishwasher deadline/01-01-2039 pay/1
-list
-add company/Meta role/Full Stack Engineer deadline/01-01-2090 pay/10000
+list sort/down
+list sort/desc
+list sort/asc
+add company/Meta role/Full Stack Engineer deadline/01-01-2022 pay/10000
 list
 add company/Speedwagon Foundation role/Researcher deadline/99-99-2030 pay/100
 list
@@ -16,10 +21,23 @@ add company/role/deadline/pay
 list
 update 1 status/Rejected
 list
-update 2 status/Rejected
+update 2 company/Rejected Inc.
 list
-update 3 status/Pending
+update 3 role/I LOVE COFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 list
+update 3 role/Coffee Barista
+list
+update 3 deadline/99-99-9999
+list
+update 3 deadline/01-02-2090
+list
+update 3 pay/-1
+list
+update 3 pay/6767
+list
+find Netflix
+find Meta
+find META
 delete 0
 list
 delete -111
