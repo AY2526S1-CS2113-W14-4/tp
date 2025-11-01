@@ -25,15 +25,12 @@ update 2 company/Rejected Inc.
 list
 update 3 role/I LOVE COFFEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
 list
-update 3 role/Coffee Barista
+update 3 role/Coffee Barista deadline/99-99-9999 pay/6767
 list
-update 3 deadline/99-99-9999
+update 3 role/Coffee Barista deadline/01-02-2090 pay/6767
 list
-update 3 deadline/01-02-2090
+update 3 role/Coffee Barista deadline/01-02-2090 pay/-1
 list
-update 3 pay/-1
-list
-update 3 pay/6767
 list
 find Netflix
 find Meta

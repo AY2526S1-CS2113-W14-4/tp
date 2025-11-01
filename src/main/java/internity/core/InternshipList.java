@@ -177,7 +177,6 @@ public class InternshipList {
         final String normalized = Status.canonical(newStatus);
         Internship internship = internshipList.get(index);
         internship.setStatus(normalized);
-        Ui.printUpdateInternship("status", index, normalized);
     }
 
     public static void updateCompany(int index, String newCompany) throws InternityException {
@@ -186,7 +185,6 @@ public class InternshipList {
         }
         Internship it = internshipList.get(index);
         it.setCompany(newCompany);
-        Ui.printUpdateInternship("company", index, newCompany);
     }
 
     public static void updateRole(int index, String newRole) throws InternityException {
@@ -195,7 +193,6 @@ public class InternshipList {
         }
         Internship it = internshipList.get(index);
         it.setRole(newRole);
-        Ui.printUpdateInternship("role", index, newRole);
     }
 
     public static void updateDeadline(int index, Date newDeadline) throws InternityException {
@@ -204,7 +201,6 @@ public class InternshipList {
         }
         Internship it = internshipList.get(index);
         it.setDeadline(newDeadline);
-        Ui.printUpdateInternship("deadline", index, newDeadline.toString());
     }
 
     public static void updatePay(int index, int newPay) throws InternityException {
@@ -213,7 +209,6 @@ public class InternshipList {
         }
         Internship it = internshipList.get(index);
         it.setPay(newPay);
-        Ui.printUpdateInternship("pay", index, String.valueOf(newPay));
     }
 
     /**

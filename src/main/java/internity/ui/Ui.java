@@ -106,6 +106,26 @@ public class Ui {
                 newValue);
     }
 
+    /**
+     * Prints a summary of the internship update, showing both the original and updated details.
+     *
+     * <p>
+     * This method displays a message indicating that an internship at a specific index
+     * has been successfully updated. It then prints the original internship details
+     * followed by the updated internship details, using the {@link Internship#toString()}
+     * method for formatting.
+     * </p>
+     *
+     * @param index            the index of the internship in the list (0-based)
+     * @param oldInternship    the original {@code Internship} object before the update
+     * @param updatedInternship the updated {@code Internship} object after the update
+     */
+    public static void printUpdateSummary(int index, Internship oldInternship, Internship updatedInternship) {
+        System.out.println("Internship at index " + (index + 1) + " successfully updated:");
+        System.out.println("Original:\n" + oldInternship.toString());
+        System.out.println("Updated:\n" + updatedInternship.toString());
+    }
+
     public static void printInternshipListEmpty() {
         System.out.println("Your internship list is currently empty.");
     }

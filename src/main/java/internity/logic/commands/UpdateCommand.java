@@ -2,6 +2,7 @@ package internity.logic.commands;
 
 import internity.core.Date;
 import internity.core.InternityException;
+import internity.core.Internship;
 import internity.core.InternshipList;
 import internity.ui.Ui;
 
@@ -75,7 +76,8 @@ public class UpdateCommand extends Command {
      */
     @Override
     public void execute() throws InternityException {
-        boolean isUpdated = false; 
+        boolean isUpdated = false;
+        Internship OldInternship = InternshipList.get(index);
         if (company != null) {
             InternshipList.updateCompany(index, company);
             isUpdated = true;
@@ -101,6 +103,7 @@ public class UpdateCommand extends Command {
                 "Provide at least one field to update: company/, role/, deadline/, pay/, status/"
             );
         }
+        Ui.printUpdateSummary(index, OldInternship, InternshipList.get(index));
     }
 
     /**
