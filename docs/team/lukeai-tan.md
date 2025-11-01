@@ -4,9 +4,8 @@
 Internity is a Command-Line Interface (CLI) application designed to help users manage their internship applications efficiently. 
 It is especially useful for Computer Science students who often apply to hundreds of internships and need a simple yet powerful 
 way to organize their applications.
-The app allows users to add, update, delete, find, and list internships, each with detailed 
-attributes such as company name, role, application deadline, pay, and status. In addition, Internity provides features 
-like a dashboard overview for quick insights and data persistence between sessions.
+Internity enables users to add, update, delete, find, and list internship entries, each containing detailed attributes such as the company name, role, application deadline, pay, and status.
+Additionally, Internity offers a dashboard overview for quick insights and ensures data persistence across sessions, allowing users to seamlessly continue where they left off.
 
 ### Code Contributions (and Enhancements)
 [RepoSense link](https://nus-cs2113-ay2526s1.github.io/tp-dashboard/?search=&sort=groupTitle&sortWithin=title&timeframe=commit&mergegroup=&groupSelect=groupByRepos&breakdown=true&checkedFileTypes=docs~functional-code~test-code~other&since=2025-09-19T00%3A00%3A00&filteredFileName=&tabOpen=true&tabType=authorship&tabAuthor=lukeai-tan&tabRepo=AY2526S1-CS2113-W14-4%2Ftp%5Bmaster%5D&authorshipIsMergeGroup=false&authorshipFileTypes=docs~functional-code~test-code~other&authorshipIsBinaryFileTypeChecked=false&authorshipIsIgnoredFilesChecked=false)
