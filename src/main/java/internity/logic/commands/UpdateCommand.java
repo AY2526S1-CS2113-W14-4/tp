@@ -101,8 +101,6 @@ public class UpdateCommand extends Command {
                 "Provide at least one field to update: company/, role/, deadline/, pay/, status/"
             );
         }
-
-        Ui.printUpdateInternship();
     }
 
     /**

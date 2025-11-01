@@ -88,8 +88,23 @@ public class Ui {
         System.out.println("Now you have " + totalItems + " internship(s) in the list.");
     }
 
-    public static void printUpdateInternship() {
-        System.out.println("Internship status updated successfully!");
+    /**
+     * Prints a confirmation message after successfully updating an internship field.
+     *
+     * <p>
+     * This method displays a message indicating that a specific field of an internship
+     * has been successfully updated, along with the new value of that field.
+     * </p>
+     *
+     * @param field    the name of the field that was updated (e.g., "company", "role")
+     * @param index    the index of the internship in the list (0-based)
+     * @param newValue the new value assigned to the updated field
+     */
+    public static void printUpdateInternship(String field, int index, String newValue) {
+        System.out.printf("Internship %s at index %d successfully updated to: %s%n",
+                field.toLowerCase(),
+                index + 1,
+                newValue);
     }
 
     public static void printInternshipListEmpty() {
