@@ -866,7 +866,7 @@ The load operation occurs once during application startup, before the user sees 
     * Company and role must not be empty.
     * Pay must be a valid non-negative integer.
     * Status must be a valid status value (Pending/Applied/Interview/Offer/Rejected).
-    * Deadline must be in DD-MM-YYYY format and represent a valid date.
+    * Deadline must be in dd-MM-yyyy format and represent a valid date.
   * If validation passes, create an `Internship` object and add it to the list.
   * If validation fails, print a warning message to stderr and skip the line (graceful degradation).
 
