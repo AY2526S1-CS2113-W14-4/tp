@@ -18,7 +18,7 @@ CP -> CF: createCommand("exit", "")
 activate CF
 CF -> EC**: new ExitCommand()
 activate EC
-return (created)
+return
 deactivate EC
 CF --> CP: return ExitCommand
 deactivate CF

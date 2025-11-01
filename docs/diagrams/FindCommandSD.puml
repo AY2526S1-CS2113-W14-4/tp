@@ -9,7 +9,7 @@ participant "<<class>>\nUi" as Ui
 
 Logic -> FC**: create new FindCommand
 activate FC
-return (created)
+return
 
 Logic -> FC: execute
 activate FC

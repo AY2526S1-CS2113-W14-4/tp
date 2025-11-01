@@ -17,7 +17,7 @@ participant "<<class>>\nUi" as Ui
 create Command
 Logic -> Command : new ListCommand(OrderType)
 activate Command
-Command --> Logic : (created)
+Command --> Logic
 deactivate Command
 
 ' execution of ListCommand

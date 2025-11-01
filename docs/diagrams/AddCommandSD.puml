@@ -9,14 +9,14 @@ participant "<<class>>\nUi" as Ui
 
 Logic -> AC**: new AddCommand(...)
 activate AC
-return (created)
+return
 
 Logic -> AC: execute()
 activate AC
 
 AC -> IN**: new Internship(...)
 activate IN
-return (created)
+return
 deactivate IN
 
 AC -> IL: add(...)

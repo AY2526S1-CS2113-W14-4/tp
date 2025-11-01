@@ -26,7 +26,7 @@ activate Internship
 create Date
 Internship -> Date: parse(deadline)
 activate Date
-Date --> Internship: (created)
+Date --> Internship
 deactivate Date
 
 Internship -> Internship : setStatus("Pending")
@@ -34,7 +34,7 @@ activate Internship
 Internship --> Internship
 deactivate Internship
 ' Construction returns the Internship instance to InternshipList
-Internship --> InternshipList: (created)
+Internship --> InternshipList
 deactivate Internship
 
 ' InternshipList appends to internal collection

@@ -8,7 +8,7 @@ participant "<<class>>\nInternshipList" as IL
 
 Logic -> DC** : create Dashboard Command
 activate DC
-return (created)
+return
 
 Logic -> DC : execute
 activate DC

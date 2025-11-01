@@ -9,7 +9,7 @@ participant "<<class>>\nUi" as Ui
 
 Logic -> UC**: new UpdateCommand(...)
 activate UC
-return (created)
+return
 
 Logic -> UC: execute()
 activate UC
