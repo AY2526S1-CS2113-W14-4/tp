@@ -77,7 +77,8 @@ September 2025, and an annual salary of $100000.
 <li>By default, when an internship is added, the status is set to Pending. Use the update command to change the status.</li>
 <li>All index parameters are in 1-indexed format.</li>
 <li>Field character limits: <code>COMPANY</code> ≤ 15 characters, <code>ROLE</code> ≤ 30 characters.</li>
-<li><code>DEADLINE</code> must be in <code>dd-MM-yyyy</code> format.</li>
+<li><code>COMPANY</code> and <code>ROLE</code> must be alphanumerical.</li>
+<li><code>DEADLINE</code> must be in <code>dd-MM-yyyy</code> format. Any valid past, present or future deadline can be added. </li>
 <li><code>PAY_AMOUNT</code> must be a non-negative integer that fits within Java's 32-bit signed integer range (maximum 2,147,483,647).</li>
 </ul>
 </div>
@@ -257,6 +258,8 @@ Format:
 ```
 help
 ```
+
+---
 
 ### Exit Internity: `exit`
 
