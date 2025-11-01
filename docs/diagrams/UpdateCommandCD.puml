@@ -87,7 +87,7 @@ InternityManager ..> UpdateCommand : calls execute() >
 UpdateCommand ..> InternshipList : updates >
 UpdateCommand ..> Ui : prints >
 UpdateCommand ..> InternityException : throws >
-UpdateCommand ..> Date : uses >
+
 
 InternityManager ..> InternshipList : saveToStorage() >
 InternshipList ..> Storage : save() >

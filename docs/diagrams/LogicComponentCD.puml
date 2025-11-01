@@ -19,8 +19,8 @@ class ArgumentParser {
 }
 
 abstract class Command {
-    + execute(): void
-    + isExit(): boolean
+    + {abstract} execute(): void
+    + {abstract} isExit(): boolean
 }
 
 class AddCommand

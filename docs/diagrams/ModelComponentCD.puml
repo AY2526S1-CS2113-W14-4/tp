@@ -2,7 +2,6 @@
 title Model Component - Class Diagram
 
 class InternshipList {
-  - {static} List: ArrayList<Internship>
   - {static} storage: Storage
   - {static} username: String
   + {static} setStorage(Storage): void
@@ -23,7 +22,6 @@ interface Comparable<T> {
 class Internship {
   - company: String
   - role: String
-  - deadline: Date
   - status: String
   - pay: int
   + Internship(String, String, Date, int)
@@ -41,22 +39,10 @@ class Date {
   + toString(): String
 }
 
-enum Status {
-  PENDING
-  INTERESTED
-  APPLIED
-  INTERVIEWING
-  OFFER
-  ACCEPTED
-  REJECTED
-  + {static} isValid(String): boolean
-  + {static} canonical(String): String
-}
 
 InternshipList *-left- "*" Internship
 Internship .|> Comparable
 Date .left.|> Comparable
 Internship --> "1" Date : deadline
-Internship --> "1" Status : status
 
 @enduml
