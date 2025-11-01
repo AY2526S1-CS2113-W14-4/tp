@@ -55,24 +55,29 @@ code reuse.
 ### Enhancements to existing features
 - Wrote additional tests for existing features to increase branch coverage from 55% to 72% and line coverage from
 70% to 83% (PR [#95](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/95))
-- Fixed 19 User/Developer Guide documentation issues from PE-D (PR [#175](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/175))
 
 ### Documentation
 - User Guide:
     - Added documentation for the features `exit`, `username`, `dashboard`
+    - Tested every command's format and expected output with the Internity application to check for any functionality bugs.
 - Developer Guide:
     - Added design details of the architecture, `Logic` and `UI` component.
     - Added UML diagrams for:
-      - Architecture Diagram
-      - Internity Class Diagram
-      - User Interaction Sequence Diagram
-      - UI Component Diagram
-      - Logic Component Class Diagram
-      - Logic Component Sequence Diagram
-      - Storage Load Sequence Diagram and associated ref diagrams
-      - DashboardCommand Sequence Diagram
-      - UsernameCommand Sequence Diagram
+      - [Architecture Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/ArchitectureOverview.png)
+      - [Internity Class Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/InternityCD.png)
+      - [User Interaction Sequence Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/UserInteractionSD.png)
+      - [UI Component Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/UIComponentOverview.png)
+      - [Logic Component Class Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/LogicComponentCD.png)
+      - [Logic Component Sequence Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/LogicComponentSD.png)
+      - [Storage Load Sequence Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/StorageLoadSD.png)
+      - [Storage Load Sequence Diagram A](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/StorageLoadSD_A.png)
+      - [Storage Load Sequence Diagram B](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/StorageLoadSD_B.png)
+      - [Storage Load Sequence Diagram C](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/StorageLoadSD_C.png)
+      - [DashboardCommand Sequence Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/DashboardCommandSD.png)
+      - [UsernameCommand Sequence Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/UsernameCommandSD.png)
     - Added details of product scope, user stories and non-functional requirements.
+    - Added manual testing details for `add`, `list`, `find`, `dashboard`, `username`, save data features.
+    - Fixed 19 User/Developer Guide documentation issues from PE-D (PR [#175](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/175))
 
 ### Community
 - PRs reviewed (with non-trivial review comments):
