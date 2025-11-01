@@ -31,7 +31,6 @@ update 3 role/Coffee Barista deadline/01-02-2090 pay/6767
 list
 update 3 role/Coffee Barista deadline/01-02-2090 pay/-1
 list
-list
 find Netflix
 find Meta
 find META
