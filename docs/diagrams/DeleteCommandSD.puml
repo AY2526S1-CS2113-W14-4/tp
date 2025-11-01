@@ -4,7 +4,6 @@ title Delete Command - Sequence Diagram
 participant Logic
 create ":DeleteCommand" as DC
 participant "<<class>>\nInternshipList" as IL
-participant ":Internship" as Intern
 participant "<<class>>\nUi" as UI
 
 Logic -> DC**: new DeleteCommand(index)
@@ -17,19 +16,12 @@ activate DC
 
 DC -> IL: get(index)
 activate IL
-IL -> Intern: retrieve internship
-activate Intern
-Intern --> IL: return internship
-deactivate Intern
-IL --> DC: return internship
+IL --> DC: return Internship
 deactivate IL
 
 DC -> IL: delete(index)
 activate IL
-IL -> IL:  remove internship
-activate IL
-IL --> IL
-deactivate IL
+
 IL --> DC
 deactivate IL
 

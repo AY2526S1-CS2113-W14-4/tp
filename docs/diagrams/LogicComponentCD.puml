@@ -1,5 +1,6 @@
 @startuml
 hide circle
+skinparam classAttributeIconSize 0
 title Logic Component - Class Diagram
 
 class CommandParser {
@@ -34,10 +35,10 @@ class DashboardCommand
 class ExitCommand
 class HelpCommand
 
-CommandParser --> CommandFactory : uses
-CommandFactory --> ArgumentParser : delegates parsing
-CommandFactory --> Command : creates
-ArgumentParser --> Command : creates
+CommandParser --> CommandFactory : uses >
+CommandFactory --> ArgumentParser : delegates parsing >
+CommandFactory --> Command : creates >
+ArgumentParser --> Command : creates >
 Command <|-- AddCommand
 Command <|-- DeleteCommand
 Command <|-- FindCommand

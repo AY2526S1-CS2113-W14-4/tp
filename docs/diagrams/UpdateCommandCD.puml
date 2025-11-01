@@ -1,6 +1,7 @@
 @startuml UpdateFeatureCD
 title Update Feature - Class Diagram
 
+
 class InternityManager {
   + InternityManager(storagePath: String)
   + start(): void

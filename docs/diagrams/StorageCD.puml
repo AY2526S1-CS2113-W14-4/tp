@@ -1,6 +1,7 @@
 @startuml
 title Storage Component - Class Diagram
 hide circle
+skinparam classAttributeIconSize 0
 class Storage {
     - filePath: Path
     __

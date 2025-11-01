@@ -11,12 +11,12 @@ participant "<<class>> Ui" as Ui
 
 
 User -> Manager : type command (e.g., "delete 1")
-Manager -> Parser : parseInput(userInput)
-Parser -> Factory : createCommand(commandWord, args)
+Manager -> Parser : parse user input
+Parser -> Factory : create command
 Factory --> Parser : return Command
 Parser --> Manager : return Command
 
-Manager -> Command : execute()
+Manager -> Command : execute
 Command -> Model : modify / query internships
 Command -> Ui : Ui display method
 Manager -> Storage : save changes

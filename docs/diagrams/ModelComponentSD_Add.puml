@@ -24,7 +24,7 @@ InternshipList -> Internship: new Internship(...)
 activate Internship
 ' Internship object parses and stores a Date and Status internally
 create Date
-Internship -> Date: parse(deadline) : Date
+Internship -> Date: parse(deadline)
 activate Date
 Date --> Internship: (created)
 deactivate Date

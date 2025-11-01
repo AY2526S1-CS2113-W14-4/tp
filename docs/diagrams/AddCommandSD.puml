@@ -25,7 +25,7 @@ note right of IL: Internally adds the internship\nto list:ArrayList<Internship>
 IL --> AC
 deactivate IL
 
-AC -> Ui: print added internship
+AC -> Ui: printAddInternship()
 activate Ui
 Ui --> AC
 deactivate Ui
