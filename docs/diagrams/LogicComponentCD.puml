@@ -1,4 +1,5 @@
 @startuml
+hide circle
 title Logic Component - Class Diagram
 
 class CommandParser {

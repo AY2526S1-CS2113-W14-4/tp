@@ -17,10 +17,6 @@ activate UC
 alt at least one field to update
     UC -> IL: get(index)
     activate IL
-    IL -> IN: retrieve Internship
-    activate IN
-    return return Internship
-    deactivate IN
     IL --> UC : return Internship
     deactivate IL
 
@@ -59,7 +55,7 @@ alt at least one field to update
         deactivate IN
     end
 
-    UC -> Ui: print updated internship
+    UC -> Ui: printUpdatedInternship()
     activate Ui
     Ui --> UC
     deactivate Ui

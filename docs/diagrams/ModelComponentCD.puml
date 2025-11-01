@@ -1,5 +1,9 @@
 @startuml ModelComponentCD
+hide circle
 title Model Component - Class Diagram
+left to right direction
+
+
 
 class InternshipList {
   - {static} storage: Storage
@@ -15,7 +19,7 @@ class InternshipList {
   - {static} isEmpty(): boolean
 }
 
-interface Comparable<T> {
+class "<<interface>>\nComparable<T>" {
     + compareTo(T): int
 }
 
@@ -40,9 +44,9 @@ class Date {
 }
 
 
-InternshipList *-left- "*" Internship
-Internship .|> Comparable
-Date .left.|> Comparable
+InternshipList --> "*" Internship
+Internship .|> "<<interface>>\nComparable<T>"
+Date .left.|> "<<interface>>\nComparable<T>"
 Internship --> "1" Date : deadline
 
 @enduml
