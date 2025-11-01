@@ -4,11 +4,11 @@ title List Command - Sequence Diagram
 
 'abstracted Logic components
 participant "Logic" as Logic
-participant "command : ListCommand" as Command
+participant ":ListCommand" as Command
 
 ' Model components
 participant "<<class>>\nInternshipList" as Model
-participant "internship : Internship" as internship
+participant ":Internship" as internship
 
 ' Ui component
 participant "<<class>>\nUi" as Ui
