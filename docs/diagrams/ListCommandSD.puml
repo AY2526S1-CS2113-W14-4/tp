@@ -25,17 +25,14 @@ Logic -> Command : execute()
 activate Command
 Command -> Model : listAll()
 activate Model
-Model -> Model : check if list is empty
+Model -> Model : isEmpty()
 activate Model
-Model --> Model : return boolean
+Model --> Model : return isEmpty()
 deactivate Model
 alt list is empty
     Model -> Ui : printInternshipListEmpty()
     activate Ui
-    Ui -> Ui : print empty list message
-    activate Ui
-    Ui --> Ui
-    deactivate Ui
+
     Ui --> Model
     deactivate Ui
     Model --> Command
@@ -47,10 +44,7 @@ else list is not empty
     deactivate Model
     Model -> Ui : printInternshipListHeader(messsage)
     activate Ui
-    Ui -> Ui : print header message
-    activate Ui
-    Ui --> Ui
-    deactivate Ui
+
     Ui --> Model
     deactivate Ui
     loop for each internship in List
@@ -61,10 +55,6 @@ else list is not empty
         activate internship
         internship --> Ui : return details
         deactivate internship
-        Ui -> Ui : print internship details
-        activate Ui
-        Ui --> Ui
-        deactivate Ui
         Ui --> Model
         deactivate Ui
     end

@@ -29,7 +29,7 @@ activate Date
 Date --> Internship: (created)
 deactivate Date
 
-Internship -> Internship : set Status to Pending
+Internship -> Internship : setStatus("Pending")
 activate Internship
 Internship --> Internship
 deactivate Internship
