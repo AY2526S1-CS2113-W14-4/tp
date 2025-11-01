@@ -3,7 +3,6 @@ package internity.core;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import internity.logic.commands.ListCommand;
 import internity.storage.Storage;
@@ -224,9 +223,10 @@ public class InternshipList {
      * Searches and prints internships that match the specified keyword in either the company name or the role.
      *
      * <p>
-     * This method performs a case-insensitive search across all stored internships. If no matches are found, a message is
-     * printed via {@link Ui#printNoInternshipFound()}. Otherwise, the matching internships are displayed
-     * with their original indices using {@link Ui#printInternshipListHeader(String)} and
+     * This method performs a case-insensitive search across all stored internships.
+     * If no matches are found, a message is printed via {@link Ui#printNoInternshipFound()}.
+     * Otherwise, the matching internships are displayed with their original
+     * indices using {@link Ui#printInternshipListHeader(String)} and
      * {@link Ui#printInternshipListContent(int, Internship)}.
      * </p>
      *

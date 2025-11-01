@@ -2,8 +2,6 @@ package internity.ui;
 
 import internity.core.Internship;
 
-import java.util.ArrayList;
-
 /**
  * The {@code Ui} class provides methods for interacting with the user in the Internity chatbot.
  * <p>
