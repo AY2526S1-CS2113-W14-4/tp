@@ -265,12 +265,12 @@ The following sequence illustrates how the add command is processed from user in
 
 **Step 1.** The user launches the application and executes a command such as:
 ```
-add company/Google role/Software Engineer Intern deadline/17-09-2025 pay/7000
+add company/Google role/Software Engineer deadline/17-09-2025 pay/7000
 ```
 - Note that by default, the status is set to Pending when a new internship is added. Users may use the `update` command to change the status.  
 
 **Step 2.** The `CommandParser` splits the input into command word `"add"` and the argument string
-`"company/Google role/Software Engineer deadline/17-09-2025 pay/120000"`.
+`"company/Google role/Software Engineer deadline/17-09-2025 pay/7000"`.
 
 **Step 3.** The CommandFactory delegates parsing to `ArgumentParser.parseAddCommandArgs(args)`, which performs detailed extraction and validation of all fields.
 
@@ -328,13 +328,13 @@ If any stage fails, the method logs the issue and throws an `InternityException.
 
 ### Example Walkthrough
 
-| Step | Component      | Action                                                                                 |
-| ---- | -------------- |----------------------------------------------------------------------------------------|
-| 1    | User           | Inputs `add company/Google role/Software Engineer Intern deadline/17-09-2025 pay/7000` |
-| 2    | CommandParser  | Separates command and arguments                                                        |
-| 3    | ArgumentParser | Parses and validates all four fields                                                   |
-| 4    | AddCommand     | Creates `Internship` object and calls `InternshipList.add()`                           |
-| 5    | Ui             | Displays success message                                                               |
+| Step | Component      | Action                                                                                |
+| ---- | -------------- |---------------------------------------------------------------------------------------|
+| 1    | User           | Inputs `add company/Google role/Software Engineer deadline/17-09-2025 pay/7000` |
+| 2    | CommandParser  | Separates command and arguments                                                       |
+| 3    | ArgumentParser | Parses and validates all four fields                                                  |
+| 4    | AddCommand     | Creates `Internship` object and calls `InternshipList.add()`                          |
+| 5    | Ui             | Displays success message                                                              |
 
 The following sequence diagram illustrates the complete add operation flow:
 
