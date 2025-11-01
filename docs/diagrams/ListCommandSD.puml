@@ -51,9 +51,25 @@ else list is not empty
 
         Model -> Ui : printInternshipListContent(internship)
         activate Ui
-        Ui -> internship : get internship details
+        Ui -> internship : getCompany()
         activate internship
-        internship --> Ui : return details
+        internship --> Ui : return company
+        deactivate internship
+        Ui -> internship : getRole()
+        activate internship
+        internship --> Ui : return role
+        deactivate internship
+        Ui -> internship : getDeadline()
+        activate internship
+        internship --> Ui : return deadline
+        deactivate internship
+        Ui -> internship : getPay()
+        activate internship
+        internship --> Ui : return pay
+        deactivate internship
+        Ui -> internship : getStatus()
+        activate internship
+        internship --> Ui : return status
         deactivate internship
         Ui --> Model
         deactivate Ui
