@@ -265,4 +265,53 @@ public class InternshipList {
     public static String getUsername() {
         return username;
     }
+
+    // @@author {lukeai-tan}
+    /**
+     * Finds the internship with the earliest deadline.
+     * <p>
+     * Assumes the internship list is non-empty.
+     * </p>
+     *
+     * @return the internship with the nearest upcoming deadline
+     * @throws InternityException if an error occurs while accessing internship data
+     */
+    public static Internship findNearestDeadlineInternship() throws InternityException {
+        LOGGER.info("Finding internship with nearest deadline.");
+        assert InternshipList.size() > 0 : "Cannot find nearest deadline in empty list";
+        Internship nearest = null;
+
+        // get the internship with the nearest deadline that is in the future
+        for (int i = 0; i < InternshipList.size(); i++) {
+            Internship internship = InternshipList.get(i);
+
+            boolean isNearestDeadline = (nearest == null)
+                    || (internship.getDeadline().compareTo(nearest.getDeadline()) < 0);
+            boolean isDeadlineInFuture = (Date.getToday().compareTo(internship.getDeadline()) <= 0);
+
+            if (isNearestDeadline && isDeadlineInFuture) {
+                nearest = internship;
+            }
+        }
+
+        // if no internships have future deadlines, get the nearest past deadline
+        if (nearest == null){
+            LOGGER.fine("No internships with valid future deadlines found.");
+            LOGGER.info("Finding past nearest deadline.");
+
+            for (int i = 0; i < InternshipList.size(); i++) {
+                Internship internship = InternshipList.get(i);
+
+                boolean isNearestDeadline = (nearest == null)
+                        || (internship.getDeadline().compareTo(nearest.getDeadline()) > 0);
+
+                if (isNearestDeadline) {
+                    nearest = internship;
+                }
+            }
+        }
+
+        LOGGER.fine("Found nearest deadline internship: " + nearest);
+        return nearest;
+    }
 }
