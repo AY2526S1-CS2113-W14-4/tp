@@ -25,15 +25,50 @@ abstract class Command {
     + {abstract} isExit(): boolean
 }
 
-class AddCommand
+class AddCommand {
+    + execute(): void
+    + isExit(): boolean
+}
 class DeleteCommand
+{
+    + execute(): void
+    + isExit(): boolean
+}
 class FindCommand
+{
+    + execute(): void
+    + isExit(): boolean
+}
 class UpdateCommand
+{
+    + execute(): void
+    + isExit(): boolean
+}
 class ListCommand
+{
+    + execute(): void
+    + isExit(): boolean
+}
 class UsernameCommand
+{
+    + execute(): void
+    + isExit(): boolean
+}
 class DashboardCommand
+{
+    + execute(): void
+    + isExit(): boolean
+}
 class ExitCommand
+{
+    + execute(): void
+    + isExit(): boolean
+}
 class HelpCommand
+{
+    + execute(): void
+    + isExit(): boolean
+}
 
 CommandParser --> CommandFactory : uses >
 CommandFactory --> ArgumentParser : delegates parsing >
