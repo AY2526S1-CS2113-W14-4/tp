@@ -1,127 +1,39 @@
 @startuml
-title Storage Load Operation - Sequence Diagram
+title Storage Load Operation - Main Sequence
 
 participant ":InternityManager" as IM
 participant "<<class>>\nInternshipList" as IL
 participant ":Storage" as S
-participant "<<class>>\nDateFormatter" as DF
 
-IM -> IL: loadFromStorage()
+IM -> IL: load from storage
 activate IL
 
-IL -> S: load()
+IL -> S: load
 activate S
 
-S -> S: check if file exists
+ref over S
+    Check Storage File
+end ref
+
 alt file does not exist
     S --> IL: return empty ArrayList
 else file exists
-    create ":BufferedReader" as BR
-    S -> BR**: new BufferedReader(filePath)
-    activate BR
+    ref over S
+        Parse Header and Username
+    end ref
 
-    S -> BR: readLine()
-    BR --> S: "Username (in line below):"
-
-    S -> S: validate header
-
-    S -> BR: readLine()
-    BR --> S: username
-
-    S -> IL: setUsername(username)
-    activate IL
-    IL --> S:
-    deactivate IL
-
-    loop for each remaining line
-        S -> BR: readLine()
-        BR --> S: line (or null if EOF)
-
-        opt line is not null
-            S -> S: parseInternshipFromFile(line, internships)
-            activate S
-
-            S -> S: split line by "|" into parts[]
-            S -> S: trim all parts
-
-            alt parts.length != 5
-                S --> S: return error
-            else parts.length == 5
-                S -> S: parseAndValidateFields(parts, line, internships)
-                activate S
-
-                opt company or role empty
-                    S --> S: return error
-                end
-
-                opt company.length() > COMPANY_MAXLEN
-                    S --> S: return error
-                end
-
-                opt role.length() > ROLE_MAXLEN
-                    S --> S: return error
-                end
-
-                opt pay not parseable as integer
-                    S -> S: parse pay as Integer
-                    S --> S: return "invalid pay format" error
-                end
-
-                opt pay < 0
-                    S -> S: validate pay >= 0
-                    S --> S: return "negative pay amount" error
-                end
-
-                opt status invalid
-                    S -> S: check isValidStatus(status)
-                    S --> S: return error
-                end
-
-                S -> DF: parse(deadlineStr)
-                activate DF
-                alt date format invalid
-                    DF --> S: throw InternityException
-                    deactivate DF
-                    S --> S: return error
-                else date valid
-                    DF --> S: return Date
-                    deactivate DF
-                end
-
-                create ":Internship" as Intern
-                S -> Intern**: new Internship(company, role, deadline, pay)
-                activate Intern
-                return (created)
-                note right of Intern: Multiple instances created,\none per valid line in file
-
-                S -> Intern: setStatus(status)
-                activate Intern
-                Intern --> S:
-                deactivate Intern
-
-                S -> S: add internship to list
-                S --> S: return null (success)
-
-                deactivate S
-            else invalid field count
-            end
-
-            deactivate S
-        end
-    end
-
-    S -> BR: close()
-    deactivate BR
-    destroy BR
+    ref over S
+        Parse Internship Lines
+    end ref
 end
 
 S --> IL: return ArrayList<Internship>
 deactivate S
 
 IL -> IL: clear current list
-IL -> IL: addAll(loadedInternships)
+IL -> IL: add all loaded internships
 
-IL --> IM:
+IL --> IM
 deactivate IL
 
 @enduml

@@ -1,0 +1,24 @@
+@startuml
+mainframe **sd** Parse Header and Username
+participant ":Storage" as S
+participant "<<class>>\nInternshipList" as IL
+participant ":BufferedReader" as BR
+
+S -> BR: read line
+activate BR
+BR --> S: "Username (in line below):"
+deactivate BR
+
+S -> S: validate header
+
+S -> BR: read line
+activate BR
+BR --> S: return username
+deactivate BR
+
+S -> IL: set username
+activate IL
+IL --> S
+deactivate IL
+
+@enduml

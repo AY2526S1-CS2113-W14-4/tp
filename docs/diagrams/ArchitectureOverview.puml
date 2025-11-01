@@ -24,7 +24,7 @@ rectangle "UI" {
 User --> [InternityManager] : inputs command
 [InternityManager] --> [CommandParser] : parse input
 [CommandParser] --> [Command] : create & return Command
-[InternityManager] --> [Command] : execute()
+[InternityManager] --> [Command] : execute
 
 [Command] --> [InternshipList] : modify/query data
 [InternityManager] --> [Storage] : save changes

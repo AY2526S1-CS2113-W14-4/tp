@@ -1,19 +1,17 @@
 @startuml
 title Dashboard Command - Sequence Diagram
 
-participant Logic
-create ":DashboardCommand" as DC
+participant ":InternityManager" as Logic
+participant ":DashboardCommand" as DC
 participant "<<class>>\nDashboardUi" as DUi
 participant "<<class>>\nInternshipList" as IL
 
-Logic -> DC** : new DashboardCommand()
-activate DC
-return (created)
 
-Logic -> DC : execute()
+
+Logic -> DC : execute
 activate DC
 
-DC -> DUi : printDashboard()
+DC -> DUi : print dashboard
 activate DUi
 
 DUi -> IL : get internship info

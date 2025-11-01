@@ -1,14 +1,12 @@
 @startuml
 title Username Command - Sequence Diagram
 
-participant Logic
-create ":UsernameCommand" as UC
+participant Logic as ":InternityManager"
+participant ":UsernameCommand" as UC
 participant "<<class>>\nInternshipList" as IL
 participant "<<class>>\nUi" as Ui
 
-Logic -> UC** : new UsernameCommand(username)
-activate UC
-return (created)
+
 
 Logic -> UC : execute()
 activate UC

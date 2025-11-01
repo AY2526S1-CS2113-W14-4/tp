@@ -23,15 +23,20 @@ end
 create ":PrintWriter" as PW
 S -> PW**: new PrintWriter(filePath)
 activate PW
+return
 
 S -> PW: println("Username (in line below):")
+activate PW
 PW --> S
+deactivate PW
 S -> IL: getUsername()
 activate IL
 IL --> S: return username
 deactivate IL
 S -> PW: println(username)
+activate PW
 PW --> S
+deactivate PW
 
 loop for each internship in List
     S -> Intern: get internship attributes\n(company, role, deadline, pay, status)
@@ -45,7 +50,9 @@ loop for each internship in List
     deactivate S
 
     S -> PW: println(formattedLine)
+    activate PW
     PW --> S
+    deactivate PW
 end
 
 S -> PW: close()

@@ -1,4 +1,6 @@
-@startuml@startuml
+@startuml
+hide circle
+
 title Internity - Class Diagram
 
 ' === Core Controller ===
@@ -24,7 +26,6 @@ class InternshipList
 class Internship
 class Storage
 class Date
-enum Status
 
 ' === UI Layer ===
 class Ui
@@ -78,7 +79,6 @@ HelpCommand -left[hidden]-> ExitCommand
 InternshipList --> Storage
 InternshipList --> Internship
 Internship --> Date
-Internship --> Status
 DashboardUi --> InternshipList
 
 ' ArgumentParser uses DateFormatter
