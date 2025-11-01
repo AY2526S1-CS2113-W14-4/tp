@@ -342,6 +342,22 @@ The following sequence diagram illustrates the complete add operation flow:
 
 #### Design considerations
 
+**Aspect: Inputting parameters by prefix**
+
+* **Alternative 1 (current choice):** Users provide prefix in words: `company/`, `role/`, `deadline/`, `pay/`
+    * Pros: Highly readable and self-explanatory for new users.
+    * Pros: Reduces ambiguity between parameters — each prefix clearly indicates its purpose.
+    * Pros: Consistent with other natural-language command formats in the application.
+    * Cons: Slightly longer to type compared to abbreviated prefixes.
+    * Cons: Parsing logic requires string comparisons with longer literals, adding minor verbosity.
+
+* **Alternative 2:** Users provide prefix in short form: `c/`, `r/`, `d/`, `p/`
+    * Pros: Faster for experienced users to type.
+    * Pros: Compact input format improves command-line efficiency.
+    * Cons: Less intuitive for beginners unfamiliar with shorthand notation.
+    * Cons: Higher likelihood of user input errors due to short and similar-looking prefixes.
+
+
 **Aspect: Status field**
 
 * **Alternative 1 (current choice):** Default the internship status to Pending when adding.
