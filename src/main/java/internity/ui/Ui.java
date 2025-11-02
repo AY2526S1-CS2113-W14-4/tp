@@ -2,8 +2,6 @@ package internity.ui;
 
 import internity.core.Internship;
 
-import java.util.ArrayList;
-
 /**
  * The {@code Ui} class provides methods for interacting with the user in the Internity chatbot.
  * <p>
@@ -20,6 +18,7 @@ public class Ui {
     public static final int PAY_MAXLEN = 10;
     public static final int STATUS_MAXLEN = 10;
 
+    //table formatting strings
     static final String FORMAT_HEADER = "%" + INDEX_MAXLEN + "s %-" + COMPANY_MAXLEN + "s %-" + ROLE_MAXLEN
             + "s %-" + DEADLINE_MAXLEN + "s %-" + PAY_MAXLEN + "s %-" + STATUS_MAXLEN + "s%n";
     static final String FORMAT_CONTENT = "%" + INDEX_MAXLEN + "d %-" + COMPANY_MAXLEN + "s %-" + ROLE_MAXLEN
@@ -89,12 +88,51 @@ public class Ui {
         System.out.println("Now you have " + totalItems + " internship(s) in the list.");
     }
 
-    public static void printUpdateInternship() {
-        System.out.println("Internship status updated successfully!");
+    /**
+     * Prints a confirmation message after successfully updating an internship field.
+     *
+     * <p>
+     * This method displays a message indicating that a specific field of an internship
+     * has been successfully updated, along with the new value of that field.
+     * </p>
+     *
+     * @param field    the name of the field that was updated (e.g., "company", "role")
+     * @param index    the index of the internship in the list (0-based)
+     * @param newValue the new value assigned to the updated field
+     */
+    public static void printUpdateInternship(String field, int index, String newValue) {
+        System.out.printf("Internship %s at index %d successfully updated to: %s%n",
+                field.toLowerCase(),
+                index + 1,
+                newValue);
+    }
+
+    /**
+     * Prints a summary of the internship update, showing both the original and updated details.
+     *
+     * <p>
+     * This method displays a message indicating that an internship at a specific index
+     * has been successfully updated. It then prints the original internship details
+     * followed by the updated internship details, using the {@link Internship#toString()}
+     * method for formatting.
+     * </p>
+     *
+     * @param index            the index of the internship in the list (0-based)
+     * @param oldInternship    the original {@code Internship} object before the update
+     * @param updatedInternship the updated {@code Internship} object after the update
+     */
+    public static void printUpdateSummary(int index, Internship oldInternship, Internship updatedInternship) {
+        System.out.println("Internship at index " + (index + 1) + " successfully updated:");
+        System.out.println("Original:\n" + oldInternship.toString());
+        System.out.println("Updated:\n" + updatedInternship.toString());
     }
 
     public static void printInternshipListEmpty() {
         System.out.println("Your internship list is currently empty.");
+    }
+
+    public static void printNoInternshipFound() {
+        System.out.println("No internships with this company or role found.");
     }
 
     /**
@@ -140,30 +178,6 @@ public class Ui {
         );
     }
 
-    /**
-     * Prints a formatted list of internships that match the user's search keyword.
-     *
-     * <p>
-     * This method first prints a header row and horizontal lines for clear table formatting.
-     * It then iterates through the provided list of {@link Internship} objects, displaying each
-     * internship's details in a tabular format. The internship details are obtained via the
-     * {@link Internship#getCompany()}, {@link Internship#getRole()},
-     * {@link Internship#getDeadline()}, {@link Internship#getPay()}
-     * and {@link Internship#getStatus()} methods.
-     * </p>
-     *
-     * @param list the list of matching {@code Internship} objects to display
-     */
-    public static void printFindInternship(ArrayList<Internship> list) {
-        printInternshipListHeader("These are the matching internships in your list:");
-
-        int i;
-        for (i = 0; i < list.size(); i++) {
-            Internship internship = list.get(i);
-            printInternshipListContent(i, internship);
-        }
-    }
-
     public static void printAskUsername() {
         System.out.println("What is your name?");
     }
@@ -180,7 +194,7 @@ public class Ui {
                   - delete    : Remove an internship application at the specified index.
                   - list      : Display all internship applications, optionally sorted by deadline.
                   - find      : Search and list internship applications matching a keyword.
-                  - update    : Update the status of an internship application at the specified index.
+                  - update    : Update any field of an internship application at the specified index.
                   - username  : Set your username for personalised greetings.
                   - dashboard : View statistics about your internship applications.
                   - help      : Display this list again. Your guide to managing internships.

@@ -3,7 +3,6 @@ package internity.core;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 import internity.logic.commands.ListCommand;
 import internity.storage.Storage;
@@ -175,13 +174,9 @@ public class InternshipList {
         if (index < 0 || index >= size()) {
             throw InternityException.invalidInternshipIndex();
         }
-        if (newStatus == null || !Status.isValid(newStatus)) {
-            throw InternityException.invalidStatus(String.valueOf(newStatus));
-        }
         final String normalized = Status.canonical(newStatus);
         Internship internship = internshipList.get(index);
         internship.setStatus(normalized);
-        System.out.println("Updated internship " + (index + 1) + " status to: " + normalized);
     }
 
     public static void updateCompany(int index, String newCompany) throws InternityException {
@@ -190,7 +185,6 @@ public class InternshipList {
         }
         Internship it = internshipList.get(index);
         it.setCompany(newCompany);
-        System.out.println("Updated internship " + (index + 1) + " company to: " + newCompany);
     }
 
     public static void updateRole(int index, String newRole) throws InternityException {
@@ -199,7 +193,6 @@ public class InternshipList {
         }
         Internship it = internshipList.get(index);
         it.setRole(newRole);
-        System.out.println("Updated internship " + (index + 1) + " role to: " + newRole);
     }
 
     public static void updateDeadline(int index, Date newDeadline) throws InternityException {
@@ -208,7 +201,6 @@ public class InternshipList {
         }
         Internship it = internshipList.get(index);
         it.setDeadline(newDeadline);
-        System.out.println("Updated internship " + (index + 1) + " deadline to: " + newDeadline);
     }
 
     public static void updatePay(int index, int newPay) throws InternityException {
@@ -217,40 +209,48 @@ public class InternshipList {
         }
         Internship it = internshipList.get(index);
         it.setPay(newPay);
-        System.out.println("Updated internship " + (index + 1) + " pay to: " + newPay);
     }
 
     /**
-     * Searches for internships that match the specified keyword in either the company name or the role.
+     * Searches and prints internships that match the specified keyword in either the company name or the role.
      *
      * <p>
-     * This method performs a case-insensitive search across all stored internships by filtering those whose
-     * company name or role contains the given keyword. If no matches are found, a message is printed to
-     * indicate that no internships match the criteria. Otherwise, the matching internships are displayed
-     * through the {@link Ui#printFindInternship(ArrayList)} method.
+     * This method performs a case-insensitive search across all stored internships.
+     * If no matches are found, a message is printed via {@link Ui#printNoInternshipFound()}.
+     * Otherwise, the matching internships are displayed with their original
+     * indices using {@link Ui#printInternshipListHeader(String)} and
+     * {@link Ui#printInternshipListContent(int, Internship)}.
      * </p>
      *
      * @param keyword the search keyword to look for within the company or role fields
      */
     public static void findInternship(String keyword) {
+        // Store matching internships and their original indices
+        ArrayList<Integer> matchingIndices = new ArrayList<>();
+        ArrayList<Internship> matchingInternships = new ArrayList<>();
+
         LOGGER.info("Searching for internships that match keyword.");
-        ArrayList<Internship> matchingInternships = internshipList.stream()
-                .filter(internship ->
-                        internship.getCompany().toLowerCase().contains(keyword.toLowerCase()) ||
-                                internship.getRole().toLowerCase().contains(keyword.toLowerCase()))
-                .collect(Collectors.toCollection(ArrayList::new)
-                );
+        for (int i = 0; i < internshipList.size(); i++) {
+            Internship thisInternship = internshipList.get(i);
+            if (thisInternship.getCompany().toLowerCase().contains(keyword.toLowerCase()) ||
+                    thisInternship.getRole().toLowerCase().contains(keyword.toLowerCase())) {
+                matchingIndices.add(i);
+                matchingInternships.add(thisInternship);
+            }
+        }
         LOGGER.info("Search completed successfully.");
 
         if (matchingInternships.isEmpty()) {
             LOGGER.info("No matching internships were found.");
-            System.out.println("No internships with this company or role found.");
+            Ui.printNoInternshipFound();
             return;
         }
 
-        LOGGER.info("Matching internships found.");
-        LOGGER.info("Printing matching internships.");
-        Ui.printFindInternship(matchingInternships);
+        LOGGER.info("Matching internships found. Printing matching internships.");
+        Ui.printInternshipListHeader("These are the matching internships in your list:");
+        for (int i = 0; i < matchingInternships.size(); i++) {
+            Ui.printInternshipListContent(matchingIndices.get(i), matchingInternships.get(i));
+        }
         LOGGER.info("Matching internships printed successfully.");
     }
 
@@ -264,5 +264,54 @@ public class InternshipList {
 
     public static String getUsername() {
         return username;
+    }
+
+    // @@author {lukeai-tan}
+    /**
+     * Finds the internship with the earliest deadline.
+     * <p>
+     * Assumes the internship list is non-empty.
+     * </p>
+     *
+     * @return the internship with the nearest upcoming deadline
+     * @throws InternityException if an error occurs while accessing internship data
+     */
+    public static Internship findNearestDeadlineInternship() throws InternityException {
+        LOGGER.info("Finding internship with nearest deadline.");
+        assert InternshipList.size() > 0 : "Cannot find nearest deadline in empty list";
+        Internship nearest = null;
+
+        // get the internship with the nearest deadline that is in the future
+        for (int i = 0; i < InternshipList.size(); i++) {
+            Internship internship = InternshipList.get(i);
+
+            boolean isNearestDeadline = (nearest == null)
+                    || (internship.getDeadline().compareTo(nearest.getDeadline()) < 0);
+            boolean isDeadlineInFuture = (Date.getToday().compareTo(internship.getDeadline()) <= 0);
+
+            if (isNearestDeadline && isDeadlineInFuture) {
+                nearest = internship;
+            }
+        }
+
+        // if no internships have future deadlines, get the nearest past deadline
+        if (nearest == null) {
+            LOGGER.fine("No internships with valid future deadlines found.");
+            LOGGER.info("Finding past nearest deadline.");
+
+            for (int i = 0; i < InternshipList.size(); i++) {
+                Internship internship = InternshipList.get(i);
+
+                boolean isNearestDeadline = (nearest == null)
+                        || (internship.getDeadline().compareTo(nearest.getDeadline()) > 0);
+
+                if (isNearestDeadline) {
+                    nearest = internship;
+                }
+            }
+        }
+
+        LOGGER.fine("Found nearest deadline internship: " + nearest);
+        return nearest;
     }
 }
