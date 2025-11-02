@@ -14,6 +14,8 @@ add company/Singapore Airlines role/Flight Operations deadline/09-12-2025 pay/30
 list
 add company/Amazon role/UAT deadline/05-11-2025 pay/9999999999
 list
+add company/Amazon role/UAT deadline/05-11-2025 pay/-800
+list
 add company/ role/ deadline/ pay/
 list
 add company/role/deadline/pay
