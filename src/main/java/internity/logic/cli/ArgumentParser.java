@@ -92,13 +92,13 @@ public final class ArgumentParser {
      * @param args the raw argument string provided by the user for the add command
      * @return a new {@link AddCommand} instance constructed from the parsed and validated arguments
      * @throws InternityException if:
-     *     <ul>
-     *         <li>The argument string is null or blank.</li>
-     *         <li>One or more required fields are missing, empty or in the wrong order.</li>
-     *         <li>Any field exceeds its maximum allowed length.</li>
-     *         <li>The pay amount is invalid (negative or non-numeric).</li>
-     *         <li>Parsing of the deadline fails.</li>
-     *     </ul>
+     *                            <ul>
+     *                                <li>The argument string is null or blank.</li>
+     *                                <li>One or more required fields are missing, empty or in the wrong order.</li>
+     *                                <li>Any field exceeds its maximum allowed length.</li>
+     *                                <li>The pay amount is invalid (negative or non-numeric).</li>
+     *                                <li>Parsing of the deadline fails.</li>
+     *                            </ul>
      */
     public static AddCommand parseAddCommandArgs(String args) throws InternityException {
         if (args == null || args.isBlank()) {
@@ -107,45 +107,76 @@ public final class ArgumentParser {
 
         assert !args.isBlank() : "Arguments cannot be blank after validation";
 
-        try {
-            String[] parts = args.split(ADD_COMMAND_PARSE_LOGIC);
-            if (parts.length != ADD_COMMAND_PARTS ||
-                    !parts[IDX_COMPANY].startsWith("company/") ||
-                    !parts[IDX_ROLE].startsWith("role/") ||
-                    !parts[IDX_DEADLINE].startsWith("deadline/") ||
-                    !parts[IDX_PAY].startsWith("pay/")) {
-                logger.severe("One or more arguments of Add command is in the wrong order.");
-                throw InternityException.invalidAddCommand();
+        String[] parts = args.split(ADD_COMMAND_PARSE_LOGIC);
+
+        // Logic: 1. Is field present? 2. Is field correct?
+        if (parts.length != ADD_COMMAND_PARTS) {
+            if (!parts[IDX_COMPANY].startsWith("company/")) {
+                logger.severe("The first field is not company");
+                throw InternityException.noFieldForAdd("company/ should be the first field.");
             }
-
-            logger.info("Successfully parsed 4 arguments of AddCommand.");
-
-            String company = parts[IDX_COMPANY].substring("company/".length()).trim();
-            String role = parts[IDX_ROLE].substring("role/".length()).trim();
-            Date deadline = DateFormatter.parse(parts[IDX_DEADLINE].substring("deadline/".length()).trim());
-            int pay = Integer.parseInt(parts[IDX_PAY].substring("pay/".length()).trim());
-
-            // throw exception on empty input or invalid pay
-            if (company.isEmpty() || role.isEmpty() || pay < 0) {
-                logger.severe("One or more arguments of Add command is empty or invalid.");
-                throw InternityException.invalidAddCommand();
+            try {
+                if (!parts[IDX_ROLE].startsWith("role/")) {
+                    logger.severe("The second field is not role.");
+                    throw InternityException.noFieldForAdd("role/ should be the second field.");
+                }
+            } catch (IndexOutOfBoundsException e) {
+                logger.severe("Missing role" + e.getMessage());
+                throw InternityException.noFieldForAdd("Please provide the role.");
             }
-
-            // throw exception on exceeding max length
-            if (company.length() > Ui.COMPANY_MAXLEN) {
-                logger.severe("Company name exceeded max length.");
-                throw InternityException.exceedFieldLength("Company", Ui.COMPANY_MAXLEN, company.length());
+            try {
+                if (!parts[IDX_DEADLINE].startsWith("deadline/")) {
+                    logger.severe("The third field is not deadline.");
+                    throw InternityException.noFieldForAdd("deadline/ should be the third field.");
+                }
+            } catch (IndexOutOfBoundsException e) {
+                logger.severe("Missing deadline" + e.getMessage());
+                throw InternityException.noFieldForAdd("Please provide the deadline.");
             }
-            if (role.length() > Ui.ROLE_MAXLEN) {
-                logger.severe("Role exceeded max length.");
-                throw InternityException.exceedFieldLength("Role", Ui.ROLE_MAXLEN, role.length());
+            try {
+                if (!parts[IDX_PAY].startsWith("pay/")) {
+                    logger.severe("The fourth field is not pay.");
+                    throw InternityException.noFieldForAdd("pay/ should be the fourth field.");
+                }
+            } catch (IndexOutOfBoundsException e) {
+                logger.severe("Missing pay" + e.getMessage());
+                throw InternityException.noFieldForAdd("Please provide the pay.");
             }
-
-            return new AddCommand(company, role, deadline, pay);
-        } catch (Exception e) {
-            logger.severe("Error executing Add Command: " + e.getMessage());
-            throw InternityException.invalidAddCommand();
         }
+
+        logger.info("All 4 arguments of AddCommand were provided and parsed successfully.");
+
+        String company = parts[IDX_COMPANY].substring("company/".length()).trim();
+        String role = parts[IDX_ROLE].substring("role/".length()).trim();
+        Date deadline = DateFormatter.parse(parts[IDX_DEADLINE].substring("deadline/".length()).trim());
+        int pay = Integer.parseInt(parts[IDX_PAY].substring("pay/".length()).trim());
+
+        // throw exception on exceeding max length
+        if (company.length() > Ui.COMPANY_MAXLEN) {
+            logger.severe("Company name exceeded max length.");
+            throw InternityException.exceedFieldLength("Company", Ui.COMPANY_MAXLEN, company.length());
+        }
+        if (role.length() > Ui.ROLE_MAXLEN) {
+            logger.severe("Role exceeded max length.");
+            throw InternityException.exceedFieldLength("Role", Ui.ROLE_MAXLEN, role.length());
+        }
+
+        // throw exception on empty input or invalid pay
+        if (company.isEmpty()) {
+            logger.severe("Company name is empty.");
+            throw InternityException.emptyField("Company");
+        }
+        if (role.isEmpty()) {
+            logger.severe("Role is empty.");
+            throw InternityException.emptyField("Role");
+        }
+        if (pay < 0) {
+            logger.severe("Pay is negative.");
+            throw InternityException.invalidPayFormat();
+        }
+
+        return new AddCommand(company, role, deadline, pay);
+
     }
 
     /**
@@ -173,7 +204,7 @@ public final class ArgumentParser {
 
     /**
      * Parses the arguments provided for the {@link FindCommand} and constructs a corresponding
-     *  {@code FindCommand} instance.
+     * {@code FindCommand} instance.
      *
      * <p>
      * This method expects a non-empty string representing the keyword to search for in the
@@ -221,7 +252,7 @@ public final class ArgumentParser {
                     company = valueAfterTag(p, "company/");
                     if (company.isEmpty()) {
                         logger.severe("Company name is empty.");
-                        throw InternityException.emptyField("company/");
+                        throw InternityException.emptyField("Company");
                     }
                     if (company.length() > Ui.COMPANY_MAXLEN) {
                         logger.severe("Company name exceeded max length.");
@@ -233,7 +264,7 @@ public final class ArgumentParser {
                     role = valueAfterTag(p, "role/");
                     if (role.isEmpty()) {
                         logger.severe("Role is empty.");
-                        throw InternityException.emptyField("role/");
+                        throw InternityException.emptyField("Role");
                     }
                     if (role.length() > Ui.ROLE_MAXLEN) {
                         logger.severe("Role exceeded max length.");
@@ -274,7 +305,7 @@ public final class ArgumentParser {
      *
      * @param args arguments for {@link ListCommand}
      * @return an instance of ListCommand constructed from the parsed arguments.
-     *      Returns a default ListCommand if no arguments are provided.
+     * Returns a default ListCommand if no arguments are provided.
      * @throws InternityException if the arguments are missing or invalid.
      */
     public static ListCommand parseListCommandArgs(String args) throws InternityException {
@@ -322,7 +353,7 @@ public final class ArgumentParser {
         }
         String indexToken = trimmed.substring(0, firstSpace).trim();
         String tagged = trimmed.substring(firstSpace + 1).trim();
-        return new String[] { indexToken, tagged };
+        return new String[]{indexToken, tagged};
     }
 
     private static int parseOneBasedIndex(String indexToken) throws InternityException {

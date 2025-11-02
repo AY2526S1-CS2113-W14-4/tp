@@ -125,7 +125,23 @@ public class InternityException extends Exception {
      * @return an {@code InternityException} for an empty field
      */
     public static InternityException emptyField(String tag) {
-        return new InternityException(tag + " cannot be empty");
+        return new InternityException(tag + " cannot be empty.");
+    }
+
+    /**
+     * Returns an exception indicating that a required field is missing.
+     * For Add Command.
+     *
+     * @param string information of the missing field
+     * @return an {@code InternityException} for the missing field
+     */
+    public static InternityException noFieldForAdd(String string) {
+        return new InternityException(string + "\n" +
+                "Usage: add company/COMPANY_NAME" +
+                " role/ROLE_NAME" +
+                " deadline/DEADLINE" +
+                " pay/PAY_AMOUNT"
+        );
     }
 
     /**
@@ -159,7 +175,7 @@ public class InternityException extends Exception {
      * @return an {@code InternityException} for an invalid pay format
      */
     public static InternityException invalidPayFormat() {
-        return new InternityException("Invalid pay. Use a whole number (example: pay/8000)");
+        return new InternityException("Invalid pay. Must be a non-negative integer. (example: pay/8000)");
     }
 
     /**
