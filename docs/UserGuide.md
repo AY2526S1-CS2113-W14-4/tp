@@ -27,7 +27,7 @@ manage hundreds of applications. This guide explains how to install and use Inte
 
 1. **Install Java 17.** Confirm you have Java 17 installed by running `java -version` in your terminal.  
    If you do not have Java 17 installed, download it from [here](https://www.oracle.com/java/technologies/downloads/#java17).
-2. **Download Internity.** Download the latest version of `Internity.jar` from [Github](https://github.com/AY2526S1-CS2113-W14-4/tp/releases), onto anywhere on your computer.
+2. **Download Internity.** Download the latest version of `Internity.jar` from [Github](https://github.com/AY2526S1-CS2113-W14-4/tp/releases), onto any empty folder on your computer.
 3. **Launch the terminal** Open a terminal, cd into the folder where you saved `Internity.jar`.
 4. **Run the program.** Run the command:  
    ```java -jar Internity.jar```
@@ -45,6 +45,7 @@ Tip: Type `help` to view a list of available commands at any time.
 <ul>
 <li>Words in <strong>UPPER_CASE</strong> are placeholders that must be supplied by you.<br>
 Example: <code>delete INDEX</code> → Please input <code>delete 1</code></li>
+<li>The commands <code>dashboard</code>, <code>help</code> and <code>exit</code> will ignore any arguments. The command will still be valid.</li>
 <li>If using a PDF version, be careful when copying commands that span multiple lines as spaces surrounding line-breaks may be omitted.</li>
 </ul>
 </div>
@@ -74,6 +75,7 @@ September 2025, and an annual salary of $100000.
 <li>The parameters should be entered in the specified order i.e. company, role, deadline, followed by pay.</li>
 <li>No duplicate parameter type, so only exactly one of each parameter type.</li>
 <li>By default, when an internship is added, the status is set to Pending. Use the update command to change the status.</li>
+<li>All index parameters are in 1-indexed format.</li>
 <li>Field character limits: <code>COMPANY</code> ≤ 15 characters, <code>ROLE</code> ≤ 30 characters.</li>
 <li><code>DEADLINE</code> must be in <code>dd-MM-yyyy</code> format.</li>
 <li><code>PAY_AMOUNT</code> must be a non-negative integer that fits within Java's 32-bit signed integer range (maximum 2,147,483,647).</li>
@@ -140,8 +142,6 @@ The 2nd command updates the company of the internship application at index 2 to 
 <div style="background-color: #331c16; color: #c3b091; padding: 15px; border-radius: 8px; border-left: 5px solid #966919;">
 <h4>Notes</h4>
 <ul>
-<li>For v1.0, only the <code>status</code> field can be updated. Updating other fields (company, role, deadline, pay) will be added in
-future iterations.</li>
 <li>All field values must adhere to the constraints specified in the <code>add</code> feature.</li>
 <li>If duplicate field values are given, only the last field will be used.
 <br>
@@ -222,6 +222,8 @@ Example:
 ```
 username Yoshikage Kira
 ```
+
+This command changes the username to `Yoshikage Kira` and notifies the user.
 
 ---
 

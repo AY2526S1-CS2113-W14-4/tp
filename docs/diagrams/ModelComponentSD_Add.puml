@@ -30,6 +30,9 @@ Date --> Internship: (created)
 deactivate Date
 
 Internship -> Internship : set Status to Pending
+activate Internship
+Internship --> Internship
+deactivate Internship
 ' Construction returns the Internship instance to InternshipList
 Internship --> InternshipList: (created)
 deactivate Internship

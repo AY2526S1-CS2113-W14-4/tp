@@ -1,4 +1,4 @@
-@startuml ModelComponentSD
+@startuml
 !include Style.puml
 title List Command - Sequence Diagram
 

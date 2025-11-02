@@ -8,75 +8,52 @@ participant ":Internship" as Intern
 
 IM -> IL: saveToStorage()
 activate IL
-
 IL -> S: save(List)
 activate S
 
-S -> S: check if parent directory exists
-alt parent directory does not exist
-    S -> S: Files.createDirectories(parent)
+' === Directory check with nested activation ===
+opt parent directory exists
+    S -> S: Files.createDirectories(filePath.getParent())
+    activate S
+    S --> S: return
+    deactivate S
 end
 
+' === Continue with save process ===
 create ":PrintWriter" as PW
 S -> PW**: new PrintWriter(filePath)
 activate PW
 
 S -> PW: println("Username (in line below):")
-PW --> S:
-
+PW --> S
 S -> IL: getUsername()
 activate IL
 IL --> S: return username
 deactivate IL
-
 S -> PW: println(username)
-PW --> S:
+PW --> S
 
 loop for each internship in List
-    S -> S: formatInternshipForFile(internship)
+    S -> Intern: get internship attributes\n(company, role, deadline, pay, status)
+    activate Intern
+    Intern --> S: return attributes
+    deactivate Intern
+
+    S -> S: format as "company | role | deadline | pay | status"
     activate S
-
-    S -> Intern: getCompany()
-    activate Intern
-    Intern --> S: return company
-    deactivate Intern
-
-    S -> Intern: getRole()
-    activate Intern
-    Intern --> S: return role
-    deactivate Intern
-
-    S -> Intern: getDeadline()
-    activate Intern
-    Intern --> S: return deadline
-    deactivate Intern
-
-    S -> Intern: getPay()
-    activate Intern
-    Intern --> S: return pay
-    deactivate Intern
-
-    S -> Intern: getStatus()
-    activate Intern
-    Intern --> S: return status
-    deactivate Intern
-
-    S -> S: format as:\n"company | role | deadline | pay | status"
     S --> S: return formatted string
     deactivate S
 
     S -> PW: println(formattedLine)
-    PW --> S:
+    PW --> S
 end
 
 S -> PW: close()
 deactivate PW
 destroy PW
 
-S --> IL:
+S --> IL
 deactivate S
-
-IL --> IM:
+IL --> IM
 deactivate IL
-
 @enduml

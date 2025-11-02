@@ -1,0 +1,73 @@
+@startuml
+title Update Command - Sequence Diagram
+
+participant Logic
+create ":UpdateCommand" as UC
+participant "<<class>>\nInternshipList" as IL
+participant ":Internship" as IN
+participant "<<class>>\nUi" as Ui
+
+Logic -> UC**: new UpdateCommand(...)
+activate UC
+return (created)
+
+Logic -> UC: execute()
+activate UC
+
+alt at least one field to update
+    UC -> IL: get(index)
+    activate IL
+    IL -> IN: retrieve Internship
+    activate IN
+    return return Internship
+    deactivate IN
+    IL --> UC : return Internship
+    deactivate IL
+
+    opt company != null
+        UC -> IN: setCompany(company)
+        activate IN
+        IN --> UC
+        deactivate IN
+    end
+
+    opt role != null
+        UC -> IN: setRole(role)
+        activate IN
+        IN --> UC
+        deactivate IN
+    end
+
+    opt deadline != null
+        UC -> IN: setDeadline(deadline)
+        activate IN
+        IN --> UC
+        deactivate IN
+    end
+
+    opt pay != null
+        UC -> IN: setPay(pay)
+        activate IN
+        IN --> UC
+        deactivate IN
+    end
+
+    opt status != null
+        UC -> IN: setStatus(status)
+        activate IN
+        IN --> UC
+        deactivate IN
+    end
+
+    UC -> Ui: print updated internship
+    activate Ui
+    Ui --> UC
+    deactivate Ui
+
+else no fields provided
+    UC --> Logic: throw InternityException
+end
+
+UC --> Logic
+deactivate UC
+@enduml

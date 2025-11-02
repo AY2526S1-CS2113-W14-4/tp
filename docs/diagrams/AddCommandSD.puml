@@ -1,16 +1,17 @@
 @startuml
 title Add Command - Sequence Diagram
+
 participant Logic
-create ":AddCommand" as AC
+participant ":AddCommand" as AC
 participant ":Internship" as IN
 participant "<<class>>\nInternshipList" as IL
 participant "<<class>>\nUi" as Ui
 
-Logic-> AC**: new AddCommand(...)
+Logic -> AC**: new AddCommand(...)
 activate AC
 return (created)
 
-Logic-> AC: execute()
+Logic -> AC: execute()
 activate AC
 
 AC -> IN**: new Internship(...)
@@ -20,7 +21,7 @@ deactivate IN
 
 AC -> IL: add(...)
 activate IL
-note right of IL: Internally adds the internship\nto internshipList:ArrayList<Internship>
+note right of IL: Internally adds the internship\nto list:ArrayList<Internship>
 IL --> AC
 deactivate IL
 
@@ -29,6 +30,6 @@ activate Ui
 Ui --> AC
 deactivate Ui
 
-AC -->Logic
+AC --> Logic
 deactivate AC
 @enduml

@@ -6,7 +6,7 @@ participant ":InternityManager" as IM
 participant ":CommandParser" as CP
 participant ":CommandFactory" as CF
 participant ":ExitCommand" as EC
-participant ":Ui" as Ui
+participant "<<class>>\nUi" as Ui
 
 User -> IM: enter "exit" command
 activate IM
