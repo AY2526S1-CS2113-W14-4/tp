@@ -171,7 +171,15 @@ public final class ArgumentParser {
         logger.info("All 4 fields of AddCommand are not empty.");
 
         Date deadline = DateFormatter.parse(deadlineString);
-        int pay = Integer.parseInt(payString);
+        int pay;
+
+        // throw exception if pay is not an integer.
+        try {
+            pay = Integer.parseInt(payString);
+        } catch (NumberFormatException e) {
+            logger.severe("Pay is not an integer.");
+            throw InternityException.invalidPayFormat();
+        }
 
         // throw exception if pay is negative
         if (pay < 0) {
