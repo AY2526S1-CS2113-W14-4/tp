@@ -69,7 +69,8 @@ public class CommandParser {
      * <p>This method checks each character in the input string to ensure that
      * <ul>
      *     <li>ALl characters are printable ASCII.</li>
-     *     <li>The pipe character {@code '|'} is not present (due to the fact that it can break the save file format).</li>
+     *     <li>The pipe character {@code '|'} is not present
+     *     (due to the fact that it can break the save file format).</li>
      * </ul>
      * </p>
      *
