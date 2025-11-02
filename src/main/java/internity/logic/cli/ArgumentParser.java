@@ -109,39 +109,25 @@ public final class ArgumentParser {
 
         String[] parts = args.split(ADD_COMMAND_PARSE_LOGIC);
 
-        // Logic: 1. Is field present? 2. Is field correct?
         if (parts.length != ADD_COMMAND_PARTS) {
-            if (!parts[IDX_COMPANY].startsWith("company/")) {
-                logger.severe("The first field is not company");
-                throw InternityException.noFieldForAdd("company/ should be the first field.");
-            }
-            try {
-                if (!parts[IDX_ROLE].startsWith("role/")) {
-                    logger.severe("The second field is not role.");
-                    throw InternityException.noFieldForAdd("role/ should be the second field.");
-                }
-            } catch (IndexOutOfBoundsException e) {
-                logger.severe("Missing role" + e.getMessage());
-                throw InternityException.noFieldForAdd("Please provide the role.");
-            }
-            try {
-                if (!parts[IDX_DEADLINE].startsWith("deadline/")) {
-                    logger.severe("The third field is not deadline.");
-                    throw InternityException.noFieldForAdd("deadline/ should be the third field.");
-                }
-            } catch (IndexOutOfBoundsException e) {
-                logger.severe("Missing deadline" + e.getMessage());
-                throw InternityException.noFieldForAdd("Please provide the deadline.");
-            }
-            try {
-                if (!parts[IDX_PAY].startsWith("pay/")) {
-                    logger.severe("The fourth field is not pay.");
-                    throw InternityException.noFieldForAdd("pay/ should be the fourth field.");
-                }
-            } catch (IndexOutOfBoundsException e) {
-                logger.severe("Missing pay" + e.getMessage());
-                throw InternityException.noFieldForAdd("Please provide the pay.");
-            }
+            throw InternityException.invalidAddCommand();
+        }
+
+        if (!parts[IDX_COMPANY].startsWith("company/")) {
+            logger.severe("The first field is not company");
+            throw InternityException.noFieldForAdd("company/ should be the first field.");
+        }
+        if (!parts[IDX_ROLE].startsWith("role/")) {
+            logger.severe("The second field is not role.");
+            throw InternityException.noFieldForAdd("role/ should be the second field.");
+        }
+        if (!parts[IDX_DEADLINE].startsWith("deadline/")) {
+            logger.severe("The third field is not deadline.");
+            throw InternityException.noFieldForAdd("deadline/ should be the third field.");
+        }
+        if (!parts[IDX_PAY].startsWith("pay/")) {
+            logger.severe("The fourth field is not pay.");
+            throw InternityException.noFieldForAdd("pay/ should be the fourth field.");
         }
 
         logger.info("All 4 arguments of AddCommand were provided and parsed successfully.");
@@ -308,7 +294,7 @@ public final class ArgumentParser {
      *
      * @param args arguments for {@link ListCommand}
      * @return an instance of ListCommand constructed from the parsed arguments.
-     * Returns a default ListCommand if no arguments are provided.
+     *      Returns a default ListCommand if no arguments are provided.
      * @throws InternityException if the arguments are missing or invalid.
      */
     public static ListCommand parseListCommandArgs(String args) throws InternityException {
