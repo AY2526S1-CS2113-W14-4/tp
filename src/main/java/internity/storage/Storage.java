@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -101,6 +102,26 @@ public class Storage {
         }
 
         logger.info("Successfully loaded " + internships.size() + " internships");
+
+        // Clean up extra files in the data directory
+        Path directory = filePath.getParent();
+        if (directory != null) {
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory)) {
+                for (Path file : stream) {
+                    if (Files.isRegularFile(file) && !file.equals(filePath)) {
+                        try {
+                            Files.delete(file);
+                            logger.info("Deleted extra file: " + file);
+                        } catch (IOException e) {
+                            logger.warning("Failed to delete extra file: " + file + " - " + e.getMessage());
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                logger.warning("Failed to list files in directory: " + directory + " - " + e.getMessage());
+            }
+        }
+
         return internships;
     }
 
