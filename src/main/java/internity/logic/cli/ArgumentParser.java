@@ -146,37 +146,40 @@ public final class ArgumentParser {
 
         logger.info("All 4 arguments of AddCommand were provided and parsed successfully.");
 
-        String company = parts[IDX_COMPANY].substring("company/".length()).trim();
-        String role = parts[IDX_ROLE].substring("role/".length()).trim();
-        Date deadline = DateFormatter.parse(parts[IDX_DEADLINE].substring("deadline/".length()).trim());
-        int pay = Integer.parseInt(parts[IDX_PAY].substring("pay/".length()).trim());
+        try {
+            String company = parts[IDX_COMPANY].substring("company/".length()).trim();
+            String role = parts[IDX_ROLE].substring("role/".length()).trim();
+            Date deadline = DateFormatter.parse(parts[IDX_DEADLINE].substring("deadline/".length()).trim());
+            int pay = Integer.parseInt(parts[IDX_PAY].substring("pay/".length()).trim());
 
-        // throw exception on exceeding max length
-        if (company.length() > Ui.COMPANY_MAXLEN) {
-            logger.severe("Company name exceeded max length.");
-            throw InternityException.exceedFieldLength("Company", Ui.COMPANY_MAXLEN, company.length());
-        }
-        if (role.length() > Ui.ROLE_MAXLEN) {
-            logger.severe("Role exceeded max length.");
-            throw InternityException.exceedFieldLength("Role", Ui.ROLE_MAXLEN, role.length());
-        }
+            // throw exception on exceeding max length
+            if (company.length() > Ui.COMPANY_MAXLEN) {
+                logger.severe("Company name exceeded max length.");
+                throw InternityException.exceedFieldLength("Company", Ui.COMPANY_MAXLEN, company.length());
+            }
+            if (role.length() > Ui.ROLE_MAXLEN) {
+                logger.severe("Role exceeded max length.");
+                throw InternityException.exceedFieldLength("Role", Ui.ROLE_MAXLEN, role.length());
+            }
 
-        // throw exception on empty input or invalid pay
-        if (company.isEmpty()) {
-            logger.severe("Company name is empty.");
-            throw InternityException.emptyField("Company");
-        }
-        if (role.isEmpty()) {
-            logger.severe("Role is empty.");
-            throw InternityException.emptyField("Role");
-        }
-        if (pay < 0) {
-            logger.severe("Pay is negative.");
+            // throw exception on empty input or invalid pay
+            if (company.isEmpty()) {
+                logger.severe("Company name is empty.");
+                throw InternityException.emptyField("Company");
+            }
+            if (role.isEmpty()) {
+                logger.severe("Role is empty.");
+                throw InternityException.emptyField("Role");
+            }
+            if (pay < 0) {
+                logger.severe("Pay is negative.");
+                throw InternityException.invalidPayFormat();
+            }
+
+            return new AddCommand(company, role, deadline, pay);
+        } catch (NumberFormatException e) {
             throw InternityException.invalidPayFormat();
         }
-
-        return new AddCommand(company, role, deadline, pay);
-
     }
 
     /**
