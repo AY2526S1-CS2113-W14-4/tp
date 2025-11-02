@@ -36,6 +36,9 @@ public class CommandParser {
         if (input == null || input.isBlank()) {
             throw InternityException.invalidInput();
         }
+
+        validateValidAscii(input);
+
         assert !input.isBlank() : "Input should not be blank after validation";
 
         String[] parts = input.trim().split("\\s+", 2);
@@ -58,5 +61,18 @@ public class CommandParser {
 
         logger.info(() -> "Successfully created command: " + command.getClass().getSimpleName());
         return command;
+    }
+
+    public void validateValidAscii(String input) throws InternityException {
+        for (char c : input.toCharArray()) {
+            if (c < 32 || c > 126) { // non-printable ASCII or Unicode
+                logger.warning("Input contains invalid character: " + c);
+                throw InternityException.invalidCharacter(c);
+            }
+            if (c == '|') { // disallow pipe
+                logger.warning("Input contains illegal character '|'");
+                throw InternityException.invalidCharacter('|');
+            }
+        }
     }
 }
