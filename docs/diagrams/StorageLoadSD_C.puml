@@ -1,0 +1,48 @@
+@startuml
+mainframe **sd** Parse Internship Lines
+participant ":Storage" as S
+participant "<<class>>\nDateFormatter" as DF
+participant ":Internship" as Intern
+participant ":BufferedReader" as BR
+
+loop for each remaining line
+    S -> S: parse internship from file line
+    S -> S: split line by "|" and trim parts[]
+
+    alt parts.length != 5
+        S --> S: return error (invalid field count)
+    else valid line
+        opt validate fields
+            S -> S: check company, role, pay, and status
+            note right: Includes checks for:\n• Empty fields\n• Max length\n• Printable ASCII characters only for company and role\n• Invalid pay\n• Negative pay\n• Invalid status
+            S --> S: return if any invalid
+        end
+
+        S -> DF: parse(deadline)
+        activate DF
+        alt invalid date
+            DF --> S: throw InternityException
+        else valid date
+            DF --> S: return Date
+            deactivate DF
+        end
+
+
+        create Intern
+        S -> Intern**: create new Internship
+        activate Intern
+        return
+        note right of Intern: Created per valid line in file
+
+        S -> Intern: setStatus(status)
+        activate Intern
+        Intern --> S
+        deactivate Intern
+
+        S -> S: add internship to list
+    end
+end
+
+S -> BR: close reader
+destroy BR
+@enduml

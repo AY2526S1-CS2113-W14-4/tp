@@ -37,7 +37,7 @@ public class DeleteCommand extends Command {
         // Get the internship before deleting to display its info
         Internship internship = InternshipList.get(index);
 
-        String internshipInfo = internship.getCompany() + " - " + internship.getRole();
+        String internshipInfo = internship.toString();
         // Assertion for internshipInfo not required here as strong concatenation will always be true
         logger.fine("Retrieved internship: " + internshipInfo);
 

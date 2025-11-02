@@ -1,8 +1,11 @@
 @startuml ModelComponentCD
+hide circle
 title Model Component - Class Diagram
+left to right direction
+skinparam classAttributeIconSize 0
+
 
 class InternshipList {
-  - {static} List: ArrayList<Internship>
   - {static} storage: Storage
   - {static} username: String
   + {static} setStorage(Storage): void
@@ -16,14 +19,13 @@ class InternshipList {
   - {static} isEmpty(): boolean
 }
 
-interface Comparable<T> {
+class "<<interface>>\nComparable<T>" {
     + compareTo(T): int
 }
 
 class Internship {
   - company: String
   - role: String
-  - deadline: Date
   - status: String
   - pay: int
   + Internship(String, String, Date, int)
@@ -41,22 +43,12 @@ class Date {
   + toString(): String
 }
 
-enum Status {
-  PENDING
-  INTERESTED
-  APPLIED
-  INTERVIEWING
-  OFFER
-  ACCEPTED
-  REJECTED
-  + {static} isValid(String): boolean
-  + {static} canonical(String): String
-}
 
-InternshipList *-left- "*" Internship
-Internship .|> Comparable
-Date .left.|> Comparable
-Internship --> "1" Date : deadline
-Internship --> "1" Status : status
+InternshipList --> "*" Internship
+Internship .|> "<<interface>>\nComparable<T>"
+Date .left.|> "<<interface>>\nComparable<T>"
+Internship -right-> "1" Date : due by >
+
+
 
 @enduml

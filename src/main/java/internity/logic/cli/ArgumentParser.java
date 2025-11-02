@@ -35,7 +35,8 @@ public final class ArgumentParser {
     private static final int IDX_ROLE = 1;
     private static final int IDX_DEADLINE = 2;
     private static final int IDX_PAY = 3;
-    private static final String ADD_COMMAND_PARSE_LOGIC = "\\s+(?=company/|role/|deadline/|pay/)";
+    private static final String PARSE_LOGIC_ADD = "\\s+(?=company/|role/|deadline/|pay/)";
+    private static final String PARSE_LOGIC_UPDATE = "\\s+(?=company/|role/|deadline/|pay/|status/)";
 
     private static final Logger logger = Logger.getLogger(ArgumentParser.class.getName());
 
@@ -46,60 +47,60 @@ public final class ArgumentParser {
     }
 
     /**
-     * Parses the arguments provided for the {@link AddCommand} and constructs
+     * Parses the user input string for the {@link AddCommand} and constructs
      * a corresponding {@code AddCommand} instance.
      *
      * <p>
-     * This method expects a single string containing all required fields of the
-     * add command in the following format:
+     * The input must contain four fields in the following strict order:
      * <pre>
      * company/COMPANY_NAME role/ROLE_NAME deadline/DEADLINE pay/PAY_AMOUNT
      * </pre>
-     * The fields must appear in this order and be separated by whitespace.
+     * Each field must be separated by whitespace and prefixed as shown above.
      * </p>
      *
      * <p>
-     * The parsing process includes:
+     * The parsing process performs the following steps:
      * <ul>
-     *     <li>Splitting the arguments string using a predefined delimiter
-     *         {@code ADD_COMMAND_PARSE_LOGIC}.</li>
-     *     <li>Verifying that all required fields are present and in the correct order.</li>
-     *     <li>Extracting the actual values for company, role, deadline and pay by removing the
-     *         respective prefixes ("company/", "role/", "deadline/", "pay/").</li>
-     *     <li>Trimming whitespace from all extracted values.</li>
-     *     <li>Parsing the deadline string into a {@link Date} object
-     *         using {@link DateFormatter#parse(String)}.</li>
-     *     <li>Parsing the pay string into an integer.</li>
+     *     <li>Splits the input string using the predefined delimiter
+     *         {@code PARSE_LOGIC_ADD} into exactly four parts.</li>
+     *     <li>Verifies that all required fields exist and appear in the correct order:
+     *         "company/", "role/", "deadline/", and "pay/".</li>
+     *     <li>Extracts the actual values for each field by removing their respective prefixes
+     *         and trimming whitespace.</li>
+     *     <li>Parses the {@code deadline} string into a {@link Date} using
+     *         {@link DateFormatter#parse(String)}.</li>
+     *     <li>Parses the {@code pay} string into an integer.</li>
      * </ul>
      * </p>
      *
      * <p>
-     * After extraction, the method performs several validations:
+     * After extraction, several validations are performed:
      * <ul>
-     *     <li>Ensures none of the extracted values are empty or missing.</li>
-     *     <li>Ensures the pay amount is a non-negative integer.</li>
-     *     <li>Ensures that the length of the company and role strings does not exceed the
-     *         maximum allowed lengths defined in {@link Ui} constants
+     *     <li>Checks that none of the fields are empty.</li>
+     *     <li>Ensures that the company and role names do not exceed their
+     *         respective maximum lengths defined in {@link Ui}
      *         ({@code COMPANY_MAXLEN} and {@code ROLE_MAXLEN}).</li>
+     *     <li>Ensures that {@code pay} is a non-negative integer.</li>
      * </ul>
      * </p>
      *
      * <p>
-     * If any of the above validations fail, an {@link InternityException} is thrown with a
-     * message indicating an invalid add command. Logging is performed at key stages for
-     * debugging purposes.
+     * If any validation fails, an {@link InternityException} is thrown with a
+     * descriptive error message. The method also logs key validation and parsing
+     * stages for debugging and traceability.
      * </p>
      *
-     * @param args the raw argument string provided by the user for the add command
-     * @return a new {@link AddCommand} instance constructed from the parsed and validated arguments
+     * @param args the raw user input string containing the add command arguments
+     * @return a new {@link AddCommand} instance with parsed and validated values
      * @throws InternityException if:
-     *     <ul>
-     *         <li>The argument string is null or blank.</li>
-     *         <li>One or more required fields are missing, empty or in the wrong order.</li>
-     *         <li>Any field exceeds its maximum allowed length.</li>
-     *         <li>The pay amount is invalid (negative or non-numeric).</li>
-     *         <li>Parsing of the deadline fails.</li>
-     *     </ul>
+     *                            <ul>
+     *                                <li>The argument string is null or blank.</li>
+     *                                <li>The number of fields is not exactly four.</li>
+     *                                <li>Any field is missing, empty, or appears out of order.</li>
+     *                                <li>Any text field exceeds its maximum allowed length.</li>
+     *                                <li>The pay amount is negative or non-numeric.</li>
+     *                                <li>The deadline cannot be parsed into a valid {@link Date}.</li>
+     *                            </ul>
      */
     public static AddCommand parseAddCommandArgs(String args) throws InternityException {
         if (args == null || args.isBlank()) {
@@ -108,45 +109,87 @@ public final class ArgumentParser {
 
         assert !args.isBlank() : "Arguments cannot be blank after validation";
 
-        try {
-            String[] parts = args.split(ADD_COMMAND_PARSE_LOGIC);
-            if (parts.length != ADD_COMMAND_PARTS ||
-                    !parts[IDX_COMPANY].startsWith("company/") ||
-                    !parts[IDX_ROLE].startsWith("role/") ||
-                    !parts[IDX_DEADLINE].startsWith("deadline/") ||
-                    !parts[IDX_PAY].startsWith("pay/")) {
-                logger.severe("One or more arguments of Add command is in the wrong order.");
-                throw InternityException.invalidAddCommand();
-            }
+        String[] parts = args.split(PARSE_LOGIC_ADD);
 
-            logger.info("Successfully parsed 4 arguments of AddCommand.");
-
-            String company = parts[IDX_COMPANY].substring("company/".length()).trim();
-            String role = parts[IDX_ROLE].substring("role/".length()).trim();
-            Date deadline = DateFormatter.parse(parts[IDX_DEADLINE].substring("deadline/".length()).trim());
-            int pay = Integer.parseInt(parts[IDX_PAY].substring("pay/".length()).trim());
-
-            // throw exception on empty input or invalid pay
-            if (company.isEmpty() || role.isEmpty() || pay < 0) {
-                logger.severe("One or more arguments of Add command is empty or invalid.");
-                throw InternityException.invalidAddCommand();
-            }
-
-            // throw exception on exceeding max length
-            if (company.length() > Ui.COMPANY_MAXLEN) {
-                logger.severe("Company name exceeded max length.");
-                throw InternityException.exceedFieldLength("Company", Ui.COMPANY_MAXLEN, company.length());
-            }
-            if (role.length() > Ui.ROLE_MAXLEN) {
-                logger.severe("Role exceeded max length.");
-                throw InternityException.exceedFieldLength("Role", Ui.ROLE_MAXLEN, role.length());
-            }
-
-            return new AddCommand(company, role, deadline, pay);
-        } catch (Exception e) {
-            logger.severe("Error executing Add Command: " + e.getMessage());
+        // throw exception if number of fields provided is not exactly 4
+        if (parts.length != ADD_COMMAND_PARTS) {
             throw InternityException.invalidAddCommand();
         }
+
+        // throw exception if fields are not provided in the specified order
+        if (!parts[IDX_COMPANY].startsWith("company/")) {
+            logger.severe("The first field is not company");
+            throw InternityException.noFieldForAdd("company/ should be the first field.");
+        }
+        if (!parts[IDX_ROLE].startsWith("role/")) {
+            logger.severe("The second field is not role.");
+            throw InternityException.noFieldForAdd("role/ should be the second field.");
+        }
+        if (!parts[IDX_DEADLINE].startsWith("deadline/")) {
+            logger.severe("The third field is not deadline.");
+            throw InternityException.noFieldForAdd("deadline/ should be the third field.");
+        }
+        if (!parts[IDX_PAY].startsWith("pay/")) {
+            logger.severe("The fourth field is not pay.");
+            throw InternityException.noFieldForAdd("pay/ should be the fourth field.");
+        }
+
+        logger.info("All 4 fields of AddCommand were provided and parsed successfully.");
+
+        String company = parts[IDX_COMPANY].substring("company/".length()).trim();
+        String role = parts[IDX_ROLE].substring("role/".length()).trim();
+        String deadlineString = parts[IDX_DEADLINE].substring("deadline/".length()).trim();
+        String payString = parts[IDX_PAY].substring("pay/".length()).trim();
+
+        // throw exception if max length is exceeded
+        if (company.length() > Ui.COMPANY_MAXLEN) {
+            logger.severe("Company name exceeded max length.");
+            throw InternityException.exceedFieldLength("Company", Ui.COMPANY_MAXLEN, company.length());
+        }
+        if (role.length() > Ui.ROLE_MAXLEN) {
+            logger.severe("Role exceeded max length.");
+            throw InternityException.exceedFieldLength("Role", Ui.ROLE_MAXLEN, role.length());
+        }
+
+        // throw exception if a field is empty
+        if (company.isEmpty()) {
+            logger.severe("Company name is empty.");
+            throw InternityException.emptyField("Company");
+        }
+        if (role.isEmpty()) {
+            logger.severe("Role is empty.");
+            throw InternityException.emptyField("Role");
+        }
+        if (deadlineString.isEmpty()) {
+            logger.severe("Deadline is empty.");
+            throw InternityException.emptyField("Deadline");
+        }
+        if (payString.isEmpty()) {
+            logger.severe("Pay is empty.");
+            throw InternityException.emptyField("Pay");
+        }
+
+        logger.info("All 4 fields of AddCommand are not empty.");
+
+        Date deadline = DateFormatter.parse(deadlineString);
+        int pay;
+
+        // throw exception if pay is not an integer or exceeds Integer.MAX_VALUE
+        try {
+            pay = Integer.parseInt(payString);
+        } catch (NumberFormatException e) {
+            logger.severe("Pay is not an integer or exceeds Integer.MAX_VALUE.");
+            throw InternityException.invalidPayFormat();
+        }
+
+        // throw exception if pay is negative
+        if (pay < 0) {
+            logger.severe("Pay is negative.");
+            throw InternityException.invalidPayFormat();
+        }
+
+        logger.info("All 4 fields of AddCommand are validated.");
+        return new AddCommand(company, role, deadline, pay);
     }
 
     /**
@@ -174,7 +217,7 @@ public final class ArgumentParser {
 
     /**
      * Parses the arguments provided for the {@link FindCommand} and constructs a corresponding
-     *  {@code FindCommand} instance.
+     * {@code FindCommand} instance.
      *
      * <p>
      * This method expects a non-empty string representing the keyword to search for in the
@@ -205,7 +248,7 @@ public final class ArgumentParser {
         int index = parseOneBasedIndex(idxAndTagged[0]);
         String tagged = requireTagged(idxAndTagged[1]);
 
-        String[] parts = tagged.split("\\s+(?=company/|role/|deadline/|pay/|status/)");
+        String[] parts = tagged.split(PARSE_LOGIC_UPDATE);
         String company = null;
         String role = null;
         Date deadline = null;
@@ -222,7 +265,7 @@ public final class ArgumentParser {
                     company = valueAfterTag(p, "company/");
                     if (company.isEmpty()) {
                         logger.severe("Company name is empty.");
-                        throw InternityException.emptyField("company/");
+                        throw InternityException.emptyField("Company");
                     }
                     if (company.length() > Ui.COMPANY_MAXLEN) {
                         logger.severe("Company name exceeded max length.");
@@ -234,7 +277,7 @@ public final class ArgumentParser {
                     role = valueAfterTag(p, "role/");
                     if (role.isEmpty()) {
                         logger.severe("Role is empty.");
-                        throw InternityException.emptyField("role/");
+                        throw InternityException.emptyField("Role");
                     }
                     if (role.length() > Ui.ROLE_MAXLEN) {
                         logger.severe("Role exceeded max length.");
@@ -326,7 +369,7 @@ public final class ArgumentParser {
         }
         String indexToken = trimmed.substring(0, firstSpace).trim();
         String tagged = trimmed.substring(firstSpace + 1).trim();
-        return new String[] { indexToken, tagged };
+        return new String[] {indexToken, tagged};
     }
 
     private static int parseOneBasedIndex(String indexToken) throws InternityException {

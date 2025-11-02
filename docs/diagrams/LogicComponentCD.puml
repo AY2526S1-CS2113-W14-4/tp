@@ -1,4 +1,6 @@
 @startuml
+hide circle
+skinparam classAttributeIconSize 0
 title Logic Component - Class Diagram
 
 class CommandParser {
@@ -19,24 +21,59 @@ class ArgumentParser {
 }
 
 abstract class Command {
+    + {abstract} execute(): void
+    + {abstract} isExit(): boolean
+}
+
+class AddCommand {
+    + execute(): void
+    + isExit(): boolean
+}
+class DeleteCommand
+{
+    + execute(): void
+    + isExit(): boolean
+}
+class FindCommand
+{
+    + execute(): void
+    + isExit(): boolean
+}
+class UpdateCommand
+{
+    + execute(): void
+    + isExit(): boolean
+}
+class ListCommand
+{
+    + execute(): void
+    + isExit(): boolean
+}
+class UsernameCommand
+{
+    + execute(): void
+    + isExit(): boolean
+}
+class DashboardCommand
+{
+    + execute(): void
+    + isExit(): boolean
+}
+class ExitCommand
+{
+    + execute(): void
+    + isExit(): boolean
+}
+class HelpCommand
+{
     + execute(): void
     + isExit(): boolean
 }
 
-class AddCommand
-class DeleteCommand
-class FindCommand
-class UpdateCommand
-class ListCommand
-class UsernameCommand
-class DashboardCommand
-class ExitCommand
-class HelpCommand
-
-CommandParser --> CommandFactory : uses
-CommandFactory --> ArgumentParser : delegates parsing
-CommandFactory --> Command : creates
-ArgumentParser --> Command : creates
+CommandParser ..> CommandFactory
+CommandFactory ..> ArgumentParser
+CommandFactory ..> Command
+ArgumentParser ..> Command
 Command <|-- AddCommand
 Command <|-- DeleteCommand
 Command <|-- FindCommand

@@ -1,0 +1,17 @@
+@startuml
+mainframe **sd** Check Storage File
+participant ":Storage" as S
+
+S -> S: check if file exists
+
+alt file does not exist
+    S --> S: return empty list
+else file exists
+    create ":BufferedReader" as BR
+    S -> BR**: create BufferedReader
+    activate BR
+    BR --> S
+    deactivate BR
+end
+
+@enduml

@@ -72,12 +72,13 @@ September 2025, and an annual salary of $100000.
 <div style="background-color: #331c16; color: #c3b091; padding: 15px; border-radius: 8px; border-left: 5px solid #966919;">
 <h4>Notes</h4>
 <ul>
-<li>The parameters should be entered in the specified order i.e. company, role, deadline, followed by pay.</li>
-<li>No duplicate parameter type, so only exactly one of each parameter type.</li>
+<li>The parameters <b>MUST</b> be entered in the specified order: company, role, deadline, followed by pay.</li>
+<li>No duplicate parameter type is allowed, so input exactly <b>ONE</b> of each parameter type.</li>
 <li>By default, when an internship is added, the status is set to Pending. Use the update command to change the status.</li>
 <li>All index parameters are in 1-indexed format.</li>
-<li>Field character limits: <code>COMPANY</code> ≤ 15 characters, <code>ROLE</code> ≤ 30 characters.</li>
-<li><code>DEADLINE</code> must be in <code>dd-MM-yyyy</code> format.</li>
+<li>Field character limits: <code>COMPANY_NAME<</code> ≤ 15 characters, <code>ROLE_NAME</code> ≤ 30 characters.</li>
+<li><code>COMPANY_NAME</code> and <code>ROLE_NAME</code> must be alphanumerical.</li>
+<li><code>DEADLINE</code> must be in <code>dd-MM-yyyy</code> format. Any valid past, present or future deadline can be added. </li>
 <li><code>PAY_AMOUNT</code> must be a non-negative integer that fits within Java's 32-bit signed integer range (maximum 2,147,483,647).</li>
 </ul>
 </div>
@@ -209,12 +210,12 @@ role details.
 
 ### Setting/Changing username: `username`
 
-Use this command to set or change the username for the Internity application.
+Use this command to set or change the username for the Internity application. Whitespace between names will be maintained.
 
 Format:
 
 ```
-username USERNAME
+username NEW_USERNAME
 ```
 
 Example:
@@ -263,6 +264,8 @@ Format:
 ```
 help
 ```
+
+---
 
 ### Exit Internity: `exit`
 
@@ -323,7 +326,7 @@ exit
 | **Update Application**  | `update`    | `update INDEX FIELD/VALUE`                                                                                                                                  | `update 1 status/Interviewing`                                                    |
 | **List Applications**   | `list`      | `list` → list all applications in the order they were added <br> `list sort/ORDER` → sort applications by deadline ascending (`asc`) or descending (`desc`) | `list` <br> `list sort/asc` <br> `list sort/desc`                                 |
 | **Find Application**    | `find`      | `find KEYWORD`                                                                                                                                              | `find Software Engineer`                                                          |
-| **Set/Change username** | `username`  | `username USERNAME`                                                                                                                                         | `username Yoshikage Kira`                                                         |
+| **Set/Change username** | `username`  | `username NEW_USERNAME`                                                                                                                                     | `username Yoshikage Kira`                                                         |
 | **Display Dashboard**   | `dashboard` | `dashboard`                                                                                                                                                 | `dashboard`                                                                       |
 | **Help**                | `help`      | `help`                                                                                                                                                      | `help`                                                                            |
 | **Exit Internity**      | `exit`      | `exit`                                                                                                                                                      | `exit`                                                                            |

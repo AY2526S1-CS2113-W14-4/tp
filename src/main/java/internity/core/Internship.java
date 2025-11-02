@@ -170,9 +170,10 @@ public class Internship implements Comparable<Internship> {
 
     @Override
     public String toString() {
-        return "  " + getCompany() + " - " + getRole()
-                + " | Deadline: " + getDeadline()
-                + " | Pay: " + getPay()
-                + " | Status: " + getStatus();
+        return "  Company: " + getCompany()
+                + "\n  Role: " + getRole()
+                + "\n  Deadline: " + getDeadline()
+                + "\n  Pay: " + getPay()
+                + "\n  Status: " + getStatus();
     }
 }

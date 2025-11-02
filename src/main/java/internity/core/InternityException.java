@@ -125,7 +125,23 @@ public class InternityException extends Exception {
      * @return an {@code InternityException} for an empty field
      */
     public static InternityException emptyField(String tag) {
-        return new InternityException(tag + " cannot be empty");
+        return new InternityException(tag + " cannot be empty.");
+    }
+
+    /**
+     * Returns an exception indicating that a required field is missing.
+     * For Add Command.
+     *
+     * @param string information of the missing field
+     * @return an {@code InternityException} for the missing field
+     */
+    public static InternityException noFieldForAdd(String string) {
+        return new InternityException(string + "\n" +
+                "Usage: add company/COMPANY_NAME" +
+                " role/ROLE_NAME" +
+                " deadline/DEADLINE" +
+                " pay/PAY_AMOUNT"
+        );
     }
 
     /**
@@ -159,7 +175,8 @@ public class InternityException extends Exception {
      * @return an {@code InternityException} for an invalid pay format
      */
     public static InternityException invalidPayFormat() {
-        return new InternityException("Invalid pay. Use a whole number (example: pay/8000)");
+        return new InternityException("Invalid pay. Must be a non-negative integer" +
+                " and within the allowed range. (Example: pay/8000)");
     }
 
     /**
@@ -194,6 +211,16 @@ public class InternityException extends Exception {
      * @return an {@code InternityException} for an invalid username command format
      */
     public static InternityException invalidUsernameCommand() {
-        return new InternityException("Invalid username command.\nUsage: username USERNAME");
+        return new InternityException("Invalid username command.\nUsage: username NEW_USERNAME");
+    }
+
+    /**
+     * Returns an exception indicating an invalid character was input.
+     *
+     * @param c the invalid character
+     * @return an {@code InternityException} for an invalid character used.
+     */
+    public static InternityException invalidCharacter(char c) {
+        return new InternityException("Input contains invalid character: '" + c + "'");
     }
 }
