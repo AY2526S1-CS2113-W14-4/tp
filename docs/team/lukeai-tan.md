@@ -69,9 +69,6 @@ code reuse.
       - [UI Component Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/UIComponentOverview.png)
       - [Logic Component Class Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/LogicComponentCD.png)
       - [Logic Component Sequence Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/LogicComponentSD.png)
-      - [Storage Load Sequence Diagram A](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/StorageLoadSD_A.png)
-      - [Storage Load Sequence Diagram B](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/StorageLoadSD_B.png)
-      - [Storage Load Sequence Diagram C](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/StorageLoadSD_C.png)
       - [DashboardCommand Sequence Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/DashboardCommandSD.png)
       - [UsernameCommand Sequence Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/UsernameCommandSD.png)
     - Added details of product scope, user stories and non-functional requirements.
