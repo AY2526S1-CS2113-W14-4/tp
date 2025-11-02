@@ -63,6 +63,19 @@ public class CommandParser {
         return command;
     }
 
+    /**
+     * Validates that the given input string contains only valid ASCII characters.
+     *
+     * <p>This method checks each character in the input string to ensure that
+     * <ul>
+     *     <li>ALl characters are printable ASCII.</li>
+     *     <li>The pipe character {@code '|'} is not present (due to the fact that it can break the save file format).</li>
+     * </ul>
+     * </p>
+     *
+     * @param input the string to validate
+     * @throws InternityException if the input contains non-printable ASCII characters or the illegal pipe character '|'
+     */
     public void validateValidAscii(String input) throws InternityException {
         for (char c : input.toCharArray()) {
             if (c < 32 || c > 126) { // non-printable ASCII or Unicode
