@@ -1,6 +1,7 @@
 @startuml
 title Storage Component - Class Diagram
-
+hide circle
+skinparam classAttributeIconSize 0
 class Storage {
     - filePath: Path
     __
@@ -10,8 +11,6 @@ class Storage {
 }
 
 class InternshipList {
-    - {static} List: ArrayList<Internship>
-    - {static} storage: Storage
     - {static} username: String
     __
     + {static} setStorage(storageInstance: Storage): void
@@ -40,15 +39,6 @@ class Internship {
     + {static} isValidStatus(status: String): boolean
 }
 
-class Date {
-    - day: int
-    - month: int
-    - year: int
-    __
-    + Date(day: int, month: int, year: int)
-    + toString(): String
-}
-
 class DateFormatter {
     + {static} parse(dateStr: String): Date
 }
@@ -57,7 +47,7 @@ class InternityException {
     + InternityException(message: String)
 }
 
-note right of Storage
+note as NoteStorage
   File Format:
   Line 1: "Username (in line below):"
   Line 2: <username>
@@ -69,11 +59,12 @@ note right of Storage
   - Validates date, pay, and status
 end note
 
-Storage "1" - "*" Internship : loads/saves >
-Storage ..> DateFormatter : uses >
-Storage ..> InternityException : throws >
+Storage ..> NoteStorage
+
+Storage ..> Internship
+Storage ..> DateFormatter
+Storage ..> InternityException
 InternshipList "1" - "1" Storage : uses >
-InternshipList "1" - "*" Internship : contains >
-Internship "1" - "1" Date : has >
+InternshipList --> "*" Internship
 
 @enduml

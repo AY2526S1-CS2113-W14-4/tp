@@ -5,18 +5,18 @@ participant ":InternityManager" as Manager
 participant ":CommandParser" as Parser
 participant ":CommandFactory" as Factory
 participant ":Command" as Command
-participant "<<class>> InternshipList" as Model
+participant "<<class>>\nInternshipList" as Model
 participant ":Storage" as Storage
-participant "<<class>> Ui" as Ui
+participant "<<class>>\nUi" as Ui
 
 
 User -> Manager : type command (e.g., "delete 1")
-Manager -> Parser : parseInput(userInput)
-Parser -> Factory : createCommand(commandWord, args)
+Manager -> Parser : parse user input
+Parser -> Factory : create command
 Factory --> Parser : return Command
 Parser --> Manager : return Command
 
-Manager -> Command : execute()
+Manager -> Command : execute
 Command -> Model : modify / query internships
 Command -> Ui : Ui display method
 Manager -> Storage : save changes

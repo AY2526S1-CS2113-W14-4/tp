@@ -210,6 +210,16 @@ public class InternityException extends Exception {
      * @return an {@code InternityException} for an invalid username command format
      */
     public static InternityException invalidUsernameCommand() {
-        return new InternityException("Invalid username command.\nUsage: username USERNAME");
+        return new InternityException("Invalid username command.\nUsage: username NEW_USERNAME");
+    }
+
+    /**
+     * Returns an exception indicating an invalid character was input.
+     *
+     * @param c the invalid character
+     * @return an {@code InternityException} for an invalid character used.
+     */
+    public static InternityException invalidCharacter(char c) {
+        return new InternityException("Input contains invalid character: '" + c + "'");
     }
 }

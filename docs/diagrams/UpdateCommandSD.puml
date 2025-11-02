@@ -1,15 +1,13 @@
 @startuml
 title Update Command - Sequence Diagram
 
-participant Logic
-create ":UpdateCommand" as UC
+participant Logic as ":InternityManager"
+participant ":UpdateCommand" as UC
 participant "<<class>>\nInternshipList" as IL
 participant ":Internship" as IN
 participant "<<class>>\nUi" as Ui
 
-Logic -> UC**: new UpdateCommand(...)
-activate UC
-return (created)
+
 
 Logic -> UC: execute()
 activate UC
@@ -17,10 +15,6 @@ activate UC
 alt at least one field to update
     UC -> IL: get(index)
     activate IL
-    IL -> IN: retrieve Internship
-    activate IN
-    return return Internship
-    deactivate IN
     IL --> UC : return Internship
     deactivate IL
 
@@ -59,7 +53,7 @@ alt at least one field to update
         deactivate IN
     end
 
-    UC -> Ui: print updated internship
+    UC -> Ui: printUpdatedInternship()
     activate Ui
     Ui --> UC
     deactivate Ui

@@ -1,9 +1,10 @@
 @startuml
 title InternityManager - Class Diagram
+hide circle
+skinparam classAttributeIconSize 0
 
 class InternityManager {
     - scanner: Scanner
-    - commandParser: CommandParser
     + InternityManager(storagePath: String)
     + start(): void
     - loadData(): void
@@ -16,13 +17,13 @@ class CommandParser
 class InternshipList
 class Storage
 class Ui
-class Command
+abstract class Command
 
-InternityManager --> CommandParser : uses
-InternityManager --> InternshipList : manages data
-InternityManager --> Storage : initializes
-InternityManager --> Ui : prints messages
-CommandParser --> Command : returns
-InternshipList --> Storage : uses
+InternityManager --> CommandParser : uses >
+InternityManager ..> InternshipList
+InternityManager ..> Storage
+InternshipList ..> Ui
+CommandParser ..> Command
+InternshipList --> Storage : loads\nand\nsaves >
 
 @enduml
