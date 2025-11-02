@@ -210,7 +210,7 @@ role details.
 
 ### Setting/Changing username: `username`
 
-Use this command to set or change the username for the Internity application.
+Use this command to set or change the username for the Internity application. Whitespace between names will be maintained.
 
 Format:
 
