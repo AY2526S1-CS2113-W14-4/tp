@@ -2,13 +2,17 @@ package internity.storage;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,6 +43,8 @@ public class Storage {
     private static final int IDX_PAY = 3;
     private static final int IDX_STATUS = 4;
     private static final int LEN_REQUIRED_FIELDS = 5;
+
+    private static final String PIPE_URL_ENCODED = "%7C";
 
     private final Path filePath;
 
@@ -71,7 +77,8 @@ public class Storage {
             return internships; // First run: nothing to load
         }
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath.toFile()))) {
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(Files.newInputStream(filePath), StandardCharsets.UTF_8))) {
             // Read first line (username header)
             String line = br.readLine();
             if (line == null || !line.equals("Username (in line below):")) {
@@ -101,6 +108,26 @@ public class Storage {
         }
 
         logger.info("Successfully loaded " + internships.size() + " internships");
+
+        // Clean up extra files in the data directory
+        Path directory = filePath.getParent();
+        if (directory != null) {
+            try (DirectoryStream<Path> stream = Files.newDirectoryStream(directory)) {
+                for (Path file : stream) {
+                    if (Files.isRegularFile(file) && !file.equals(filePath)) {
+                        try {
+                            Files.delete(file);
+                            logger.info("Deleted extra file: " + file);
+                        } catch (IOException e) {
+                            logger.warning("Failed to delete extra file: " + file + " - " + e.getMessage());
+                        }
+                    }
+                }
+            } catch (IOException e) {
+                logger.warning("Failed to list files in directory: " + directory + " - " + e.getMessage());
+            }
+        }
+
         return internships;
     }
 
@@ -133,6 +160,7 @@ public class Storage {
     /**
      * Parses and validates all fields of an internship entry from storage.
      * This centralizes all parsing and validation logic for clarity and maintainability.
+     * URL-encoded pipe characters (%7C) are decoded back to | in company and role.
      *
      * Validation rules:
      * - Company and role must not be empty
@@ -148,14 +176,24 @@ public class Storage {
      * @return Error message if parsing/validation failed, null if successful.
      */
     private String parseAndValidateFields(String[] parts, String line, ArrayList<Internship> internships) {
-        String company = parts[IDX_COMPANY];
-        String role = parts[IDX_ROLE];
+        String company = parts[IDX_COMPANY].replace(PIPE_URL_ENCODED, "|");
+        String role = parts[IDX_ROLE].replace(PIPE_URL_ENCODED, "|");
         String deadlineStr = parts[IDX_DEADLINE];
 
         // Validate non-empty company and role
         if (company.isEmpty() || role.isEmpty()) {
             logger.warning("Empty company or role in line: " + line);
             return "Warning: Skipped line with empty company or role: " + line;
+        }
+
+        // Validate company and role contain only ASCII characters
+        if (!isAsciiOnly(company)) {
+            logger.warning("Company contains non-ASCII characters in line: " + line);
+            return "Warning: Skipped line with non-ASCII characters in company name: " + line;
+        }
+        if (!isAsciiOnly(role)) {
+            logger.warning("Role contains non-ASCII characters in line: " + line);
+            return "Warning: Skipped line with non-ASCII characters in role: " + line;
         }
 
         // Validate company and role length does not exceed limits
@@ -208,10 +246,13 @@ public class Storage {
     }
 
     /**
-     * Saves internships to the storage file.
+     * Saves internships to the storage file atomically.
      * The first line contains "Username (in line below):"
      * The second line contains the actual username.
      * Followed by internship entries on subsequent lines.
+     *
+     * Uses a temporary file and atomic rename to prevent data loss in case of
+     * crashes or errors during writing.
      *
      * @param internships The list of internships to save.
      * @throws InternityException If there is an error writing to the file.
@@ -225,10 +266,14 @@ public class Storage {
             // Create parent directories if they don't exist
             if (filePath.getParent() != null) {
                 Files.createDirectories(filePath.getParent());
-                logger.warning("Created parent directories for: " + filePath);
+                logger.info("Created parent directories for: " + filePath);
             }
 
-            try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(filePath.toFile())))) {
+            // Write to a temporary file first for atomic save
+            Path tempFile = filePath.resolveSibling(filePath.getFileName() + ".tmp");
+
+            try (PrintWriter pw = new PrintWriter(new BufferedWriter(
+                    new OutputStreamWriter(Files.newOutputStream(tempFile), StandardCharsets.UTF_8)))) {
                 // Write username header and value
                 pw.println("Username (in line below):");
                 String username = InternshipList.getUsername();
@@ -239,6 +284,19 @@ public class Storage {
                     pw.println(formatInternshipForFile(internship));
                 }
             }
+
+            // Atomically replace the old file with the new one
+            // This is atomic on most filesystems, preventing data loss
+            try {
+                Files.move(tempFile, filePath, StandardCopyOption.REPLACE_EXISTING,
+                        StandardCopyOption.ATOMIC_MOVE);
+                logger.info("Successfully saved with atomic move");
+            } catch (AtomicMoveNotSupportedException e) {
+                // Fallback: non-atomic move (still safer than direct write)
+                logger.warning("Atomic move not supported, using regular move");
+                Files.move(tempFile, filePath, StandardCopyOption.REPLACE_EXISTING);
+            }
+
             logger.info("Successfully saved " + internships.size() + " internships");
         } catch (IOException e) {
             logger.severe("Failed to save internships to " + filePath + ": " + e.getMessage());
@@ -247,7 +305,28 @@ public class Storage {
     }
 
     /**
+     * Checks if a string contains only printable ASCII characters (32-126).
+     * This prevents malicious non-ASCII and control characters from being stored.
+     *
+     * @param str The string to check.
+     * @return true if the string contains only printable ASCII characters, false otherwise.
+     */
+    private boolean isAsciiOnly(String str) {
+        if (str == null) {
+            return false;
+        }
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c < 32 || c > 126) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
      * Formats an internship for storage in the file.
+     * Pipe characters in company and role are URL-encoded to prevent delimiter conflicts.
      *
      * @param internship The internship to format.
      * @return A pipe-delimited string representation of the internship.
@@ -259,8 +338,11 @@ public class Storage {
         assert internship.getDeadline() != null : "Deadline cannot be null";
         assert internship.getStatus() != null : "Status cannot be null";
 
-        return internship.getCompany() + " | "
-                + internship.getRole() + " | "
+        String encodedCompany = internship.getCompany().replace("|", PIPE_URL_ENCODED);
+        String encodedRole = internship.getRole().replace("|", PIPE_URL_ENCODED);
+
+        return encodedCompany + " | "
+                + encodedRole + " | "
                 + internship.getDeadline().toString() + " | "
                 + internship.getPay() + " | "
                 + internship.getStatus();

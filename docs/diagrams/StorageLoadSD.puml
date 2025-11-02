@@ -31,7 +31,13 @@ S --> IL: return ArrayList<Internship>
 deactivate S
 
 IL -> IL: clear current list
+activate IL
+IL --> IL
+deactivate IL
 IL -> IL: add all loaded internships
+activate IL
+IL --> IL
+deactivate IL
 
 IL --> IM
 deactivate IL
