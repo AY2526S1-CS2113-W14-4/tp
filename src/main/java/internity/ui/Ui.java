@@ -78,12 +78,12 @@ public class Ui {
      * @param internship the internship that was added
      */
     public static void printAddInternship(Internship internship) {
-        System.out.println("Noted. I've added this internship:");
+        System.out.println("Added this internship:");
         System.out.println(internship.toString());
     }
 
     public static void printRemoveInternship(String item, int totalItems) {
-        System.out.println("Noted. I've removed this internship:");
+        System.out.println("Removed this internship::");
         System.out.println("  " + item);
         System.out.println("Now you have " + totalItems + " internship(s) in the list.");
     }
