@@ -8,7 +8,7 @@ participant "<<class>>\nArgumentParser" as AP
 participant ":AddCommand" as AddC
 participant ":ExitCommand" as ExitC
 
-IM -> CP: parseInput(input)
+IM -> CP: parse input
 activate CP
 
 ' --- validate input ---
@@ -24,22 +24,22 @@ CP --> CP: return from split
 deactivate CP
 
 ' --- create command via factory ---
-CP -> CF: createCommand(commandWord, args)
+CP -> CF: create Command
 activate CF
 
 alt Command requires argument parsing
-    CF -> AP: parseAddCommandArgs(args)
+    CF -> AP: parse AddCommand args
     activate AP
-    AP -> AddC**: new AddCommand(company, role, deadline, pay)
+    AP -> AddC**: create AddCommand
     activate AddC
-    return (created)
+    return
     deactivate AddC
     AP --> CF: return AddCommand
     deactivate AP
 else Command does not require args (exit/dashboard)
-    CF -> ExitC**: new ExitCommand()
+    CF -> ExitC**: create ExitCommand
     activate ExitC
-    return (created)
+    return
     deactivate ExitC
 end
 

@@ -36,6 +36,9 @@ public class CommandParser {
         if (input == null || input.isBlank()) {
             throw InternityException.invalidInput();
         }
+
+        validateValidAscii(input);
+
         assert !input.isBlank() : "Input should not be blank after validation";
 
         String[] parts = input.trim().split("\\s+", 2);
@@ -58,5 +61,26 @@ public class CommandParser {
 
         logger.info(() -> "Successfully created command: " + command.getClass().getSimpleName());
         return command;
+    }
+
+    /**
+     * Validates that the given input string contains only valid ASCII characters.
+     *
+     * <p>This method checks each character in the input string to ensure that
+     * <ul>
+     *     <li>ALl characters are printable ASCII.</li>
+     * </ul>
+     * </p>
+     *
+     * @param input the string to validate
+     * @throws InternityException if the input contains non-printable ASCII characters or the illegal pipe character '|'
+     */
+    public void validateValidAscii(String input) throws InternityException {
+        for (char c : input.toCharArray()) {
+            if (c < 32 || c > 126) { // non-printable ASCII or Unicode
+                logger.warning("Input contains invalid character: " + c);
+                throw InternityException.invalidCharacter(c);
+            }
+        }
     }
 }
