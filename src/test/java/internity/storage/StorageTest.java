@@ -708,4 +708,77 @@ class StorageTest {
 
         assertEquals(0, internships.size());
     }
+
+    private static String buildAsciiString(int start, int end) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = start; i <= end; i++) {
+            sb.append((char) i);
+        }
+        return sb.toString();
+    }
+
+    @Test
+    void load_asciiRole32to61_loadsCorrectly() throws InternityException {
+        String role = "A"; // Start with a character as 32 is a space
+        role += buildAsciiString(32, 60);
+        ArrayList<Internship> internships = new ArrayList<>();
+        internships.add(new Internship("Google", role, new Date(15, 3, 2025), 6000));
+        storage.save(internships);
+
+        ArrayList<Internship> loadedInternships = storage.load();
+
+        assertEquals(1, loadedInternships.size());
+        assertEquals("Google", loadedInternships.get(0).getCompany());
+        assertEquals(role, loadedInternships.get(0).getRole());
+        assertEquals(6000, loadedInternships.get(0).getPay());
+        assertEquals("Pending", loadedInternships.get(0).getStatus());
+    }
+
+    @Test
+    void load_asciiRole62to91_loadsCorrectly() throws InternityException {
+        String role = buildAsciiString(61, 90);
+        ArrayList<Internship> internships = new ArrayList<>();
+        internships.add(new Internship("Google", role, new Date(15, 3, 2025), 6000));
+        storage.save(internships);
+
+        ArrayList<Internship> loadedInternships = storage.load();
+
+        assertEquals(1, loadedInternships.size());
+        assertEquals("Google", loadedInternships.get(0).getCompany());
+        assertEquals(role, loadedInternships.get(0).getRole());
+        assertEquals(6000, loadedInternships.get(0).getPay());
+        assertEquals("Pending", loadedInternships.get(0).getStatus());
+    }
+
+    @Test
+    void load_asciiRole92to121_loadsCorrectly() throws InternityException {
+        String role = buildAsciiString(91, 120);
+        ArrayList<Internship> internships = new ArrayList<>();
+        internships.add(new Internship("Google", role, new Date(15, 3, 2025), 6000));
+        storage.save(internships);
+
+        ArrayList<Internship> loadedInternships = storage.load();
+
+        assertEquals(1, loadedInternships.size());
+        assertEquals("Google", loadedInternships.get(0).getCompany());
+        assertEquals(role, loadedInternships.get(0).getRole());
+        assertEquals(6000, loadedInternships.get(0).getPay());
+        assertEquals("Pending", loadedInternships.get(0).getStatus());
+    }
+
+    @Test
+    void load_asciiRole122to126_loadsCorrectly() throws InternityException {
+        String role = buildAsciiString(121, 126);
+        ArrayList<Internship> internships = new ArrayList<>();
+        internships.add(new Internship("Google", role, new Date(15, 3, 2025), 6000));
+        storage.save(internships);
+
+        ArrayList<Internship> loadedInternships = storage.load();
+
+        assertEquals(1, loadedInternships.size());
+        assertEquals("Google", loadedInternships.get(0).getCompany());
+        assertEquals(role, loadedInternships.get(0).getRole());
+        assertEquals(6000, loadedInternships.get(0).getPay());
+        assertEquals("Pending", loadedInternships.get(0).getStatus());
+    }
 }
