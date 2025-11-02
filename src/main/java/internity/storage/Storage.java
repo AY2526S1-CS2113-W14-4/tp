@@ -2,17 +2,12 @@ package internity.storage;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,7 +70,8 @@ public class Storage {
             return internships; // First run: nothing to load
         }
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(Files.newInputStream(filePath), StandardCharsets.UTF_8))) {
+        try (BufferedReader br = new BufferedReader(
+                new InputStreamReader(Files.newInputStream(filePath), StandardCharsets.UTF_8))) {
             // Read first line (username header)
             String line = br.readLine();
             if (line == null || !line.equals("Username (in line below):")) {
@@ -232,10 +228,13 @@ public class Storage {
     }
 
     /**
-     * Saves internships to the storage file.
+     * Saves internships to the storage file atomically.
      * The first line contains "Username (in line below):"
      * The second line contains the actual username.
      * Followed by internship entries on subsequent lines.
+     *
+     * Uses a temporary file and atomic rename to prevent data loss in case of
+     * crashes or errors during writing.
      *
      * @param internships The list of internships to save.
      * @throws InternityException If there is an error writing to the file.
@@ -249,10 +248,14 @@ public class Storage {
             // Create parent directories if they don't exist
             if (filePath.getParent() != null) {
                 Files.createDirectories(filePath.getParent());
-                logger.warning("Created parent directories for: " + filePath);
+                logger.info("Created parent directories for: " + filePath);
             }
 
-            try (PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(filePath), StandardCharsets.UTF_8)))) {
+            // Write to a temporary file first for atomic save
+            Path tempFile = filePath.resolveSibling(filePath.getFileName() + ".tmp");
+
+            try (PrintWriter pw = new PrintWriter(new BufferedWriter(
+                    new OutputStreamWriter(Files.newOutputStream(tempFile), StandardCharsets.UTF_8)))) {
                 // Write username header and value
                 pw.println("Username (in line below):");
                 String username = InternshipList.getUsername();
@@ -263,6 +266,19 @@ public class Storage {
                     pw.println(formatInternshipForFile(internship));
                 }
             }
+
+            // Atomically replace the old file with the new one
+            // This is atomic on most filesystems, preventing data loss
+            try {
+                Files.move(tempFile, filePath, StandardCopyOption.REPLACE_EXISTING,
+                        StandardCopyOption.ATOMIC_MOVE);
+                logger.info("Successfully saved with atomic move");
+            } catch (AtomicMoveNotSupportedException e) {
+                // Fallback: non-atomic move (still safer than direct write)
+                logger.warning("Atomic move not supported, using regular move");
+            Files.move(tempFile, filePath, StandardCopyOption.REPLACE_EXISTING);
+            }
+
             logger.info("Successfully saved " + internships.size() + " internships");
         } catch (IOException e) {
             logger.severe("Failed to save internships to " + filePath + ": " + e.getMessage());

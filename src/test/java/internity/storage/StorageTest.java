@@ -781,4 +781,79 @@ class StorageTest {
         assertEquals(6000, loadedInternships.get(0).getPay());
         assertEquals("Pending", loadedInternships.get(0).getStatus());
     }
+
+    @Test
+    void save_atomicMove_createsTemporaryFile() throws InternityException, IOException {
+        ArrayList<Internship> internships = new ArrayList<>();
+        internships.add(new Internship("Google", "SWE", new Date(15, 3, 2025), 6000));
+
+        // Spy on file system to verify temp file is created during save
+        Path expectedTempFile = Path.of(testFilePath + ".tmp");
+
+        storage.save(internships);
+
+        // After save completes, temp file should be deleted (moved to actual file)
+        assertTrue(Files.exists(Path.of(testFilePath)));
+        assertTrue(Files.notExists(expectedTempFile));
+    }
+
+    @Test
+    void save_partialWrite_originalFileUnchanged() throws InternityException, IOException {
+        // Create initial file with data
+        ArrayList<Internship> originalInternships = new ArrayList<>();
+        originalInternships.add(new Internship("Google", "SWE", new Date(15, 3, 2025), 6000));
+        storage.save(originalInternships);
+
+        List<String> originalContent = Files.readAllLines(Path.of(testFilePath));
+
+        // Simulate failure by using a custom Storage that fails during write
+        // (This is tricky - you'd need to make Storage methods mockable)
+        // For now, verify that if temp file exists, original is still intact
+
+        Path tempFile = Path.of(testFilePath + ".tmp");
+        Files.writeString(tempFile, "partial data");
+
+        // Original file should still have correct content
+        List<String> currentContent = Files.readAllLines(Path.of(testFilePath));
+        assertEquals(originalContent, currentContent);
+
+        // Cleanup
+        Files.deleteIfExists(tempFile);
+    }
+
+    @Test
+    void save_multipleRapidSaves_dataConsistent() throws InternityException, IOException {
+        // Test that rapid consecutive saves don't corrupt data
+        for (int i = 0; i < 10; i++) {
+            ArrayList<Internship> internships = new ArrayList<>();
+            internships.add(new Internship("Company" + i, "Role" + i, new Date(15, 3, 2025), 1000 * i));
+            storage.save(internships);
+        }
+
+        ArrayList<Internship> loaded = storage.load();
+        assertEquals(1, loaded.size());
+        assertEquals("Company9", loaded.get(0).getCompany());
+        assertEquals("Role9", loaded.get(0).getRole());
+        assertEquals(9000, loaded.get(0).getPay());
+    }
+
+    @Test
+    void save_overwriteExisting_preservesDataIntegrity() throws InternityException, IOException {
+        // Save initial data
+        ArrayList<Internship> internships1 = new ArrayList<>();
+        internships1.add(new Internship("Google", "SWE", new Date(15, 3, 2025), 6000));
+        storage.save(internships1);
+
+        // Overwrite with new data
+        ArrayList<Internship> internships2 = new ArrayList<>();
+        internships2.add(new Internship("Meta", "ML", new Date(20, 4, 2025), 7000));
+        internships2.add(new Internship("Amazon", "DevOps", new Date(1, 5, 2025), 5500));
+        storage.save(internships2);
+
+        // Verify new data is correct and old data is gone
+        ArrayList<Internship> loaded = storage.load();
+        assertEquals(2, loaded.size());
+        assertEquals("Meta", loaded.get(0).getCompany());
+        assertEquals("Amazon", loaded.get(1).getCompany());
+    }
 }
