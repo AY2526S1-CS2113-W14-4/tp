@@ -47,6 +47,8 @@ class Date {
 InternshipList --> "*" Internship
 Internship .|> "<<interface>>\nComparable<T>"
 Date .left.|> "<<interface>>\nComparable<T>"
-Internship --> "1" Date
+Internship -right-> "1" Date : due by >
+
+
 
 @enduml
