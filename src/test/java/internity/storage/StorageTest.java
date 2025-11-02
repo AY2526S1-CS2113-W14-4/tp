@@ -247,10 +247,10 @@ class StorageTest {
     void load_invalidStatus_skipsLine() throws InternityException, IOException {
         String content =
                 "Username (in line below):\n"
-                + "TestUser\n"
-                + "Google | SWE | 15-03-2025 | 6000 | Pending\n"
-                + "Meta | Data Scientist | 20-04-2025 | 7000 | InvalidStatus\n"  // Invalid status
-                + "Amazon | DevOps | 01-05-2025 | 5500 | Rejected\n";
+                        + "TestUser\n"
+                        + "Google | SWE | 15-03-2025 | 6000 | Pending\n"
+                        + "Meta | Data Scientist | 20-04-2025 | 7000 | InvalidStatus\n"  // Invalid status
+                        + "Amazon | DevOps | 01-05-2025 | 5500 | Rejected\n";
         Files.writeString(Path.of(testFilePath), content);
 
         ArrayList<Internship> internships = storage.load();
@@ -646,5 +646,66 @@ class StorageTest {
         assertEquals("Username (in line below):", lines.get(0));
         assertEquals("NewUser", lines.get(1));
         assertEquals("Google | SWE | 15-03-2025 | 6000 | Pending", lines.get(2));
+    }
+
+    @Test
+    void saveAndLoad_companyWithPipe_preservesPipe() throws InternityException {
+        ArrayList<Internship> internships = new ArrayList<>();
+        internships.add(new Internship("Comp|any", "SWE", new Date(15, 3, 2025), 6000));
+        storage.save(internships);
+
+        InternshipList.clear();
+        ArrayList<Internship> loadedInternships = storage.load();
+
+        assertEquals(1, loadedInternships.size());
+        assertEquals("Comp|any", loadedInternships.get(0).getCompany());
+        assertEquals("SWE", loadedInternships.get(0).getRole());
+    }
+
+    @Test
+    void saveAndLoad_roleWithPipe_preservesPipe() throws InternityException {
+        ArrayList<Internship> internships = new ArrayList<>();
+        internships.add(new Internship("Google", "SW|E", new Date(15, 3, 2025), 6000));
+        storage.save(internships);
+
+        InternshipList.clear();
+        ArrayList<Internship> loadedInternships = storage.load();
+
+        assertEquals(1, loadedInternships.size());
+        assertEquals("Google", loadedInternships.get(0).getCompany());
+        assertEquals("SW|E", loadedInternships.get(0).getRole());
+    }
+
+    @Test
+    void load_deadlineWithPipe_skipsLine() throws InternityException, IOException {
+        String content = "Username (in line below):\n\n"
+                + "Google | SWE | 15-03|2025 | 6000 | Pending\n";
+        Files.writeString(Path.of(testFilePath), content);
+
+        ArrayList<Internship> internships = storage.load();
+
+        assertEquals(0, internships.size());
+    }
+
+    @Test
+    void load_payWithPipe_skipsLine() throws InternityException, IOException {
+        String content = "Username (in line below):\n\n"
+                + "Google | SWE | 15-03-2025 | 60|00 | Pending\n";
+        Files.writeString(Path.of(testFilePath), content);
+
+        ArrayList<Internship> internships = storage.load();
+
+        assertEquals(0, internships.size());
+    }
+
+    @Test
+    void load_statusWithPipe_skipsLine() throws InternityException, IOException {
+        String content = "Username (in line below):\n\n"
+                + "Google | SWE | 15-03-2025 | 6000 | Pend|ing\n";
+        Files.writeString(Path.of(testFilePath), content);
+
+        ArrayList<Internship> internships = storage.load();
+
+        assertEquals(0, internships.size());
     }
 }

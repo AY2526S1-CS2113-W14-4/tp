@@ -5,7 +5,10 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -72,7 +75,7 @@ public class Storage {
             return internships; // First run: nothing to load
         }
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath.toFile()))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(Files.newInputStream(filePath), StandardCharsets.UTF_8))) {
             // Read first line (username header)
             String line = br.readLine();
             if (line == null || !line.equals("Username (in line below):")) {
@@ -169,8 +172,8 @@ public class Storage {
      * @return Error message if parsing/validation failed, null if successful.
      */
     private String parseAndValidateFields(String[] parts, String line, ArrayList<Internship> internships) {
-        String company = parts[IDX_COMPANY];
-        String role = parts[IDX_ROLE];
+        String company = parts[IDX_COMPANY].replace("%7C", "|");
+        String role = parts[IDX_ROLE].replace("%7C", "|");
         String deadlineStr = parts[IDX_DEADLINE];
 
         // Validate non-empty company and role
@@ -249,7 +252,7 @@ public class Storage {
                 logger.warning("Created parent directories for: " + filePath);
             }
 
-            try (PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(filePath.toFile())))) {
+            try (PrintWriter pw = new PrintWriter(new BufferedWriter(new OutputStreamWriter(Files.newOutputStream(filePath), StandardCharsets.UTF_8)))) {
                 // Write username header and value
                 pw.println("Username (in line below):");
                 String username = InternshipList.getUsername();
@@ -280,8 +283,11 @@ public class Storage {
         assert internship.getDeadline() != null : "Deadline cannot be null";
         assert internship.getStatus() != null : "Status cannot be null";
 
-        return internship.getCompany() + " | "
-                + internship.getRole() + " | "
+        String escapedCompany = internship.getCompany().replace("|", "%7C");
+        String escapedRole = internship.getRole().replace("|", "%7C");
+
+        return escapedCompany + " | "
+                + escapedRole + " | "
                 + internship.getDeadline().toString() + " | "
                 + internship.getPay() + " | "
                 + internship.getStatus();
