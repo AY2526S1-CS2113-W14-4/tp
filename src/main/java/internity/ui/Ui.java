@@ -187,6 +187,6 @@ public class Ui {
 
                 For verbose instructions, refer to the user guide.
                 """;
-        System.out.println(commandList);
+        System.out.print(commandList);
     }
 }
