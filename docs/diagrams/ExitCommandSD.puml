@@ -39,11 +39,12 @@ IM -> EC: isExit()
 activate EC
 EC --> IM: return true
 deactivate EC
-IM --> User
 
 note right of IM
   Main command loop breaks
-  and program terminates
+  Program terminates
 end note
-deactivate IM
+
+IM --> User: program ends
+destroy IM
 @enduml
