@@ -34,7 +34,8 @@ public final class ArgumentParser {
     private static final int IDX_ROLE = 1;
     private static final int IDX_DEADLINE = 2;
     private static final int IDX_PAY = 3;
-    private static final String ADD_COMMAND_PARSE_LOGIC = "\\s+(?=company/|role/|deadline/|pay/)";
+    private static final String PARSE_LOGIC_ADD = "\\s+(?=company/|role/|deadline/|pay/)";
+    private static final String PARSE_LOGIC_UPDATE = "\\s+(?=company/|role/|deadline/|pay/|status/)";
 
     private static final Logger logger = Logger.getLogger(ArgumentParser.class.getName());
 
@@ -107,7 +108,7 @@ public final class ArgumentParser {
 
         assert !args.isBlank() : "Arguments cannot be blank after validation";
 
-        String[] parts = args.split(ADD_COMMAND_PARSE_LOGIC);
+        String[] parts = args.split(PARSE_LOGIC_ADD);
 
         if (parts.length != ADD_COMMAND_PARTS) {
             throw InternityException.invalidAddCommand();
@@ -224,7 +225,7 @@ public final class ArgumentParser {
         int index = parseOneBasedIndex(idxAndTagged[0]);
         String tagged = requireTagged(idxAndTagged[1]);
 
-        String[] parts = tagged.split("\\s+(?=company/|role/|deadline/|pay/|status/)");
+        String[] parts = tagged.split(PARSE_LOGIC_UPDATE);
         String company = null;
         String role = null;
         Date deadline = null;
