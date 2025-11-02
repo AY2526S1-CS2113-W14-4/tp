@@ -110,10 +110,12 @@ public final class ArgumentParser {
 
         String[] parts = args.split(PARSE_LOGIC_ADD);
 
+        // throw exception if number of fields provided is not exactly 4
         if (parts.length != ADD_COMMAND_PARTS) {
             throw InternityException.invalidAddCommand();
         }
 
+        // throw exception if fields are not provided in the specified order
         if (!parts[IDX_COMPANY].startsWith("company/")) {
             logger.severe("The first field is not company");
             throw InternityException.noFieldForAdd("company/ should be the first field.");
@@ -131,42 +133,54 @@ public final class ArgumentParser {
             throw InternityException.noFieldForAdd("pay/ should be the fourth field.");
         }
 
-        logger.info("All 4 arguments of AddCommand were provided and parsed successfully.");
+        logger.info("All 4 fields of AddCommand were provided and parsed successfully.");
 
-        try {
-            String company = parts[IDX_COMPANY].substring("company/".length()).trim();
-            String role = parts[IDX_ROLE].substring("role/".length()).trim();
-            Date deadline = DateFormatter.parse(parts[IDX_DEADLINE].substring("deadline/".length()).trim());
-            int pay = Integer.parseInt(parts[IDX_PAY].substring("pay/".length()).trim());
+        String company = parts[IDX_COMPANY].substring("company/".length()).trim();
+        String role = parts[IDX_ROLE].substring("role/".length()).trim();
+        String deadlineString = parts[IDX_DEADLINE].substring("deadline/".length()).trim();
+        String payString = parts[IDX_PAY].substring("pay/".length()).trim();
 
-            // throw exception on exceeding max length
-            if (company.length() > Ui.COMPANY_MAXLEN) {
-                logger.severe("Company name exceeded max length.");
-                throw InternityException.exceedFieldLength("Company", Ui.COMPANY_MAXLEN, company.length());
-            }
-            if (role.length() > Ui.ROLE_MAXLEN) {
-                logger.severe("Role exceeded max length.");
-                throw InternityException.exceedFieldLength("Role", Ui.ROLE_MAXLEN, role.length());
-            }
+        // throw exception if max length is exceeded
+        if (company.length() > Ui.COMPANY_MAXLEN) {
+            logger.severe("Company name exceeded max length.");
+            throw InternityException.exceedFieldLength("Company", Ui.COMPANY_MAXLEN, company.length());
+        }
+        if (role.length() > Ui.ROLE_MAXLEN) {
+            logger.severe("Role exceeded max length.");
+            throw InternityException.exceedFieldLength("Role", Ui.ROLE_MAXLEN, role.length());
+        }
 
-            // throw exception on empty input or invalid pay
-            if (company.isEmpty()) {
-                logger.severe("Company name is empty.");
-                throw InternityException.emptyField("Company");
-            }
-            if (role.isEmpty()) {
-                logger.severe("Role is empty.");
-                throw InternityException.emptyField("Role");
-            }
-            if (pay < 0) {
-                logger.severe("Pay is negative.");
-                throw InternityException.invalidPayFormat();
-            }
+        // throw exception if a field is empty
+        if (company.isEmpty()) {
+            logger.severe("Company name is empty.");
+            throw InternityException.emptyField("Company");
+        }
+        if (role.isEmpty()) {
+            logger.severe("Role is empty.");
+            throw InternityException.emptyField("Role");
+        }
+        if (deadlineString.isEmpty()) {
+            logger.severe("Deadline is empty.");
+            throw InternityException.emptyField("Deadline");
+        }
+        if (payString.isEmpty()) {
+            logger.severe("Pay is empty.");
+            throw InternityException.emptyField("Pay");
+        }
 
-            return new AddCommand(company, role, deadline, pay);
-        } catch (NumberFormatException e) {
+        logger.info("All 4 fields of AddCommand are not empty.");
+
+        Date deadline = DateFormatter.parse(deadlineString);
+        int pay = Integer.parseInt(payString);
+
+        // throw exception if pay is negative
+        if (pay < 0) {
+            logger.severe("Pay is negative.");
             throw InternityException.invalidPayFormat();
         }
+
+        logger.info("All 4 fields of AddCommand are validated.");
+        return new AddCommand(company, role, deadline, pay);
     }
 
     /**
@@ -295,7 +309,7 @@ public final class ArgumentParser {
      *
      * @param args arguments for {@link ListCommand}
      * @return an instance of ListCommand constructed from the parsed arguments.
-     *      Returns a default ListCommand if no arguments are provided.
+     * Returns a default ListCommand if no arguments are provided.
      * @throws InternityException if the arguments are missing or invalid.
      */
     public static ListCommand parseListCommandArgs(String args) throws InternityException {
