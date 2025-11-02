@@ -47,7 +47,7 @@ class InternityException {
     + InternityException(message: String)
 }
 
-note right of Storage
+note as NoteStorage
   File Format:
   Line 1: "Username (in line below):"
   Line 2: <username>
@@ -59,10 +59,12 @@ note right of Storage
   - Validates date, pay, and status
 end note
 
+Storage ..> NoteStorage
+
 Storage ..> Internship
 Storage ..> DateFormatter
 Storage ..> InternityException
-InternshipList "1" - "1" Storage : stores >
+InternshipList "1" - "1" Storage : uses >
 InternshipList --> "*" Internship
 
 @enduml

@@ -39,6 +39,7 @@ The **Architecture Diagram** below explains the high-level design of the Interni
 ![Architecture Diagram](diagrams/ArchitectureOverview.png)<br>
 
 The diagram below shows a simplified **Class Diagram** of all of Internity's classes and their relationships.
+<br>(Ui class omitted for simplification as most classes are dependent on it.)
 ![Internity Class Diagram](diagrams/InternityCD.png)
 
 #### Layers

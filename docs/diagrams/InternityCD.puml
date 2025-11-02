@@ -28,7 +28,6 @@ class Storage
 class Date
 
 ' === UI Layer ===
-class Ui
 class DashboardUi
 
 ' === Utilities ===
@@ -36,14 +35,13 @@ class DateFormatter
 
 ' === Relationships ===
 InternityManager --> CommandParser
-InternityManager --> InternshipList
-InternityManager --> Storage
-InternityManager --> Ui
+InternityManager ..> InternshipList
+InternityManager ..> Storage
 
-CommandParser --> CommandFactory
-CommandFactory --> ArgumentParser
-CommandFactory --> Command
-ArgumentParser --> Command
+CommandParser ..> CommandFactory
+CommandFactory ..> ArgumentParser
+CommandFactory ..> Command
+ArgumentParser ..> Command
 
 ' Command hierarchy
 Command <|-- AddCommand
@@ -57,20 +55,17 @@ Command <|-- HelpCommand
 Command <|-- ExitCommand
 
 ' All commands interact with InternshipList
-AddCommand --> InternshipList
-DeleteCommand --> InternshipList
-FindCommand --> InternshipList
-UpdateCommand --> InternshipList
-ListCommand --> InternshipList
-UsernameCommand --> InternshipList
-DashboardCommand --> InternshipList
-ExitCommand --> InternshipList
+AddCommand ..> InternshipList
+DeleteCommand ..> InternshipList
+FindCommand ..> InternshipList
+UpdateCommand ..> InternshipList
+ListCommand ..> InternshipList
+UsernameCommand ..> InternshipList
+DashboardCommand ..> InternshipList
+ExitCommand ..> InternshipList
 
 ' Dashboard uses DashboardUi
-DashboardCommand --> DashboardUi
-
-' Help uses Ui
-HelpCommand -up-> Ui
+DashboardCommand ..> DashboardUi
 
 ' force helpcommand to be there
 HelpCommand -left[hidden]-> ExitCommand
@@ -79,9 +74,10 @@ HelpCommand -left[hidden]-> ExitCommand
 InternshipList --> Storage
 InternshipList --> Internship
 Internship --> Date
-DashboardUi --> InternshipList
+DashboardUi ..> InternshipList
+DateFormatter ..> Date
 
 ' ArgumentParser uses DateFormatter
-ArgumentParser --> DateFormatter
+ArgumentParser ..> DateFormatter
 
 @enduml
