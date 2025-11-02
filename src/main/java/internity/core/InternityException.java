@@ -194,7 +194,7 @@ public class InternityException extends Exception {
      * @return an {@code InternityException} for an invalid username command format
      */
     public static InternityException invalidUsernameCommand() {
-        return new InternityException("Invalid username command.\nUsage: username USERNAME");
+        return new InternityException("Invalid username command.\nUsage: username NEW_USERNAME");
     }
 
     /**
