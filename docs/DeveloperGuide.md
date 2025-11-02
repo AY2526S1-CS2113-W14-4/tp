@@ -39,6 +39,7 @@ The **Architecture Diagram** below explains the high-level design of the Interni
 ![Architecture Diagram](diagrams/ArchitectureOverview.png)<br>
 
 The diagram below shows a simplified **Class Diagram** of all of Internity's classes and their relationships.
+<br>(Ui class omitted for simplification as most classes are dependent on it.)
 ![Internity Class Diagram](diagrams/InternityCD.png)
 
 #### Layers
@@ -265,12 +266,12 @@ The following sequence illustrates how the add command is processed from user in
 
 **Step 1.** The user launches the application and executes a command such as:
 ```
-add company/Google role/Software Engineer Intern deadline/17-09-2025 pay/7000
+add company/Google role/Software Engineer deadline/17-09-2025 pay/7000
 ```
 - Note that by default, the status is set to Pending when a new internship is added. Users may use the `update` command to change the status.  
 
 **Step 2.** The `CommandParser` splits the input into command word `"add"` and the argument string
-`"company/Google role/Software Engineer deadline/17-09-2025 pay/120000"`.
+`"company/Google role/Software Engineer deadline/17-09-2025 pay/7000"`.
 
 **Step 3.** The CommandFactory delegates parsing to `ArgumentParser.parseAddCommandArgs(args)`, which performs detailed extraction and validation of all fields.
 
@@ -328,19 +329,35 @@ If any stage fails, the method logs the issue and throws an `InternityException.
 
 ### Example Walkthrough
 
-| Step | Component      | Action                                                                                 |
-| ---- | -------------- |----------------------------------------------------------------------------------------|
-| 1    | User           | Inputs `add company/Google role/Software Engineer Intern deadline/17-09-2025 pay/7000` |
-| 2    | CommandParser  | Separates command and arguments                                                        |
-| 3    | ArgumentParser | Parses and validates all four fields                                                   |
-| 4    | AddCommand     | Creates `Internship` object and calls `InternshipList.add()`                           |
-| 5    | Ui             | Displays success message                                                               |
+| Step | Component      | Action                                                                                |
+| ---- | -------------- |---------------------------------------------------------------------------------------|
+| 1    | User           | Inputs `add company/Google role/Software Engineer deadline/17-09-2025 pay/7000` |
+| 2    | CommandParser  | Separates command and arguments                                                       |
+| 3    | ArgumentParser | Parses and validates all four fields                                                  |
+| 4    | AddCommand     | Creates `Internship` object and calls `InternshipList.add()`                          |
+| 5    | Ui             | Displays success message                                                              |
 
 The following sequence diagram illustrates the complete add operation flow:
 
 ![Add Command: Sequence Diagram](diagrams/AddCommandSD.png)
 
 #### Design considerations
+
+**Aspect: Inputting parameters by prefix**
+
+* **Alternative 1 (current choice):** Users provide prefix in words: `company/`, `role/`, `deadline/`, `pay/`
+    * Pros: Highly readable and self-explanatory for new users.
+    * Pros: Reduces ambiguity between parameters — each prefix clearly indicates its purpose.
+    * Pros: Consistent with other natural-language command formats in the application.
+    * Cons: Slightly longer to type compared to abbreviated prefixes.
+    * Cons: Parsing logic requires string comparisons with longer literals, adding minor verbosity.
+
+* **Alternative 2:** Users provide prefix in short form: `c/`, `r/`, `d/`, `p/`
+    * Pros: Faster for experienced users to type.
+    * Pros: Compact input format improves command-line efficiency.
+    * Cons: Less intuitive for beginners unfamiliar with shorthand notation.
+    * Cons: Higher likelihood of user input errors due to short and similar-looking prefixes.
+
 
 **Aspect: Status field**
 
@@ -355,20 +372,6 @@ The following sequence diagram illustrates the complete add operation flow:
     * Cons: Increases user effort for the common case of adding a pending internship. 
     * Cons: May cause confusion or errors if users are unfamiliar with valid status options.
 
-**Aspect: Inputting parameters by prefix**
-
-* **Alternative 1 (current choice):** Users provide prefix in words: `company/`, `role/`, `deadline/`, `pay/`
-    * Pros: Highly readable and self-explanatory for new users. 
-    * Pros: Reduces ambiguity between parameters — each prefix clearly indicates its purpose.
-    * Pros: Consistent with other natural-language command formats in the application.
-    * Cons: Slightly longer to type compared to abbreviated prefixes.
-    * Cons: Parsing logic requires string comparisons with longer literals, adding minor verbosity.
-
-* **Alternative 2:** Users provide prefix in short form: `c/`, `r/`, `d/`, `p/`
-    * Pros: Faster for experienced users to type.
-    * Pros: Compact input format improves command-line efficiency.
-    * Cons: Less intuitive for beginners unfamiliar with shorthand notation.
-    * Cons: Higher likelihood of user input errors due to short and similar-looking prefixes.
 
 **Aspect: Order of parameters**
 
@@ -385,6 +388,23 @@ The following sequence diagram illustrates the complete add operation flow:
     * Cons: Requires more complex parsing logic to detect and map prefixes dynamically.
     * Cons: Increases risk of malformed input if prefixes are missing or repeated.
     * Cons: Harder to maintain and debug due to variable argument positions.
+
+
+**Aspect: Allowing duplicate internship entries**
+
+Rationale:
+- Since users may apply to the same company for different positions or different application cycles, 
+allowing duplicates supports flexibility.
+- It aligns with the goal of Internity as a personal tracking tool rather than a strict database system.
+
+
+**Aspect: Allowing any deadline for internship entries**
+
+Rationale:
+- Users may want to record past, current, or future internship opportunities, 
+so restricting deadlines could reduce usability.
+- Flexibility in deadlines ensures that the system remains a personal organizational tool 
+rather than enforcing business rules that may not apply to all users.
 
 ---
 
@@ -444,7 +464,7 @@ Given below is an example usage scenario and how the update mechanism behaves at
   - On success, calls `Ui.printUpdateInternship()` to acknowledge the update.  
 
   ![Update Command Sequence Diagram](diagrams/UpdateCommandSD.png)
-  ![Update Command Class Diagram](diagrams/UpdateCommandCD.png)
+
 
 #### Error Handling
 - Invalid format for `update` arguments → `ArgumentParser.invalidUpdateFormat()`  
@@ -863,7 +883,7 @@ The load operation occurs once during application startup, before the user sees 
     * Company and role must not be empty.
     * Pay must be a valid non-negative integer.
     * Status must be a valid status value (Pending/Applied/Interview/Offer/Rejected).
-    * Deadline must be in DD-MM-YYYY format and represent a valid date.
+    * Deadline must be in dd-MM-yyyy format and represent a valid date.
   * If validation passes, create an `Internship` object and add it to the list.
   * If validation fails, print a warning message to stderr and skip the line (graceful degradation).
 
@@ -874,6 +894,12 @@ The load operation occurs once during application startup, before the user sees 
 The following sequence diagram illustrates the load operation:
 
 ![Storage Load Sequence Diagram](diagrams/StorageLoadSD.png)
+
+![Storage Load Sequence Diagram A](diagrams/StorageLoadSD_A.png)
+
+![Storage Load Sequence Diagram B](diagrams/StorageLoadSD_B.png)
+
+![Storage Load Sequence Diagram C](diagrams/StorageLoadSD_C.png)
 
 The load sequence diagram demonstrates the robust error-handling approach: corrupted lines are skipped with warnings rather than causing the entire load operation to fail. This design choice prioritizes availability over strict consistency, ensuring users can still access their valid data even if some entries are corrupted.
 

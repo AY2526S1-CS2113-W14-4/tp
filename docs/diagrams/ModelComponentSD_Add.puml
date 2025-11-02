@@ -4,13 +4,12 @@ title Model Component - Sequence Diagram (Adding a new Internship)
 ' Shows interactions between Logic, Model, InternshipList, Internship, Date and Status
 ' Additional abstract components: Logic (parses commands) and Storage (persists data)
 '
-participant Logic as "Logic"
+participant Logic as ":AddCommand"
 
 
 box Model
 participant InternshipList as "<<class>>\nInternshipList"
 participant Internship as ":Internship"
-participant Date as "Date"
 endbox
 
 ' --- Scenario 1: Adding a new internship ---
@@ -23,18 +22,16 @@ create Internship
 InternshipList -> Internship: new Internship(...)
 activate Internship
 ' Internship object parses and stores a Date and Status internally
-create Date
-Internship -> Date: parse(deadline) : Date
-activate Date
-Date --> Internship: (created)
-deactivate Date
 
-Internship -> Internship : set Status to Pending
+
+
+
+Internship -> Internship : setStatus("Pending")
 activate Internship
 Internship --> Internship
 deactivate Internship
 ' Construction returns the Internship instance to InternshipList
-Internship --> InternshipList: (created)
+Internship --> InternshipList
 deactivate Internship
 
 ' InternshipList appends to internal collection

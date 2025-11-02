@@ -1,20 +1,17 @@
 @startuml
 title Find Command - Sequence Diagram
 
-participant Logic
+participant ":InternityManager" as Logic
 participant ":FindCommand" as FC
 participant "<<class>>\nInternshipList" as IL
 participant ":Internship" as IN
 participant "<<class>>\nUi" as Ui
 
-Logic -> FC**: new FindCommand(...)
-activate FC
-return (created)
 
-Logic -> FC: execute()
+Logic -> FC: execute
 activate FC
 
-FC -> IL: findInternship(...)
+FC -> IL: find internship by company\nor role keyword
 activate IL
 
 loop for each internship in list
