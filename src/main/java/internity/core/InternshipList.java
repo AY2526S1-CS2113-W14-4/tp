@@ -224,7 +224,7 @@ public class InternshipList {
      *
      * @param keyword the search keyword to look for within the company or role fields
      */
-    public static void findInternship(String keyword){
+    public static void findInternship(String keyword) {
         // Store matching internships and their original indices
         ArrayList<Integer> matchingIndices = new ArrayList<>();
         ArrayList<Internship> matchingInternships = new ArrayList<>();
@@ -233,7 +233,7 @@ public class InternshipList {
         for (int i = 0; i < internshipList.size(); i++) {
             Internship thisInternship = internshipList.get(i);
             if (thisInternship.getCompany().toLowerCase().contains(keyword.toLowerCase()) ||
-                    thisInternship.getRole().toLowerCase().contains(keyword.toLowerCase())){
+                    thisInternship.getRole().toLowerCase().contains(keyword.toLowerCase())) {
                 matchingIndices.add(i);
                 matchingInternships.add(thisInternship);
             }
@@ -295,7 +295,7 @@ public class InternshipList {
         }
 
         // if no internships have future deadlines, get the nearest past deadline
-        if (nearest == null){
+        if (nearest == null) {
             LOGGER.fine("No internships with valid future deadlines found.");
             LOGGER.info("Finding past nearest deadline.");
 
