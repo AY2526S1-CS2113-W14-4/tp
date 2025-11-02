@@ -7,7 +7,12 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
+import java.nio.file.AtomicMoveNotSupportedException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -178,6 +183,16 @@ public class Storage {
             return "Warning: Skipped line with empty company or role: " + line;
         }
 
+        // Validate company and role contain only ASCII characters
+        if (!isAsciiOnly(company)) {
+            logger.warning("Company contains non-ASCII characters in line: " + line);
+            return "Warning: Skipped line with non-ASCII characters in company name: " + line;
+        }
+        if (!isAsciiOnly(role)) {
+            logger.warning("Role contains non-ASCII characters in line: " + line);
+            return "Warning: Skipped line with non-ASCII characters in role: " + line;
+        }
+
         // Validate company and role length does not exceed limits
         if (company.length() > Ui.COMPANY_MAXLEN) {
             logger.warning("Company name too long in line: " + line);
@@ -276,7 +291,7 @@ public class Storage {
             } catch (AtomicMoveNotSupportedException e) {
                 // Fallback: non-atomic move (still safer than direct write)
                 logger.warning("Atomic move not supported, using regular move");
-            Files.move(tempFile, filePath, StandardCopyOption.REPLACE_EXISTING);
+                Files.move(tempFile, filePath, StandardCopyOption.REPLACE_EXISTING);
             }
 
             logger.info("Successfully saved " + internships.size() + " internships");
@@ -284,6 +299,26 @@ public class Storage {
             logger.severe("Failed to save internships to " + filePath + ": " + e.getMessage());
             throw new InternityException("Could not save internships: " + e.getMessage());
         }
+    }
+
+    /**
+     * Checks if a string contains only printable ASCII characters (32-126).
+     * This prevents malicious non-ASCII and control characters from being stored.
+     *
+     * @param str The string to check.
+     * @return true if the string contains only printable ASCII characters, false otherwise.
+     */
+    private boolean isAsciiOnly(String str) {
+        if (str == null) {
+            return false;
+        }
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c < 32 || c > 126) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**

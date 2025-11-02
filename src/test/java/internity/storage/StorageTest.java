@@ -856,4 +856,38 @@ class StorageTest {
         assertEquals("Meta", loaded.get(0).getCompany());
         assertEquals("Amazon", loaded.get(1).getCompany());
     }
+
+    @Test
+    void load_nonAsciiCompany_skipsLine() throws InternityException, IOException {
+        String content = "Username (in line below):\n"
+                + "TestUser\n"
+                + "Google | SWE | 15-03-2025 | 6000 | Pending\n"
+                + "Méta | Data Scientist | 20-04-2025 | 7000 | Accepted\n"  // Non-ASCII 'é' in company
+                + "Amazon | DevOps | 01-05-2025 | 5500 | Rejected\n";
+        Files.writeString(Path.of(testFilePath), content);
+
+        ArrayList<Internship> internships = storage.load();
+
+        assertEquals(2, internships.size());
+        assertEquals("Google", internships.get(0).getCompany());
+        assertEquals("Amazon", internships.get(1).getCompany());
+        assertTrue(errContent.toString().contains("Warning: Skipped line with non-ASCII characters in company name"));
+    }
+
+    @Test
+    void load_nonAsciiRole_skipsLine() throws InternityException, IOException {
+        String content = "Username (in line below):\n"
+                + "TestUser\n"
+                + "Google | SWE | 15-03-2025 | 6000 | Pending\n"
+                + "Meta | Data Scientïst | 20-04-2025 | 7000 | Accepted\n"  // Non-ASCII 'ï' in role
+                + "Amazon | DevOps | 01-05-2025 | 5500 | Rejected\n";
+        Files.writeString(Path.of(testFilePath), content);
+
+        ArrayList<Internship> internships = storage.load();
+
+        assertEquals(2, internships.size());
+        assertEquals("Google", internships.get(0).getCompany());
+        assertEquals("Amazon", internships.get(1).getCompany());
+        assertTrue(errContent.toString().contains("Warning: Skipped line with non-ASCII characters in role"));
+    }
 }
