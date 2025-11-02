@@ -20,10 +20,10 @@ class Ui
 abstract class Command
 
 InternityManager --> CommandParser : uses >
-InternityManager --> InternshipList : manages data >
-InternityManager --> Storage : initializes >
-InternityManager --> Ui : prints messages >
-CommandParser --> Command : returns >
-InternshipList --> Storage : uses >
+InternityManager ..> InternshipList
+InternityManager ..> Storage
+InternshipList ..> Ui
+CommandParser ..> Command
+InternshipList --> Storage : loads\nand\nsaves >
 
 @enduml

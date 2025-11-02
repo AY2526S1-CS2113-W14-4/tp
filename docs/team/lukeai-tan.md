@@ -69,7 +69,6 @@ code reuse.
       - [UI Component Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/UIComponentOverview.png)
       - [Logic Component Class Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/LogicComponentCD.png)
       - [Logic Component Sequence Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/LogicComponentSD.png)
-      - [Storage Load Sequence Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/StorageLoadSD.png)
       - [Storage Load Sequence Diagram A](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/StorageLoadSD_A.png)
       - [Storage Load Sequence Diagram B](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/StorageLoadSD_B.png)
       - [Storage Load Sequence Diagram C](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/StorageLoadSD_C.png)
@@ -77,7 +76,7 @@ code reuse.
       - [UsernameCommand Sequence Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/UsernameCommandSD.png)
     - Added details of product scope, user stories and non-functional requirements.
     - Added manual testing details for `add`, `list`, `find`, `dashboard`, `username`, save data features.
-    - Fixed 19 User/Developer Guide documentation issues from PE-D (PR [#175](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/175))
+    - Fixed 19 User/Developer Guide documentation bugs from PE-D (PR [#175](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/175))
 
 ### Community
 - PRs reviewed (with non-trivial review comments):

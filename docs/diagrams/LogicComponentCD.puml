@@ -70,10 +70,10 @@ class HelpCommand
     + isExit(): boolean
 }
 
-CommandParser --> CommandFactory : uses >
-CommandFactory --> ArgumentParser : delegates parsing >
-CommandFactory --> Command : creates >
-ArgumentParser --> Command : creates >
+CommandParser ..> CommandFactory
+CommandFactory ..> ArgumentParser
+CommandFactory ..> Command
+ArgumentParser ..> Command
 Command <|-- AddCommand
 Command <|-- DeleteCommand
 Command <|-- FindCommand

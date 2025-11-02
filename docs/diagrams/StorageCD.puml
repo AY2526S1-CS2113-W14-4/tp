@@ -11,7 +11,6 @@ class Storage {
 }
 
 class InternshipList {
-    - {static} storage: Storage
     - {static} username: String
     __
     + {static} setStorage(storageInstance: Storage): void
@@ -60,10 +59,10 @@ note right of Storage
   - Validates date, pay, and status
 end note
 
-Storage "1" - "*" Internship : loads/saves >
-Storage ..> DateFormatter : uses >
-Storage ..> InternityException : throws >
-InternshipList "1" - "1" Storage : uses >
+Storage ..> Internship
+Storage ..> DateFormatter
+Storage ..> InternityException
+InternshipList "1" - "1" Storage : stores >
 InternshipList --> "*" Internship
 
 @enduml
