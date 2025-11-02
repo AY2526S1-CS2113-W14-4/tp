@@ -44,6 +44,8 @@ public class Storage {
     private static final int IDX_STATUS = 4;
     private static final int LEN_REQUIRED_FIELDS = 5;
 
+    private static final String PIPE_URL_ENCODED = "%7C";
+
     private final Path filePath;
 
     /**
@@ -158,6 +160,7 @@ public class Storage {
     /**
      * Parses and validates all fields of an internship entry from storage.
      * This centralizes all parsing and validation logic for clarity and maintainability.
+     * URL-encoded pipe characters (%7C) are decoded back to | in company and role.
      *
      * Validation rules:
      * - Company and role must not be empty
@@ -173,8 +176,8 @@ public class Storage {
      * @return Error message if parsing/validation failed, null if successful.
      */
     private String parseAndValidateFields(String[] parts, String line, ArrayList<Internship> internships) {
-        String company = parts[IDX_COMPANY].replace("%7C", "|");
-        String role = parts[IDX_ROLE].replace("%7C", "|");
+        String company = parts[IDX_COMPANY].replace(PIPE_URL_ENCODED, "|");
+        String role = parts[IDX_ROLE].replace(PIPE_URL_ENCODED, "|");
         String deadlineStr = parts[IDX_DEADLINE];
 
         // Validate non-empty company and role
@@ -323,6 +326,7 @@ public class Storage {
 
     /**
      * Formats an internship for storage in the file.
+     * Pipe characters in company and role are URL-encoded to prevent delimiter conflicts.
      *
      * @param internship The internship to format.
      * @return A pipe-delimited string representation of the internship.
@@ -334,11 +338,11 @@ public class Storage {
         assert internship.getDeadline() != null : "Deadline cannot be null";
         assert internship.getStatus() != null : "Status cannot be null";
 
-        String escapedCompany = internship.getCompany().replace("|", "%7C");
-        String escapedRole = internship.getRole().replace("|", "%7C");
+        String encodedCompany = internship.getCompany().replace("|", PIPE_URL_ENCODED);
+        String encodedRole = internship.getRole().replace("|", PIPE_URL_ENCODED);
 
-        return escapedCompany + " | "
-                + escapedRole + " | "
+        return encodedCompany + " | "
+                + encodedRole + " | "
                 + internship.getDeadline().toString() + " | "
                 + internship.getPay() + " | "
                 + internship.getStatus();
