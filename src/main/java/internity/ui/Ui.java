@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public class Ui {
     public static final int INDEX_MAXLEN = 5;
-    public static final int COMPANY_MAXLEN = 15;
+    public static final int COMPANY_MAXLEN = 30;
     public static final int ROLE_MAXLEN = 30;
     public static final int DEADLINE_MAXLEN = 15;
     public static final int PAY_MAXLEN = 10;
@@ -27,7 +27,7 @@ public class Ui {
 
     /** Horizontal line used to visually separate sections in the console output. */
     static final String LINE = "____________________________________________________" +
-            "__________________________________________\n";
+            "_________________________________________________________\n";
 
     /**
      * Prints a horizontal divider line to the console.
