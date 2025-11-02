@@ -14,7 +14,7 @@ import java.util.ArrayList;
  */
 public class Ui {
     public static final int INDEX_MAXLEN = 5;
-    public static final int COMPANY_MAXLEN = 15;
+    public static final int COMPANY_MAXLEN = 30;
     public static final int ROLE_MAXLEN = 30;
     public static final int DEADLINE_MAXLEN = 15;
     public static final int PAY_MAXLEN = 10;
@@ -27,7 +27,7 @@ public class Ui {
 
     /** Horizontal line used to visually separate sections in the console output. */
     static final String LINE = "____________________________________________________" +
-            "__________________________________________\n";
+            "_________________________________________________________\n";
 
     /**
      * Prints a horizontal divider line to the console.
@@ -75,16 +75,17 @@ public class Ui {
      * {@link Internship#toString()} method of the given {@code Internship} object.
      * </p>
      *
-     * @param internship the internship that was added
+     * @param internshipInfo details of the internship that was added
      */
-    public static void printAddInternship(Internship internship) {
-        System.out.println("Noted. I've added this internship:");
-        System.out.println(internship.toString());
+    public static void printAddInternship(String internshipInfo, int totalItems) {
+        System.out.println("Added this internship:");
+        System.out.println(internshipInfo);
+        System.out.println("Now you have " + totalItems + " internship(s) in the list.");
     }
 
-    public static void printRemoveInternship(String item, int totalItems) {
-        System.out.println("Noted. I've removed this internship:");
-        System.out.println("  " + item);
+    public static void printRemoveInternship(String internshipInfo, int totalItems) {
+        System.out.println("Removed this internship:");
+        System.out.println(internshipInfo);
         System.out.println("Now you have " + totalItems + " internship(s) in the list.");
     }
 
@@ -187,6 +188,6 @@ public class Ui {
 
                 For verbose instructions, refer to the user guide.
                 """;
-        System.out.println(commandList);
+        System.out.print(commandList);
     }
 }
