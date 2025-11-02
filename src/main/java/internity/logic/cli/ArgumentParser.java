@@ -92,14 +92,14 @@ public final class ArgumentParser {
      * @param args the raw user input string containing the add command arguments
      * @return a new {@link AddCommand} instance with parsed and validated values
      * @throws InternityException if:
-     *     <ul>
-     *         <li>The argument string is null or blank.</li>
-     *         <li>The number of fields is not exactly four.</li>
-     *         <li>Any field is missing, empty, or appears out of order.</li>
-     *         <li>Any text field exceeds its maximum allowed length.</li>
-     *         <li>The pay amount is negative or non-numeric.</li>
-     *         <li>The deadline cannot be parsed into a valid {@link Date}.</li>
-     *     </ul>
+     *                            <ul>
+     *                                <li>The argument string is null or blank.</li>
+     *                                <li>The number of fields is not exactly four.</li>
+     *                                <li>Any field is missing, empty, or appears out of order.</li>
+     *                                <li>Any text field exceeds its maximum allowed length.</li>
+     *                                <li>The pay amount is negative or non-numeric.</li>
+     *                                <li>The deadline cannot be parsed into a valid {@link Date}.</li>
+     *                            </ul>
      */
     public static AddCommand parseAddCommandArgs(String args) throws InternityException {
         if (args == null || args.isBlank()) {
@@ -173,11 +173,11 @@ public final class ArgumentParser {
         Date deadline = DateFormatter.parse(deadlineString);
         int pay;
 
-        // throw exception if pay is not an integer.
+        // throw exception if pay is not an integer or exceeds Integer.MAX_VALUE
         try {
             pay = Integer.parseInt(payString);
         } catch (NumberFormatException e) {
-            logger.severe("Pay is not an integer.");
+            logger.severe("Pay is not an integer or exceeds Integer.MAX_VALUE.");
             throw InternityException.invalidPayFormat();
         }
 
@@ -317,7 +317,7 @@ public final class ArgumentParser {
      *
      * @param args arguments for {@link ListCommand}
      * @return an instance of ListCommand constructed from the parsed arguments.
-     *      Returns a default ListCommand if no arguments are provided.
+     * Returns a default ListCommand if no arguments are provided.
      * @throws InternityException if the arguments are missing or invalid.
      */
     public static ListCommand parseListCommandArgs(String args) throws InternityException {
@@ -365,7 +365,7 @@ public final class ArgumentParser {
         }
         String indexToken = trimmed.substring(0, firstSpace).trim();
         String tagged = trimmed.substring(firstSpace + 1).trim();
-        return new String[]{indexToken, tagged};
+        return new String[] {indexToken, tagged};
     }
 
     private static int parseOneBasedIndex(String indexToken) throws InternityException {

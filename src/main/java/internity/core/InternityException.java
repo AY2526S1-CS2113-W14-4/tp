@@ -175,7 +175,7 @@ public class InternityException extends Exception {
      * @return an {@code InternityException} for an invalid pay format
      */
     public static InternityException invalidPayFormat() {
-        return new InternityException("Invalid pay. Must be a non-negative integer. (Example: pay/8000)");
+        return new InternityException("Invalid pay. Must be a non-negative integer and within the allowed range. (Example: pay/8000)");
     }
 
     /**

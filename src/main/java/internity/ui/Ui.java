@@ -75,11 +75,11 @@ public class Ui {
      * {@link Internship#toString()} method of the given {@code Internship} object.
      * </p>
      *
-     * @param internship the internship that was added
+     * @param internshipInfo details of the internship that was added
      */
-    public static void printAddInternship(Internship internship, int totalItems) {
+    public static void printAddInternship(String internshipInfo, int totalItems) {
         System.out.println("Added this internship:");
-        System.out.println(internship.toString());
+        System.out.println(internshipInfo);
         System.out.println("Now you have " + totalItems + " internship(s) in the list.");
     }
 
