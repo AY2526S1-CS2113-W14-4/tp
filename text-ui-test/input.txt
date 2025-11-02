@@ -10,6 +10,7 @@ add company/Meta role/Full Stack Engineer deadline/01-01-2090 pay/10000
 list
 add company/Speedwagon Foundation role/Researcher deadline/99-99-2030 pay/100
 list
+add company/Singapore Airlines role/Flight Operations deadline/09-12-2025 pay/3000
 add company/ role/ deadline/ pay/
 list
 add company/role/deadline/pay

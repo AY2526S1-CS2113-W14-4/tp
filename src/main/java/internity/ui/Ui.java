@@ -77,14 +77,15 @@ public class Ui {
      *
      * @param internship the internship that was added
      */
-    public static void printAddInternship(Internship internship) {
+    public static void printAddInternship(Internship internship, int totalItems) {
         System.out.println("Added this internship:");
         System.out.println(internship.toString());
+        System.out.println("Now you have " + totalItems + " internship(s) in the list.");
     }
 
-    public static void printRemoveInternship(String item, int totalItems) {
-        System.out.println("Removed this internship::");
-        System.out.println("  " + item);
+    public static void printRemoveInternship(String internshipInfo, int totalItems) {
+        System.out.println("Removed this internship:");
+        System.out.println(internshipInfo);
         System.out.println("Now you have " + totalItems + " internship(s) in the list.");
     }
 

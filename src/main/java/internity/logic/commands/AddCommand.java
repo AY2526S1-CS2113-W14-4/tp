@@ -62,7 +62,7 @@ public class AddCommand extends Command {
         logger.info("Executing add command");
         Internship internship = new Internship(company, role, deadline, pay);
         InternshipList.add(internship);
-        Ui.printAddInternship(internship);
+        Ui.printAddInternship(internship, InternshipList.size());
         logger.info("Add command executed successfully.");
     }
 
