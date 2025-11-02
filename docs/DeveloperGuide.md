@@ -772,12 +772,16 @@ the username, total internships, status overview and nearest deadline.
 3. Inside `DashboardUi.printDashboard()`, the following occurs:
    - User display: Prints the current username using `InternshipList.getUsername()`.
    - Internship count: Fetches and displays total internships via `InternshipList.size()`.
-   - Nearest deadline: Iterates through internships to find the one with the earliest `Date`.
+   - Nearest deadline: Gets the upcoming internship with the nearest deadline using `InternshipList.getNearestDeadline()`.
+     - Case 1: If internship with future (at least today) upcoming deadline exist, displays the internship details.
+     - Case 2: If no such internships exist, it displays the details of internship with the most recent past deadline and marks it as <code>(OVERDUE!)</code>.
    - Status overview: Aggregates internship statuses into categories (Pending, Applied, etc.) and displays a summary.
 4. If no internships exist, a meaningful fallback message is shown (e.g. "No internships found.").
 
 #### Design Considerations
-1. Separation of concerns: `DashboardCommand` delegates all display logic to `DashboardUi`.
+1. Separation of concerns:
+   - `DashboardCommand` delegates all display logic to `DashboardUi`.
+   - `DashboardUI` delegates all data retrieval logic to `InternshipList`.
 2. Read-only operation: The dashboard performs only data retrieval, ensuring no side effects.
 3. Extensibility: The `DashboardUi` class can easily be expanded to include additional statistics in the future.
 
