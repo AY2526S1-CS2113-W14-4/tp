@@ -78,11 +78,14 @@ public class CommandParser {
      * @throws InternityException if the input contains non-printable ASCII characters
      */
     public void validateValidAscii(String input) throws InternityException {
-        for (char c : input.toCharArray()) {
-            if (c < 32 || c > 126) { // non-printable ASCII or Unicode
-                logger.warning("Input contains invalid character: " + c);
-                throw InternityException.invalidCharacter(c);
+        int[] codePoints = input.codePoints().toArray();
+        for (int cp : codePoints) {
+            if (cp < 32 || cp > 126) { // Only printable ASCII
+                String invalidChar = new String(Character.toChars(cp));
+                logger.warning("Input contains invalid character: " + invalidChar);
+                throw new InternityException("Invalid character detected: '" + invalidChar + "'");
             }
         }
     }
+
 }
