@@ -88,6 +88,26 @@ class DashboardUiTest {
     }
 
     @Test
+    void printDashboard_multipleInternshipsWithSameDeadline_printsExpectedInfo() throws InternityException {
+        InternshipList.clear();
+        Date date1 = new Date(1, 1, 2024);
+        Date date2 = new Date(1, 1, 2012);
+        InternshipList.add(new Internship("Google", "Coffee Intern", date2, 8000));
+        InternshipList.add(new Internship("Google", "SWE", date1, 8000));
+        InternshipList.add(new Internship("Microsoft", "Intern", date1, 5000));
+        InternshipList.add(new Internship("Netflix", "Ops Intern", date1, 9000));
+
+        DashboardUi.printDashboard();
+
+        String output = outContent.toString();
+
+        assertTrue(output.contains("User: TestUser"), "Should print username");
+        assertTrue(output.contains("Nearest Deadline:")
+                && output.contains("01-01-2024"), "Should show the nearest deadline");
+        assertTrue(output.contains("Found 2 other"), "Should show count of internships with same nearest deadline");
+    }
+
+    @Test
     void printDashboard_noInternships_printsNoInternshipsMessage() throws InternityException {
         InternshipList.clear();
         outContent.reset();
