@@ -14,7 +14,6 @@ like a dashboard overview for quick insights and data persistence between sessio
 [RepoSense link](https://nus-cs2113-ay2526s1.github.io/tp-dashboard/?search=&sort=groupTitle&sortWithin=title&timeframe=commit&mergegroup=&groupSelect=groupByRepos&breakdown=true&checkedFileTypes=docs~functional-code~test-code~other&since=2025-09-19T00%3A00%3A00&filteredFileName=&tabOpen=true&tabType=authorship&tabAuthor=BestBearrr&tabRepo=AY2526S1-CS2113-W14-4%2Ftp%5Bmaster%5D&authorshipIsMergeGroup=false&authorshipFileTypes=docs~functional-code~test-code&authorshipIsBinaryFileTypeChecked=false&authorshipIsIgnoredFilesChecked=false)
 
 #### AddCommand
-
 * Implemented the AddCommand feature, enabling users to record new internship entries with details such as company, role, deadline, and pay.
 * Designed the command to integrate seamlessly with the ArgumentParser, ensuring robust validation and structured parsing.
 * Added logic in AddCommand.execute() to instantiate a new Internship object and update the global static InternshipList.
@@ -22,7 +21,6 @@ like a dashboard overview for quick insights and data persistence between sessio
 * Implemented comprehensive validation for empty fields, negative pay, and exceeded character limits.
 
 #### FindCommand
-
 * Implemented FindCommand, which filters internships by matching user keywords against both company and role fields.
 * Designed case-insensitive substring matching for more intuitive search results.
 * Integrated with the ArgumentParser to handle and validate keyword input.
@@ -30,7 +28,6 @@ like a dashboard overview for quick insights and data persistence between sessio
 * Optimised command behavior to handle empty and invalid inputs gracefully using centralized exception handling.
 
 #### ArgumentParser
-
 * Designed and implemented parsing logic for both add and find commands.
 * For AddCommand:
     * Developed a structured parsing mechanism that enforces strict input format (company/, role/, deadline/, pay/).
@@ -62,18 +59,22 @@ Wrote unit tests for AddCommand and FindCommand to ensure code correctness and r
 ### Documentation
 * User Guide:
   * Added documentation for the `add` and `find` features and FAQs
-  * Improved clarity to enhance user understanding.
+  * Improved clarity to enhance user understanding
 * Developer Guide
-  * Added implementation details for the `add` and `find` features
+  * Added implementation details for the `add`, `find` and `help` features
   * Described sequence of operations, logic for parsing arguments, as well as design considerations
-  * Added and documented new UML Diagrams to improve the technical clarity of the model layer:
+  * Added and documented new UML Diagrams to improve the technical clarity of the model layer and features:
+    * Model Component Object Diagram 
     * AddCommand Sequence Diagram
     * FindCommand Sequence Diagram
+    * HelpCommand Sequence Diagram
+  * Updated instructions for manual testing
 
 ### Community
 
 #### Contribution to Team
-- Reviewed PRs by teammates.
+- PRs reviewed (with non-trivial review comments):
+[#38](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/38),
 - Collaborated closely with team members to design and refine command features, ensuring consistency across all implementations.
 - Helped maintain consistent coding standards across the team by suggesting improvements to naming conventions and code structure.
 - Contributed to sprint planning discussions, helping prioritise tasks and define achievable milestones.
