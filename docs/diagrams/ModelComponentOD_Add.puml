@@ -27,7 +27,7 @@ object "<u>deadline:Date</u>" as deadline {
 ' Relationships
 AddCommand ..> Internship
 AddCommand --> deadline
-InternshipList *-- Internship : contains >
+InternshipList *-- Internship
 Internship --> deadline : due by >
 
 ' Note
@@ -36,6 +36,5 @@ note as n1
   one Internship object created
   by AddCommand.
 end note
-
 
 @enduml
