@@ -78,7 +78,7 @@ September 2025, and a monthly salary of $6000.
 <li>No duplicate field is allowed, so input exactly <b>ONE</b> of each field.</li>
 <li>By default, when an internship is added, the status is set to Pending. Use the update command to change the status.</li>
 <li>All indexes are in 1-indexed format.</li>
-<li>Field character limits: <code>COMPANY_NAME<</code> ≤ 30 characters, <code>ROLE_NAME</code> ≤ 30 characters.</li>
+<li>Field character limits: <code>COMPANY_NAME</code> ≤ 30 characters, <code>ROLE_NAME</code> ≤ 30 characters.</li>
 <li><code>COMPANY_NAME</code> and <code>ROLE_NAME</code> must be alphanumerical.</li>
 <li><code>DEADLINE</code> must be in <code>dd-MM-yyyy</code> format. Any valid past, present or future deadline can be added. </li>
 <li><code>PAY_AMOUNT</code> must be a non-negative integer within Java's 32-bit signed integer range (maximum 2,147,483,647).</li>
