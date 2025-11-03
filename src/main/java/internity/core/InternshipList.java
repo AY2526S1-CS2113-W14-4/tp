@@ -276,21 +276,43 @@ public class InternshipList {
      * @return the internship with the nearest upcoming deadline
      * @throws InternityException if an error occurs while accessing internship data
      */
-    public static Internship findNearestDeadlineInternship() throws InternityException {
+    public static ArrayList<Internship> findNearestDeadlineInternship() throws InternityException {
         LOGGER.info("Finding internship with nearest deadline.");
         assert InternshipList.size() > 0 : "Cannot find nearest deadline in empty list";
+        ArrayList<Internship> result = new ArrayList<>();
         Internship nearest = null;
+        // value of pay is no. of internships with same deadline as nearest
+        Internship countSameDeadlineInternship = new Internship(
+                "Count", "count", new Date(1, 1,1970),
+                0);
+
+        // check if this internship has the nearest deadline (at least as near as the current nearest)
+        boolean isNearestDeadline;
+        //  check if the deadline is in the future (including today)
+        boolean isDeadlineInFuture;
+        // check if the deadline is the same as the current nearest deadline
+        boolean isSameDeadline;
+        // no. of internships with same deadline as nearest
+        int countSameDeadline = 0;
 
         // get the internship with the nearest deadline that is in the future
         for (int i = 0; i < InternshipList.size(); i++) {
             Internship internship = InternshipList.get(i);
 
-            boolean isNearestDeadline = (nearest == null)
-                    || (internship.getDeadline().compareTo(nearest.getDeadline()) < 0);
-            boolean isDeadlineInFuture = (Date.getToday().compareTo(internship.getDeadline()) <= 0);
+            isNearestDeadline = (nearest == null)
+                    || (internship.getDeadline().compareTo(nearest.getDeadline()) <= 0);
+            isDeadlineInFuture = (Date.getToday().compareTo(internship.getDeadline()) <= 0);
 
             if (isNearestDeadline && isDeadlineInFuture) {
-                nearest = internship;
+                isSameDeadline = (nearest != null)
+                        && (internship.getDeadline().compareTo(nearest.getDeadline()) == 0);
+
+                if (isSameDeadline) {
+                    countSameDeadline += 1;
+                } else{
+                    nearest = internship;
+                    countSameDeadline = 0;
+                }
             }
         }
 
@@ -302,16 +324,30 @@ public class InternshipList {
             for (int i = 0; i < InternshipList.size(); i++) {
                 Internship internship = InternshipList.get(i);
 
-                boolean isNearestDeadline = (nearest == null)
+                isNearestDeadline = (nearest == null)
                         || (internship.getDeadline().compareTo(nearest.getDeadline()) > 0);
 
                 if (isNearestDeadline) {
-                    nearest = internship;
+                    isSameDeadline = (nearest != null)
+                            && (internship.getDeadline().compareTo(nearest.getDeadline()) == 0);
+
+                    if (isSameDeadline) {
+                        countSameDeadline += 1;
+                    } else{
+                        nearest = internship;
+                        countSameDeadline = 0;
+                    }
                 }
             }
         }
 
         LOGGER.fine("Found nearest deadline internship: " + nearest);
-        return nearest;
+        LOGGER.fine("Found occurence of nearest deadline: " + countSameDeadline);
+
+        countSameDeadlineInternship.setPay(countSameDeadline);
+        result.add(nearest);
+        result.add(countSameDeadlineInternship);
+
+        return result;
     }
 }

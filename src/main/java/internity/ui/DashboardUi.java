@@ -1,5 +1,6 @@
 package internity.ui;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import internity.core.InternshipList;
  */
 public class DashboardUi {
     private static final Logger logger = Logger.getLogger(DashboardUi.class.getName());
+    private static final String INDENT = "  ";
 
     /**
      * Prints the complete dashboard to the console.
@@ -106,7 +108,7 @@ public class DashboardUi {
 
         System.out.println("\nStatus Overview:");
         for (String status : statusOrder) {
-            System.out.printf("  %-15s : %d%n", status, statusCount.get(status));
+            System.out.printf("%s%-15s : %d%n", INDENT, status, statusCount.get(status));
         }
         logger.fine("Status overview printed");
     }
@@ -124,20 +126,25 @@ public class DashboardUi {
             return;
         }
 
-        Internship nearest = InternshipList.findNearestDeadlineInternship();
+        ArrayList<Internship> nearestResult = InternshipList.findNearestDeadlineInternship();
+        Internship nearest = nearestResult.get(0);
+        int countNearest = nearestResult.get(1).getPay(); // Using pay field to store count of nearest deadlines
+
         if (nearest == null) {
             System.out.println("\nNearest Deadline: No valid deadlines found.");
             return;
         }
 
+        boolean isDeadlineInPast = nearest.getDeadline().compareTo(internity.core.Date.getToday()) < 0;
+
         System.out.println("\nNearest Deadline:");
-        System.out.printf("  %s | %s @ %s",
+        System.out.printf("  %s | %s @ %s %s%n",
                 nearest.getDeadline().toString(),
                 nearest.getRole(),
-                nearest.getCompany());
-        boolean isDeadlineInPast = nearest.getDeadline().compareTo(internity.core.Date.getToday()) < 0;
-        if (isDeadlineInPast) {
-            System.out.println(" (OVERDUE!)");
+                nearest.getCompany(),
+                (isDeadlineInPast)? "(OVERDUE!)" : "");
+        if (countNearest > 0){
+            System.out.printf(INDENT + "(Found %d other internship(s) with the same deadline)%n", countNearest);
         }
 
         logger.fine("Nearest deadline displayed: " + nearest);
