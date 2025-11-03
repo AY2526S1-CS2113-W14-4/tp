@@ -66,7 +66,7 @@ code reuse.
       - [Architecture Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/ArchitectureOverview.png)
       - [Internity Class Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/InternityCD.png)
       - [User Interaction Sequence Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/UserInteractionSD.png)
-      - [UI Component Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/UIComponentOverview.png)
+      - [UI Component Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/UiComponentOverview.png)
       - [Logic Component Class Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/LogicComponentCD.png)
       - [Logic Component Sequence Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/LogicComponentSD.png)
       - [DashboardCommand Sequence Diagram](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/docs/diagrams/DashboardCommandSD.png)

@@ -191,7 +191,7 @@ The class diagram above shows the main classes involved in manipulating `Interns
 * InternshipList is a class that manages a static ArrayList of Internship objects. It provides methods to add, delete, find, list, retrieve, sort and update internships.
 * Internship represents a single internship application with the attributes company, role, deadline, pay and status.
 * Date encapsulates date-related functionality, including parsing and formatting dates in dd-MM-yyyy format.
-* Status is an enum representing the possible statuses of an internship application (Pending, Interested, Applied, Interviewing, Offer, Accepted, Rejected).
+* Status is a String representing the possible statuses of an internship application (Pending, Applied, Interview, Offer, Rejected).
 
 *Getters and setters have been omitted from Class Diagram for clarity.*
 
@@ -1122,6 +1122,7 @@ Test case 4: Add an internship with an empty field
     - Error message indicates role field is empty.
     - Internship is not added.
 
+
 ---
 
 ### Updating an internship
@@ -1163,7 +1164,7 @@ Test case 4: Missing update fields
 
 ### Deleting an internship
 
-Prerequisites: At least one internship has been added.
+Prerequisite: At least one internship has been added.
 
 Test case 1: Delete an internship by index
 - Action: `delete 1`
@@ -1174,13 +1175,13 @@ Test case 1: Delete an internship by index
 Test case 2: Delete with invalid index (as there are fewer than 1000 internships in the list)
 - Action: `delete 1000`
 - Expected:
-  - Error message indicates invalid internship index.
+  - Error message indicates invalid internship index: `Invalid internship index: 1000`
   - No internship is removed.
 
 Test case 3: Delete with index 0 or negative index
 - Action: `delete 0`, `delete -1`
 - Expected:
-  - Error message indicates invalid internship index.
+  - Error message indicates invalid internship index: `Invalid internship index: 0` or `Invalid internship index: -1`
   - No internship is removed.
 
 ---
@@ -1247,10 +1248,9 @@ Test case 3: Invalid username input
 ---
 
 ### Displaying the Internity Dashboard
-Prerequisites: At least one internship has been added to the system.
 
 Test case 1: Display dashboard with multiple internships
-- Action: `dashboard`
+- Action: Add internships, then `dashboard`
 - Expected:
   - Dashboard shows the current username.
   - Total internships are displayed.
@@ -1273,7 +1273,19 @@ Test case 4: Dashboard reflects recent changes
 - Expected:
   - Dashboard reflects the updated internship count, deadlines and statuses.
 
+Test case 5: Nearest deadline is overdue
+- Action: Add only internships with deadlines in the past, then `dashboard`
+- Expected:
+    - Dashboard shows the nearest deadline internship marked as `(OVERDUE!)`.
+
+Test case 6: Multiple internships with the same nearest deadline
+- Action: Add multiple internships with the same nearest deadline (e.g. the date today), then `dashboard`
+- Expected:
+    - Dashboard shows the nearest deadline internship and indicates the count of other internships with that deadline.
+
+
 ---
+
 
 ### Saving Data
 Prerequisites: 

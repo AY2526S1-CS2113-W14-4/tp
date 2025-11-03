@@ -27,10 +27,10 @@ manage hundreds of applications. This guide explains how to install and use Inte
 
 1. **Install Java 17.** Confirm you have Java 17 installed by running `java -version` in your terminal.  
    If you do not have Java 17 installed, download it from [here](https://www.oracle.com/java/technologies/downloads/#java17).
-2. **Download Internity.** Download the latest version of `Internity.jar` from [Github](https://github.com/AY2526S1-CS2113-W14-4/tp/releases), onto any empty folder on your computer.
-3. **Launch the terminal** Open a terminal, cd into the folder where you saved `Internity.jar`.
+2. **Download Internity.** Download the latest version of `[CS2113-W14-4][Internity].jar` from [GitHub](https://github.com/AY2526S1-CS2113-W14-4/tp/releases), onto any empty folder on your computer.
+3. **Launch the terminal** Open a terminal, cd into the folder where you saved `[CS2113-W14-4][Internity].jar`.
 4. **Run the program.** Run the command:  
-   ```java -jar Internity.jar```
+   ```java -jar [CS2113-W14-4][Internity].jar```
 5. **Start using Internity!** You can now start adding, deleting, updating and viewing your internship applications.  
    You may refer to the Features below for details of each command.
 
@@ -47,7 +47,7 @@ Tip: Type `help` to view a list of available commands at any time.
 Example: <code>delete INDEX</code> → Please input <code>delete 1</code></li>
 <li>The commands <code>dashboard</code>, <code>help</code> and <code>exit</code> will ignore any arguments. The command will still be valid.</li>
 <li>If using a PDF version, be careful when copying commands that span multiple lines as spaces surrounding line-breaks may be omitted.</li>
-<li>Uppercase, lowercase, digits and symbols are allowed. More specifically, only valid ASCII printable characters are allowed (character code 32 to 126).</li>
+<li>Uppercase, lowercase, digits and symbols are allowed. More specifically, only valid ASCII printable characters are allowed (character codes 32 to 126).</li>
 </ul>
 </div>
 
@@ -145,7 +145,7 @@ The 2nd command updates the company of the internship application at index 2 to 
 <h4>Notes</h4>
 <ul>
 <li>All field values must adhere to the constraints specified in the <code>add</code> feature.</li>
-<li>If duplicate field values are given, only the last field will be used.
+<li>If duplicate valid field values are given, only the last field will be used.
 <br>
 Example: <code>update 1 company/ABC company/XYZ</code> will update the company of the internship application at index 1 to "XYZ".</li>
 </ul>
@@ -245,16 +245,13 @@ dashboard
 <ul>
 <li>This command is still valid if extra parameters are given
 <br>Example: <code>dashboard cs2113</code></li>
-<li>The <strong>Nearest Deadline</strong> displays the internship with the closest upcoming deadline. If no future deadlines exist, it shows the most recent past deadline and marks it as <code>(OVERDUE!)</code>. It also shows the number of internships that share the same deadline (if any).
+<li>The <strong>Nearest Deadline</strong> displays the internship with the closest upcoming deadline. If no future deadlines exist, it shows the most recent past deadline and marks it as <code>(OVERDUE!)</code>.</li>
 <br>Example:
 
-<code>Nearest Deadline:
-
-31-10-2019 | Coffee Barista @ Sunbucks (OVERDUE!)
-
-(Found 2 other internship(s) with the same deadline)
-</code></li>
-</ul>
+```
+Nearest Deadline:
+  31-10-2019 | Coffee Barista @ Sunbucks (OVERDUE!)
+```
 </div>
 
 ---
@@ -320,13 +317,28 @@ exit
 
 
 * **Q: How can I reset my data to start fresh?**
-  <br> A: Close the app and delete or rename the `data/internships.txt` file. On next start, the app will create a new empty data file. Be careful: this deletes all saved internships.
+  <br> A: Close the app and delete the `data/internships.txt` file. On next start, the app will create a new empty data file. Be careful: this deletes all saved internships.
 
 
 * **Q: I see warnings about corrupted lines being deleted when I start Internity — what happened?**
   <br> A: On startup, Internity scans the save file (`data/internships.txt`) for malformed or corrupted lines. If any problematic lines are found, the program automatically detects and removes those lines to keep the data consistent and prints a warning for each deleted line. These warnings appear before the welcome message.
   <br>*Important*: the deletions are staged in memory and are NOT written back to the save file immediately. The cleaned data is only persisted to disk when the program executes a command. If you force-quit the program (for example, pressing Ctrl+C) before typing any command, the program exits without saving and the original save file will remain unchanged.
 
+
+* **Q: Does the username persist between sessions?**
+  <br> A: Yes, the username is saved in the data file and automatically loaded when you start Internity.
+
+
+* **Q: Can I have duplicate internship applications?**
+  <br> A: Yes, Internity allows multiple entries with the same company and role, as they may represent different opportunities or applications.
+
+
+* **Q: What if I enter a deadline in the past?**
+  <br> A: You can add past deadlines without issue.
+
+
+* **Q: Is the pay amount monthly or annual?**
+  <br> A: The pay field represents the monthly salary (e.g., in SGD or your local currency). It's stored as a number without units, so you may choose to use any currency.
 ---
 
 ## Command Summary

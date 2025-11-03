@@ -88,8 +88,14 @@ public class Storage {
             // Read second line (actual username)
             String username = br.readLine();
             if (username != null && !username.trim().isEmpty()) {
-                InternshipList.setUsername(username.trim());
-                logger.info("Loaded username: " + username.trim());
+                String trimmedUsername = username.trim();
+                if (!isAsciiOnly(trimmedUsername)) {
+                    logger.warning("Username contains non-ASCII characters: " + trimmedUsername);
+                    // Skip setting invalid username
+                } else {
+                    InternshipList.setUsername(trimmedUsername);
+                    logger.info("Loaded username: " + trimmedUsername);
+                }
             }
 
             // Read remaining lines as internship data

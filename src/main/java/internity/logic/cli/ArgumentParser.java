@@ -2,6 +2,9 @@ package internity.logic.cli;
 
 import java.util.logging.Logger;
 
+import internity.core.Date;
+import internity.core.InternityException;
+import internity.core.InternshipList;
 import internity.core.Status;
 import internity.logic.commands.AddCommand;
 import internity.logic.commands.DeleteCommand;
@@ -9,8 +12,6 @@ import internity.logic.commands.FindCommand;
 import internity.logic.commands.ListCommand;
 import internity.logic.commands.UpdateCommand;
 import internity.logic.commands.UsernameCommand;
-import internity.core.Date;
-import internity.core.InternityException;
 import internity.ui.Ui;
 import internity.utils.DateFormatter;
 
@@ -246,6 +247,11 @@ public final class ArgumentParser {
         String trimmed = requireArgs(args);
         String[] idxAndTagged = splitIndexAndTagged(trimmed);
         int index = parseOneBasedIndex(idxAndTagged[0]);
+
+        if (index < 0 || index >= InternshipList.size()) {
+            throw InternityException.invalidInternshipIndex();
+        }
+
         String tagged = requireTagged(idxAndTagged[1]);
 
         String[] parts = tagged.split(PARSE_LOGIC_UPDATE);
