@@ -2,6 +2,7 @@ package internity.core;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 import java.util.logging.Logger;
 
 import internity.logic.commands.ListCommand;
@@ -119,25 +120,29 @@ public class InternshipList {
         return internshipList.size();
     }
 
-    // @@author {V1T0bh}
     /**
-     * Sort internships by deadline in the specified order.
+     * Returns a new list of internships sorted by the specified order.
+     * The original internship list is not modified.
      *
-     * @param order the order type (ASCENDING or DESCENDING)
+     * @param order the order type (ASCENDING, DESCENDING, or DEFAULT)
+     * @return a new {@code ArrayList<Internship>} view sorted for display
      */
-    public static void sortInternships(ListCommand.OrderType order) {
+    public static List<Internship> sortInternships(ListCommand.OrderType order) {
+        ArrayList<Internship> sortedList = new ArrayList<>(internshipList);
+
         if (order == ListCommand.OrderType.DESCENDING) {
-            internshipList.sort(Comparator.comparing(Internship::getDeadline).reversed());
+            sortedList.sort(Comparator.comparing(Internship::getDeadline).reversed());
         } else if (order == ListCommand.OrderType.ASCENDING) {
-            internshipList.sort(Comparator.comparing(Internship::getDeadline));
+            sortedList.sort(Comparator.comparing(Internship::getDeadline));
         }
+        return sortedList;
     }
 
-    // @@author {V1T0bh}
     /**
-     * Lists all internships in a formatted table.
+     * Lists internships in a formatted table.
+     * Sorting, when requested, is applied only to a temporary copy for display.
      *
-     * @param order the order type for sorting the internships
+     * @param order the display order type
      * @throws InternityException if there is an error during listing
      */
     public static void listAll(ListCommand.OrderType order) throws InternityException {
@@ -151,17 +156,17 @@ public class InternshipList {
         }
         assert (size() > 0) : "Internship list should not be empty";
 
-        sortInternships(order);
+        List<Internship> view = sortInternships(order);
 
         Ui.printInternshipListHeader("Here are the internships in your list:");
-        int i;
-        for (i = 0; i < InternshipList.size(); i++) {
-            Internship internship = InternshipList.get(i);
+        int i = 0;
+        for (Internship internship : view) {
             LOGGER.fine("Listing internship at index: " + i);
             Ui.printInternshipListContent(i, internship);
+            i++;
         }
         LOGGER.info("Finished listing internships. Total: " + i);
-        assert (i == size()) : "All internships should be listed";
+        assert (i == view.size()) : "All internships should be listed";
     }
 
     // @@author {V1T0bh}
