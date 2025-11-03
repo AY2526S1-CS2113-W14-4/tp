@@ -181,7 +181,7 @@ list sort/desc
 <ul>
 <li>If two applications have the same deadline, they are further sorted by the order they were added.</li>
 <li>The <code>sort/ORDER</code> parameter is optional. If omitted, the default listing order is by addition time.</li>
-<li>When sorting is applied, the selected order will persist for subsequent listings.</li>
+<li>When sorting is applied, the selected order will not persist for subsequent listings.</li>
 </ul>
 </div>
 
