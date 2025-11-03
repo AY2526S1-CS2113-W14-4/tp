@@ -285,7 +285,8 @@ public class InternshipList {
      *         and the value is the count of additional internships with the same deadline
      * @throws InternityException if an error occurs while accessing internship data
      */
-    public static AbstractMap.SimpleEntry<Internship, Integer> findNearestDeadlineInternship() throws InternityException {
+    public static AbstractMap.SimpleEntry<Internship, Integer> findNearestDeadlineInternship()
+            throws InternityException {
         LOGGER.info("Finding internship with nearest deadline.");
         assert InternshipList.size() > 0 : "Cannot find nearest deadline in empty list";
 
