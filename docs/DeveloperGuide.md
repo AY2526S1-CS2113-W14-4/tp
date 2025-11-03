@@ -1164,7 +1164,7 @@ Test case 4: Missing update fields
 
 ### Deleting an internship
 
-Prerequisites: At least one internship has been added.
+Prerequisite: At least one internship has been added.
 
 Test case 1: Delete an internship by index
 - Action: `delete 1`
@@ -1175,13 +1175,13 @@ Test case 1: Delete an internship by index
 Test case 2: Delete with invalid index (as there are fewer than 1000 internships in the list)
 - Action: `delete 1000`
 - Expected:
-  - Error message indicates invalid internship index.
+  - Error message indicates invalid internship index: `Invalid internship index: 1000`
   - No internship is removed.
 
 Test case 3: Delete with index 0 or negative index
 - Action: `delete 0`, `delete -1`
 - Expected:
-  - Error message indicates invalid internship index.
+  - Error message indicates invalid internship index: `Invalid internship index: 0` or `Invalid internship index: -1`
   - No internship is removed.
 
 ---
