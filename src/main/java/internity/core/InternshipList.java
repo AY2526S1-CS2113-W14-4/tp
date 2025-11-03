@@ -125,7 +125,7 @@ public class InternshipList {
      * The original internship list is not modified.
      *
      * @param order the order type (ASCENDING, DESCENDING, or DEFAULT)
-     * @return a new ArrayList<Internship> view sorted for display
+     * @return a new {@code ArrayList<Internship>} view sorted for display
      */
     public static List<Internship> sortInternships(ListCommand.OrderType order) {
         ArrayList<Internship> sortedList = new ArrayList<>(internshipList);
