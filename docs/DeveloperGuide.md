@@ -219,7 +219,7 @@ The sequence diagram above shows how the `UpdateCommand` interacts with the `Int
 
 ### Storage Component
 
-**API**: [`Storage.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/storage/Storage.java)
+**API**: `Storage.java`
 
 The `Storage` component:
 * can save internship data in a pipe-delimited text format, and read it back into corresponding objects.
@@ -234,7 +234,7 @@ The following class diagram shows the Storage component and its relationships:
 The class diagram illustrates:
 * **Storage** manages file I/O operations and uses helper methods for parsing and formatting
 * **InternshipList** acts as a facade, coordinating between Storage and the in-memory list
-* **Internship** and **Date** are the data models that get serialized/deserialized
+* **Internship** and **Date** are the data models that get serialised/deserialised
 * **DateFormatter** provides date parsing utilities used during the load operation
 * **InternityException** is thrown when storage operations encounter errors
 
@@ -244,9 +244,9 @@ The class diagram illustrates:
 
 ### Add feature
 
-**API**: [`AddCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/AddCommand.java)
+**API**: `AddCommand.java`
 
-The add mechanism allows users to record new internship entries in their tracking list. This feature ensures users can maintain a comprehensive and organized list of upcoming internship opportunities, along with key details such as company, role, deadline and pay.
+The add mechanism allows users to record new internship entries in their tracking list. This feature ensures users can maintain a comprehensive and organised list of upcoming internship opportunities, along with key details such as company, role, deadline and pay.
 
 ### Implementation
 
@@ -276,46 +276,50 @@ add company/Google role/Software Engineer deadline/17-09-2025 pay/7000
 
 ### Argument Parsing Logic
 
-The `ArgumentParser.parseAddCommandArgs()` method is responsible for transforming the raw argument string into a valid `AddCommand` instance.
-This step is critical to ensure input integrity and proper data representation.
+The `ArgumentParser.parseAddCommandArgs()` method converts a raw argument string into a valid `AddCommand` instance.
+This process ensures strict input integrity, correct field representation and data consistency.
 
 **Parsing process:**
 
 **1. Input Validation**
 * Checks if the argument string is null or blank.
-* Throws `InternityException.invalidAddCommand()` if input is missing.
+* Throws `InternityException.invalidAddCommand()` if the check fails.
+* Assertion ensures arguments remain non-blank after validation.
 
 **2. Splitting Fields**
-* Splits the argument string using a predefined delimiter (`ADD_COMMAND_PARSE_LOGIC`) into 4 parts.
-* Each part is expected to start with a specific prefix and be in the following order:  
-  `company/`, `role/`, `deadline/`, and `pay/`. 
-* If any prefix is missing or out of order, parsing fails immediately.
+* Splits the input string using the predefined delimiter PARSE_LOGIC_ADD.
+* Expects exactly four parts each prefixed with `company/`, `role/`, `deadline/` and `pay/`, and in this exact order. 
+* If the number of fields is not four, throws `InternityException.invalidAddCommand()`.
+* If any field is missing or placed in the wrong order, throws `InternityException.noFieldForAdd()` specifying that field.
 
 **3. Extracting Values**
-* Removes each prefix to isolate the user-provided values.
-* Trims whitespace from each field.
+* For each field, removes the prefix and trims whitespace.
 * Example:  
   ```
   company/Google → "Google"
   role/Software Engineer → "Software Engineer"
   ```
-**4. Data Conversion**
-* The `deadline` string is parsed into a `Date` object via `DateFormatter.parse()`.
-* The `pay` field is converted into an integer using `Integer.parseInt()`.
+* The extracted strings are stored as: `company`, `role`, `deadlineString`, `payString`.  
 
-**5. Validation**
-* Ensures no fields are empty.
-* Ensures `pay` is non-negative.
-* Verifies that `company` and `role` do not exceed the maximum character limits defined in `Ui` (`COMPANY_MAXLEN` and `ROLE_MAXLEN`).
-* Logs detailed error messages if any validation fails.
+**4. Field Lines and Emptiness Checks**
+* Ensures each field is non-empty, throwing `InternityException.emptyField()` otherwise.
+* Checks that:
+  * company.length() ≤ `Ui.COMPANY_MAXLEN`
+  * role.length() ≤ `Ui.ROLE_MAXLEN`
+  * If violated, throws `InternityException.exceedFieldLength()`.
+
+**5. Data Conversion**
+* Parses `deadlineString` into a `Date` object via `DateFormatter.parse()`.
+* Parses `payString` into an integer using `Integer.parseInt()`.
+  * If parsing fails because `payString` contains non-numerical character(s), is negative or exceeds `Integer.MAX_VALUE`, throws `InternityException.invalidPayFormat()`.
 
 **6. Command Construction**
-* If all checks pass, a new `AddCommand` instance is created:  
+* Upon successful validation, a new `AddCommand` instance is created:  
   ```
   return new AddCommand(company, role, deadline, pay);
   ```
 
-If any stage fails, the method logs the issue and throws an `InternityException.invalidAddCommand()` to provide consistent feedback to the user.
+At any failure stage: The issue is logged an appropriate `InternityException` is thrown to provide clear user feedback.
 
 ### Command Execution Flow
 
@@ -346,7 +350,7 @@ The following sequence diagram illustrates the complete add operation flow:
 
 * **Alternative 1 (current choice):** Users provide prefix in words: `company/`, `role/`, `deadline/`, `pay/`
     * Pros: Highly readable and self-explanatory for new users.
-    * Pros: Reduces ambiguity between parameters — each prefix clearly indicates its purpose.
+    * Pros: Reduces ambiguity between parameters as each prefix clearly indicates its purpose.
     * Pros: Consistent with other natural-language command formats in the application.
     * Cons: Slightly longer to type compared to abbreviated prefixes.
     * Cons: Parsing logic requires string comparisons with longer literals, adding minor verbosity.
@@ -375,14 +379,14 @@ The following sequence diagram illustrates the complete add operation flow:
 **Aspect: Order of parameters**
 
 * **Alternative 1 (current choice):** Fixed order: company, role, deadline, then pay.
-    * Pros: Simplifies parsing logic and validation — no need for dynamic prefix searching.
-    * Pros: Guarantees consistent argument positions, reducing ambiguity.
+    * Pros: Simplifies parsing logic and validation, so no need for dynamic prefix searching.
+    * Pros: Guarantees consistent argument positions, providing a consistent format and reducing ambiguity for users.
     * Pros: Easier to implement and debug, with predictable input format.
-    * Cons: Users must remember and follow the exact field order.
+    * Cons: Users need to follow the exact field order.
     * Cons: Any deviation from the expected sequence causes command rejection.
 
 * **Alternative 2:** Flexible order.
-    * Pros: More user-friendly — fields can be entered in any sequence.
+    * Pros: More user-friendly as fields can be entered in any sequence.
     * Pros: Robust against user typing variations.
     * Cons: Requires more complex parsing logic to detect and map prefixes dynamically.
     * Cons: Increases risk of malformed input if prefixes are missing or repeated.
@@ -396,21 +400,20 @@ Rationale:
 allowing duplicates supports flexibility.
 - It aligns with the goal of Internity as a personal tracking tool rather than a strict database system.
 
-
 **Aspect: Allowing any deadline for internship entries**
 
 Rationale:
 - Users may want to record past, current, or future internship opportunities, 
 so restricting deadlines could reduce usability.
-- Flexibility in deadlines ensures that the system remains a personal organizational tool 
+- Flexibility in deadlines ensures that the system remains a personal organisational tool 
 rather than enforcing business rules that may not apply to all users.
 
 ---
 
 ### Update feature
-**API**: [`UpdateCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/UpdateCommand.java)
+**API**: `UpdateCommand.java`
 
-The update mechanism lets users modify one or more fields of an existing internship entry. It keeps the list accurate as applications evolve, without forcing users to re-enter the whole record.
+The update mechanism lets users modify one or more fields of an existing internship entry. It keeps the list accurate as applications evolve, without the need for users to re-enter the whole record.
 
 #### Implementation
 `UpdateCommand` extends the abstract `Command` class. Users specify a 1-based index in the CLI, which is converted to a 0-based index during parsing. Any subset of fields can be provided. Only non-null fields are applied.
@@ -478,20 +481,21 @@ Given below is an example usage scenario and how the update mechanism behaves at
 
 #### Example Commands
 ```bash
-update 3 status/Interviewing           # Update only status
-update 2 company/Apple role/ML Engineer # Update company and role
-update 4 deadline/15-12-2025 pay/8500   # Update deadline and pay
-update 1                                # Invalid because no fields
+update 3 status/Interviewing             # Update only status
+update 2 company/Apple role/ML Engineer  # Update company and role
+update 4 deadline/15-12-2025 pay/8500    # Update deadline and pay
+update 1                                 # Invalid - no fields
+update status/Accepted                   # Invalid - no internship index
 ```
 
 #### Design Considerations
 - Fields not provided by the user are ignored, so updates can be partial and focused.  
-- Validation is split across parsing and model methods for clear responsibility.  
-- Success messaging is centralized in `Ui` for consistent output formatting.  
+- Validation is split across parsing and model methods for clear responsibility.
+- Success messaging is centralised in `Ui` for consistent output formatting.  
 
 ### Delete feature
 
-**API**: [`DeleteCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/DeleteCommand.java)
+**API**: `DeleteCommand.java`
 
 The delete mechanism allows users to remove internship entries from their tracking list. This feature is essential for maintaining an up-to-date list of relevant internship applications by removing entries that are no longer needed.
 
@@ -543,6 +547,8 @@ The sequence diagram shows how the delete command flows through multiple layers:
 
 ### List feature
 
+**API**: `ListCommand.java`
+
 The list mechanism is implemented by the `ListCommand` class, which allows users to view all internships in their list.
 
 Below is the sequence diagram for a common usage of the list feature:
@@ -588,7 +594,7 @@ the `Internship.compareTo()` method.
 **Aspect: Index validation location**
 
 * **Alternative 1 (current choice):** Perform bounds checking in `InternshipList.delete()` and `InternshipList.get()`.
-  * Pros: Centralized validation logic in the model layer
+  * Pros: Centralised validation logic in the model layer
   * Pros: Ensures all access to the list is safe, regardless of caller
   * Pros: Follows encapsulation principles
   * Cons: May result in duplicate checks if both `get()` and `delete()` are called
@@ -601,7 +607,7 @@ the `Internship.compareTo()` method.
 
 ### Find feature
 
-**API**: [`FindCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/FindCommand.java)
+**API**: `FindCommand.java`
 
 ![Find Command: Sequence Diagram](diagrams/FindCommandSD.png)
 
