@@ -1036,7 +1036,7 @@ should be able to accomplish most of the tasks faster using commands than using 
 
 
 ## Glossary
-**Internship**<br>
+**Internship**\
 A temporary work experience offered by a company or organization that allows a student or early-career individual
 to gain practical skills, industry knowledge and professional exposure in a specific field. Internships may be paid
 or unpaid, part-time or full-time, and can occur during or after academic study.
@@ -1064,8 +1064,14 @@ Test case 2: Add an internship with missing fields
 Test case 3: Add an internship with invalid pay
 - Action: `add company/Bay Harbour role/Butcher deadline/15-12-2025 pay/-1000`
 - Expected:
-  - Error message indicates invalid add command.
+  - Error message indicates invalid pay.
   - Internship is not added.
+
+Test case 4: Add an internship with an empty field
+- Action: `add company/Uber role/ deadline/15-12-2025 pay/2000`
+- Expected:
+    - Error message indicates role field is empty.
+    - Internship is not added.
 
 ---
 
@@ -1075,9 +1081,9 @@ Prerequisite: Have one internship added to the list.
 
 Test case 1: Update a single field (company name)
 
-- Action: `update 1 company/Microsoft`.
+- Action: `update 1 company/Apple`.
 - Expected:
-  - The company field of the first internship changes to “Microsoft”.
+  - The company field of the first internship changes to “Apple”.
   - All other fields (role, deadline, pay, status) remain unchanged.
   - A success message will be displayed.
 
@@ -1098,7 +1104,7 @@ Test case 3: Invalid index
 
 Test case 4: Missing update fields
 
-- Action: Add an internship using `add company/Meta role/Designer deadline/05-11-2025 pay/6000`.  
+- Action: First, add an internship using `add company/Meta role/Designer deadline/05-11-2025 pay/6000`.  
   Then, execute the command `update 1`.
 - Expected:
   - The command fails with an error message indicating an invalid update command.
@@ -1116,7 +1122,7 @@ Test case 1: Delete an internship by index
   - The internship at index 1 is removed from the list.
   - Confirmation message reflects removed internship details.
 
-Test case 2: Delete with invalid index (too high)
+Test case 2: Delete with invalid index (as there are fewer than 1000 internships in the list)
 - Action: `delete 1000`
 - Expected:
   - Error message indicates invalid internship index.
@@ -1171,13 +1177,19 @@ Test case 2: Find by role name
 ### Changing username
 Prerequisites: The application has been launched and the user is at the command prompt.
 
-Test case 1: Changing username
+Test case 1: Changing username I
 - Action: `username Dexter`
 - Expected:
   - Username is updated to "Dexter".
   - Confirmation message reflects the new username: `Username set to Dexter`.
 
-Test case 2: Invalid username input
+Test case 2: Changing username II
+- Action: `username Dexter <3 Nicole`
+- Expected:
+    - Username is updated to "Dexter <3 Nicole".
+    - Confirmation message reflects the new username: `Username set to Dexter <3 Nicole`.
+
+Test case 3: Invalid username input
 - Action: `username` (without specifying a name)
 - Expected:
   - Error message is displayed indicating an invalid username command.
