@@ -1,0 +1,41 @@
+@startuml ModelComponentOD_Add
+hide circle
+title Model Component: Object Diagram (After adding an internship)
+
+' Objects
+object "<u>:InternshipList</u>" as InternshipList
+
+object "<u>:AddCommand</u>" as AddCommand {
+    company = "Google"
+    role = "Software Engineer"
+    pay = 5000
+}
+
+object "<u>:Internship</u>" as Internship {
+    company = "Google"
+    role = "Software Engineer"
+    pay = 5000
+    status = "Pending"
+}
+
+object "<u>deadline:Date</u>" as deadline {
+    day = 12
+    month = 12
+    year = 2025
+}
+
+' Relationships
+AddCommand ..> Internship
+AddCommand --> deadline
+InternshipList *-- Internship : contains >
+Internship --> deadline : due by >
+
+' Note
+note as n1
+  The InternshipList now holds
+  one Internship object created
+  by AddCommand.
+end note
+
+
+@enduml
