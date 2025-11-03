@@ -2,6 +2,8 @@ package internity.logic.cli;
 
 import java.util.logging.Logger;
 
+import internity.Internity;
+import internity.core.InternshipList;
 import internity.core.Status;
 import internity.logic.commands.AddCommand;
 import internity.logic.commands.DeleteCommand;
@@ -246,6 +248,11 @@ public final class ArgumentParser {
         String trimmed = requireArgs(args);
         String[] idxAndTagged = splitIndexAndTagged(trimmed);
         int index = parseOneBasedIndex(idxAndTagged[0]);
+
+        if (index < 0 || index >= InternshipList.size()) {
+            throw InternityException.invalidInternshipIndex();
+        }
+
         String tagged = requireTagged(idxAndTagged[1]);
 
         String[] parts = tagged.split(PARSE_LOGIC_UPDATE);

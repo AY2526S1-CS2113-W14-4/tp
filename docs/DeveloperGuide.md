@@ -1063,8 +1063,15 @@ Test case 2: Add an internship with missing fields
 Test case 3: Add an internship with invalid pay
 - Action: `add company/Bay Harbour role/Butcher deadline/15-12-2025 pay/-1000`
 - Expected:
-  - Error message indicates invalid add command.
+  - Error message indicates invalid pay.
   - Internship is not added.
+
+Test case 4: Add an internship with only an invalid deadline
+- Action: `add company/Microsoft role/Intern deadline/123456 pay/5000`
+- Expected:
+  - Error message indicates that date is invalid.
+  - Internship is not added.
+
 
 ---
 
@@ -1097,8 +1104,7 @@ Test case 3: Invalid index
 
 Test case 4: Missing update fields
 
-- Action: Add an internship using `add company/Meta role/Designer deadline/05-11-2025 pay/6000`.  
-  Then, execute the command `update 1`.
+- Action: `update 1`
 - Expected:
   - The command fails with an error message indicating an invalid update command.
   - No changes are made to the internship.
