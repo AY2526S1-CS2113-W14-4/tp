@@ -298,6 +298,8 @@ This process ensures strict input integrity, correct field representation and da
   ```
   company/Google → "Google"
   role/Software Engineer → "Software Engineer"
+  deadline/17-09-2025 → "17-09-2025"  
+  pay/7000 → "7000"
   ```
 * The extracted strings are stored as: `company`, `role`, `deadlineString`, `payString`.  
 
@@ -326,7 +328,16 @@ At any failure stage: The issue is logged an appropriate `InternityException` is
 **Step 4.** When `InternityManager` calls `AddCommand.execute()`:
 * A new `Internship` object is created using the parsed details.
 * The `InternshipList.add(internship)` method adds the internship to the global static list.
-* The `Ui.printAddInternship()` method displays a formatted confirmation message to the user.
+* The `Ui.printAddInternship()` method displays a formatted confirmation message to the user:
+    ```
+    Added this internship:
+      Company: Google
+      Role: Software Engineer
+      Deadline: 17-09-2025
+      Pay: 7000
+      Status: Pending
+    Now you have 1 internship(s) in the list.
+    ```
 
 **Step 5.** After execution, `InternityManager` triggers `InternshipList.saveToStorage()`, which internally calls `Storage.save()` to persist the updated internship list to disk.
 
@@ -780,7 +791,7 @@ persistent data model and displayed in future interactions.
 
 ### Dashboard feature
 
-**API**: [`DashboardCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/DashboardCommand.java)
+**API**: `DashboardCommand.java`
 
 The Dashboard feature presents a comprehensive summary of the user's internship tracking data, including
 the username, total internships, status overview and nearest deadline.
@@ -813,7 +824,7 @@ the username, total internships, status overview and nearest deadline.
 
 ### Exit feature
 
-**API**: [`ExitCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/ExitCommand.java)
+**API**: `ExitCommand.java`
 
 The ExitCommand allows the user to gracefully terminate the Internity application. Upon execution, it ensures that the user is notified
 and the main command loop in InternityManager is stopped.
@@ -831,7 +842,7 @@ termination.
 
 ### Storage feature
 
-**API**: [`Storage.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/storage/Storage.java)
+**API**: `Storage.java`
 
 The Storage feature provides persistent data storage for Internity, allowing users to save their internship data across application sessions. Without this feature, users would lose all their internship data when closing the application. This is a critical feature that transforms Internity from a temporary session-based tool to a reliable long-term tracking system.
 
