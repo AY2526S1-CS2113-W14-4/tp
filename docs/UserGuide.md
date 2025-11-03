@@ -27,10 +27,10 @@ manage hundreds of applications. This guide explains how to install and use Inte
 
 1. **Install Java 17.** Confirm you have Java 17 installed by running `java -version` in your terminal.  
    If you do not have Java 17 installed, download it from [here](https://www.oracle.com/java/technologies/downloads/#java17).
-2. **Download Internity.** Download the latest version of `Internity.jar` from [Github](https://github.com/AY2526S1-CS2113-W14-4/tp/releases), onto any empty folder on your computer.
-3. **Launch the terminal** Open a terminal, cd into the folder where you saved `Internity.jar`.
+2. **Download Internity.** Download the latest version of `[CS2113-W14-4][Internity].jar` from [GitHub](https://github.com/AY2526S1-CS2113-W14-4/tp/releases), onto any empty folder on your computer.
+3. **Launch the terminal** Open a terminal, cd into the folder where you saved `[CS2113-W14-4][Internity].jar`.
 4. **Run the program.** Run the command:  
-   ```java -jar Internity.jar```
+   ```java -jar [CS2113-W14-4][Internity].jar```
 5. **Start using Internity!** You can now start adding, deleting, updating and viewing your internship applications.  
    You may refer to the Features below for details of each command.
 
