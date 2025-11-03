@@ -828,7 +828,7 @@ termination.
 
 **API**: [`Storage.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/storage/Storage.java)
 
-The Storage feature provides persistent data storage for Internity, allowing users to save their internship data across application sessions. Without this feature, users would lose all their internship data when closing the application. This is a critical feature that transforms Internity from a temporary session-based tool to a reliable long-term tracking system.
+The Storage feature provides persistent data storage for Internity, allowing users to save their internship data across application sessions. Without this feature, users would lose all their internship data upon closing the application. This is a critical feature that transforms Internity from a temporary session-based tool to a reliable long-term tracking system.
 
 #### Implementation
 
@@ -884,6 +884,7 @@ The load operation occurs once during application startup, before the user sees 
   * Validate that there are exactly 5 fields.
   * Call `parseAndValidateFields()` to validate each field:
     * Company and role must not be empty.
+    * Company and role contains only printable ASCII characters.
     * Pay must be a valid non-negative integer.
     * Status must be a valid status value (Pending/Applied/Interview/Offer/Rejected).
     * Deadline must be in dd-MM-yyyy format and represent a valid date.
@@ -916,7 +917,7 @@ The save operation occurs automatically after every command that modifies data (
 
 **Step 3.** Inside `Storage.save()`:
 * Check if the specified parent directory exists.
-* Open a `PrintWriter` to write to the file (overwrites existing content).
+* Open a `PrintWriter` to write to a temporary file.
 * Write the username header (`"Username (in line below):"`).
 * Retrieve and write the username via `InternshipList.getUsername()`.
 * For each internship in the list:
@@ -925,6 +926,8 @@ The save operation occurs automatically after every command that modifies data (
   * Format as: `"company | role | DD-MM-YYYY | pay | status"`.
   * Write the formatted line to the file.
 * Close the `PrintWriter` to flush and finalize the file.
+* Perform an atomic move to replace the original file with the temporary file (to ensure data integrity).
+* If atomic move is not supported by the filesystem, fall back to a regular move while logging a warning.
 
 **Step 4.** If any `IOException` occurs, wrap it in an `InternityException` and throw it. `InternityManager` catches this and displays a warning (but doesn't crash the application).
 
@@ -933,6 +936,11 @@ The following sequence diagram illustrates the save operation:
 ![Storage Save Sequence Diagram](diagrams/StorageSaveSD.png)
 
 The save sequence diagram shows the straightforward serialization process. Note that the entire file is rewritten on each save operation, which is acceptable for the target use case (up to 1000 internships) but would require optimization for larger datasets.
+
+### Atomic Save Operations
+To ensure data integrity during save operations, the Storage feature employs a strategy of writing to a temporary file followed by an atomic move to replace the original file. This approach minimizes the risk of data corruption in case of application crashes or interruptions during the write process.
+
+If the atomic move fails (e.g., due to filesystem limitations), the system falls back to a standard overwrite method while logging a warning.
 
 #### Design considerations
 
@@ -966,17 +974,15 @@ The save sequence diagram shows the straightforward serialization process. Note 
 
 * **Alternative 1 (current choice):** Auto-save after every command that modifies data.
   * Pros: Minimizes data loss risk.
-  * Pros: No need for users to remember to save manually.
   * Cons: Performance impact if storage is slow.
 
 * **Alternative 2:** Save only on application exit.
+  * Pros: Fewer writes to disk.
   * Cons: Risk of data loss if application crashes.
 
 * **Alternative 3:** Periodic auto-save every N seconds or N operations.
-  - Pros: Balances performance and data safety.
-  - Cons: More complex implementation (requires background thread or operation counter).
-
-
+  * Pros: Balances performance and data safety.
+  * Cons: More complex implementation (requires background thread or operation counter).
 
 ---
 
