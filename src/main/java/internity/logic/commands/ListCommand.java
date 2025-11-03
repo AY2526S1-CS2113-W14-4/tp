@@ -7,10 +7,12 @@ import internity.core.InternshipList;
 
 /**
  * Represents a command that lists all internship applications
- * as a formatted table
+ * as a formatted table.
  * <br>
  * Command format:
  * {@code list [sort/asc|sort/desc]}
+ *
+ * Sorting is non-persistent: the underlying list order is not modified.
  */
 public class ListCommand extends Command {
     public enum OrderType {

@@ -580,11 +580,10 @@ Below is the sequence diagram for a common usage of the list feature:
 
 #### Implementation
 1. `ListCommand` accesses the `InternshipList`, which contains the `ArrayList<Internship>` of all stored internships.
-2. If `sort/asc` is specified, the internships are sorted in ascending order of deadlines using `Collections.sort()` and
-the `Internship.compareTo()` method.
-3. If `sort/desc` is specified, the list is sorted in descending order by deadline.
+2. If `sort/asc` is specified, `InternshipList.sortInternships(order)` returns a new `ArrayList` copy sorted by deadline in ascending order. The original list is not modified.
+3. If `sort/desc` is specified, `InternshipList.sortInternships(order)` returns a new `ArrayList` copy sorted by deadline in descending order. The original list is not modified.
 4. If no sort option is specified, the internships are listed in the order they were added, after the last sort.
-5. The internship list is iterated through and each internship's details are printed using `Ui.printList().
+5. The internship list is iterated through and each internship's details are printed using `Ui.printList()`.
 
 #### Design considerations
 
@@ -791,7 +790,7 @@ persistent data model and displayed in future interactions.
     ```
 2. The `UsernameCommand` constructor validates that the argument is non-null and non-blank.
 3. When `execute()` is called:
-   - The provided username is stored via `InternshipList.setUSername(username)`.
+   - The provided username is stored via `InternshipList.setUsername(username)`.
    - The UI is updated through `Ui.printSetUsername(username)` to show the change.
 4. The command does not modify any internship data and does not terminate the application.
 
