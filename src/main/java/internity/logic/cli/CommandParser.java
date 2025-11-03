@@ -68,7 +68,8 @@ public class CommandParser {
      *
      * <p>This method checks each character in the input string to ensure that:
      * <ul>
-     *     <li>All characters are printable ASCII characters, including uppercase and lowercase letters, digits, and symbols.</li>
+     *     <li>All characters are printable ASCII characters, including uppercase and lowercase letters,
+     *         digits, and symbols.</li>
      *     <li>Printable ASCII characters have values ranging from 32 (space) to 126 (tilde ~).</li>
      * </ul>
      * </p>
