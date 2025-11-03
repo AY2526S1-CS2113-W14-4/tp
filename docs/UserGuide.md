@@ -145,7 +145,7 @@ The 2nd command updates the company of the internship application at index 2 to 
 <h4>Notes</h4>
 <ul>
 <li>All field values must adhere to the constraints specified in the <code>add</code> feature.</li>
-<li>If duplicate field values are given, only the last field will be used.
+<li>If duplicate valid field values are given, only the last field will be used.
 <br>
 Example: <code>update 1 company/ABC company/XYZ</code> will update the company of the internship application at index 1 to "XYZ".</li>
 </ul>
