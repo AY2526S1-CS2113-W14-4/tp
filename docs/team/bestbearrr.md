@@ -18,14 +18,14 @@ like a dashboard overview for quick insights and data persistence between sessio
 * Designed the command to integrate seamlessly with the ArgumentParser, ensuring robust validation and structured parsing.
 * Added logic in AddCommand.execute() to instantiate a new Internship object and update the global static InternshipList.
 * Enhanced usability by integrating Ui.printAddInternship() for consistent success feedback after addition.
-* Implemented comprehensive validation for empty fields, negative pay, and exceeded character limits.
+* Implemented comprehensive validation for empty fields, negative and non-numeric pay, and exceeding character limits.
 
 #### FindCommand
 * Implemented FindCommand, which filters internships by matching user keywords against both company and role fields.
 * Designed case-insensitive substring matching for more intuitive search results.
 * Integrated with the ArgumentParser to handle and validate keyword input.
 * Ensured that filtered results are displayed using the Ui layer in a consistent and readable format.
-* Optimised command behavior to handle empty and invalid inputs gracefully using centralized exception handling.
+* Optimised command behavior to handle empty and invalid inputs gracefully using centralised exception handling.
 
 #### ArgumentParser
 * Designed and implemented parsing logic for both add and find commands.
@@ -34,7 +34,7 @@ like a dashboard overview for quick insights and data persistence between sessio
     * Implemented extensive validation and error handling for missing prefixes, field order, and data format.
 * For FindCommand:
     * Implemented argument extraction logic to handle single or multi-word search terms.
-    * Ensured trimming, normalization, and exception handling for blank or invalid input.
+    * Ensured trimming, normalisation, and exception handling for blank or invalid input.
 * Enhanced logging for debugging and traceability of command parsing.
 
 #### User Interface
@@ -44,7 +44,7 @@ like a dashboard overview for quick insights and data persistence between sessio
 * Added logging and structured formatting for output consistency.
 
 #### Internship
-* Added a toString method to display the internship to text
+* Added a toString method to display the internship details to a structured text format
 
 Wrote unit tests for AddCommand and FindCommand to ensure code correctness and reliability.
 
