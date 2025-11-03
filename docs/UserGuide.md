@@ -47,7 +47,7 @@ Tip: Type `help` to view a list of available commands at any time.
 Example: <code>delete INDEX</code> → Please input <code>delete 1</code></li>
 <li>The commands <code>dashboard</code>, <code>help</code> and <code>exit</code> will ignore any arguments. The command will still be valid.</li>
 <li>If using a PDF version, be careful when copying commands that span multiple lines as spaces surrounding line-breaks may be omitted.</li>
-<li></li>
+<li>Uppercase, lowercase, digits and symbols are allowed. More specifically, only valid ASCII printable characters are allowed (character code 32 to 126).</li>
 </ul>
 </div>
 

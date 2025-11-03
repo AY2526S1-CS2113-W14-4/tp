@@ -64,16 +64,17 @@ public class CommandParser {
     }
 
     /**
-     * Validates that the given input string contains only valid ASCII characters.
+     * Validates that the given input string contains only printable ASCII characters.
      *
-     * <p>This method checks each character in the input string to ensure that
+     * <p>This method checks each character in the input string to ensure that:
      * <ul>
-     *     <li>ALl characters are printable ASCII.</li>
+     *     <li>All characters are printable ASCII characters, including uppercase and lowercase letters, digits, and symbols.</li>
+     *     <li>Printable ASCII characters have values ranging from 32 (space) to 126 (tilde ~).</li>
      * </ul>
      * </p>
      *
      * @param input the string to validate
-     * @throws InternityException if the input contains non-printable ASCII characters or the illegal pipe character '|'
+     * @throws InternityException if the input contains non-printable ASCII characters
      */
     public void validateValidAscii(String input) throws InternityException {
         for (char c : input.toCharArray()) {
