@@ -1,9 +1,9 @@
 package internity.logic.commands;
 
+import java.util.logging.Logger;
+
 import internity.core.InternityException;
 import internity.ui.Ui;
-
-import java.util.logging.Logger;
 
 /**
  * Represents a command that lists all available commands.

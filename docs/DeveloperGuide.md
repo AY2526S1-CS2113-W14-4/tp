@@ -191,7 +191,7 @@ The class diagram above shows the main classes involved in manipulating `Interns
 * InternshipList is a class that manages a static ArrayList of Internship objects. It provides methods to add, delete, find, list, retrieve, sort and update internships.
 * Internship represents a single internship application with the attributes company, role, deadline, pay and status.
 * Date encapsulates date-related functionality, including parsing and formatting dates in dd-MM-yyyy format.
-* Status is an enum representing the possible statuses of an internship application (Pending, Interested, Applied, Interviewing, Offer, Accepted, Rejected).
+* Status is a String representing the possible statuses of an internship application (Pending, Applied, Interview, Offer, Rejected).
 
 *Getters and setters have been omitted from Class Diagram for clarity.*
 
@@ -821,6 +821,7 @@ the username, total internships, status overview and nearest deadline.
    - Nearest deadline: Gets the upcoming internship with the nearest deadline using `InternshipList.getNearestDeadline()`.
      - Case 1: If internship with future (at least today) upcoming deadline exist, displays the internship details.
      - Case 2: If no such internships exist, it displays the details of internship with the most recent past deadline and marks it as <code>(OVERDUE!)</code>.
+   - Nearest deadline count: Gets the count of internships with the same deadline as the nearest deadline internship.
    - Status overview: Aggregates internship statuses into categories (Pending, Applied, etc.) and displays a summary.
 4. If no internships exist, a meaningful fallback message is shown (e.g. "No internships found.").
 
@@ -1121,6 +1122,7 @@ Test case 4: Add an internship with an empty field
     - Error message indicates role field is empty.
     - Internship is not added.
 
+
 ---
 
 ### Updating an internship
@@ -1246,10 +1248,9 @@ Test case 3: Invalid username input
 ---
 
 ### Displaying the Internity Dashboard
-Prerequisites: At least one internship has been added to the system.
 
 Test case 1: Display dashboard with multiple internships
-- Action: `dashboard`
+- Action: Add internships, then `dashboard`
 - Expected:
   - Dashboard shows the current username.
   - Total internships are displayed.
@@ -1272,7 +1273,19 @@ Test case 4: Dashboard reflects recent changes
 - Expected:
   - Dashboard reflects the updated internship count, deadlines and statuses.
 
+Test case 5: Nearest deadline is overdue
+- Action: Add only internships with deadlines in the past, then `dashboard`
+- Expected:
+    - Dashboard shows the nearest deadline internship marked as `(OVERDUE!)`.
+
+Test case 6: Multiple internships with the same nearest deadline
+- Action: Add multiple internships with the same nearest deadline (e.g. the date today), then `dashboard`
+- Expected:
+    - Dashboard shows the nearest deadline internship and indicates the count of other internships with that deadline.
+
+
 ---
+
 
 ### Saving Data
 Prerequisites: 
