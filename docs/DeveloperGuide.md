@@ -191,7 +191,7 @@ The class diagram above shows the main classes involved in manipulating `Interns
 * InternshipList is a singleton class that manages a static ArrayList of Internship objects. It provides methods to add, delete, update, find and list internships. It also allows
 * Internship represents a single internship application with attributes like company, role, deadline, pay and status.
 * Date encapsulates date-related functionality, including parsing and formatting dates in dd-MM-yyyy format.
-* Status is an enum representing the possible statuses of an internship application (Pending, Applied, Interview, Offer, Rejected).
+* Status is a String representing the possible statuses of an internship application (Pending, Applied, Interview, Offer, Rejected).
 
 *Getters and setters have been omitted from Class Diagram for clarity.*
 
