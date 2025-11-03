@@ -47,12 +47,14 @@ Tip: Type `help` to view a list of available commands at any time.
 Example: <code>delete INDEX</code> → Please input <code>delete 1</code></li>
 <li>The commands <code>dashboard</code>, <code>help</code> and <code>exit</code> will ignore any arguments. The command will still be valid.</li>
 <li>If using a PDF version, be careful when copying commands that span multiple lines as spaces surrounding line-breaks may be omitted.</li>
+<li>Uppercase, lowercase, digits and symbols are allowed. More specifically, only valid ASCII printable characters are allowed (character code 32 to 126).</li>
 </ul>
 </div>
 
 ### Adding an application: `add`
 
-Add a new internship application with company, role, deadline and pay amount
+Add a new internship application with company, role, deadline and pay amount.\
+Refer to notes on using the command below.
 
 Format
 
@@ -63,23 +65,23 @@ add company/COMPANY_NAME role/ROLE_NAME deadline/DEADLINE pay/PAY_AMOUNT
 Example:
 
 ```
-add company/Google role/Software Engineer Intern deadline/17-09-2025 pay/100000
+add company/Google role/Software Engineer Intern deadline/17-09-2025 pay/7000
 ```
 
 This command adds an internship application at Google for the role of Software Engineer Intern with a deadline of 17
-September 2025, and an annual salary of $100000.
+September 2025, and a monthly salary of $6000.
 
 <div style="background-color: #331c16; color: #c3b091; padding: 15px; border-radius: 8px; border-left: 5px solid #966919;">
-<h4>Notes</h4>
+<h4>Notes on using <code>add</code></h4>
 <ul>
-<li>The parameters <b>MUST</b> be entered in the specified order: company, role, deadline, followed by pay.</li>
-<li>No duplicate parameter type is allowed, so input exactly <b>ONE</b> of each parameter type.</li>
+<li>The fields <b>MUST</b> be entered in exactly the specified order: company, role, deadline, followed by pay.</li>
+<li>No duplicate field is allowed, so input exactly <b>ONE</b> of each field.</li>
 <li>By default, when an internship is added, the status is set to Pending. Use the update command to change the status.</li>
-<li>All index parameters are in 1-indexed format.</li>
-<li>Field character limits: <code>COMPANY_NAME<</code> ≤ 15 characters, <code>ROLE_NAME</code> ≤ 30 characters.</li>
+<li>All indexes are in 1-indexed format.</li>
+<li>Field character limits: <code>COMPANY_NAME</code> ≤ 30 characters, <code>ROLE_NAME</code> ≤ 30 characters.</li>
 <li><code>COMPANY_NAME</code> and <code>ROLE_NAME</code> must be alphanumerical.</li>
 <li><code>DEADLINE</code> must be in <code>dd-MM-yyyy</code> format. Any valid past, present or future deadline can be added. </li>
-<li><code>PAY_AMOUNT</code> must be a non-negative integer that fits within Java's 32-bit signed integer range (maximum 2,147,483,647).</li>
+<li><code>PAY_AMOUNT</code> must be a non-negative integer within Java's 32-bit signed integer range (maximum 2,147,483,647).</li>
 </ul>
 </div>
 
@@ -108,7 +110,6 @@ This command deletes the internship application at index 2 from the list.
 ### Updating an application: `update`
 
 Use this command to update any field (company, role, deadline, pay, status) of an internship application.  
-
 
 <div style="background-color: #333446; color: #EAEFEF; padding: 15px; border-radius: 8px; border-left: 5px solid #7F8CAA;">
 <h4><strong>Valid <code>STATUS</code> values</strong></h4>
@@ -179,9 +180,9 @@ list sort/desc
 <div style="background-color: #331c16; color: #c3b091; padding: 15px; border-radius: 8px; border-left: 5px solid #966919;">
 <h4>Notes</h4>
 <ul>
-<li>If two applications have the same deadline, they are further sorted by the order they were added.</li>
 <li>The <code>sort/ORDER</code> parameter is optional. If omitted, the default listing order is by addition time.</li>
-<li>When sorting is applied, the selected order will not persist for subsequent listings.</li>
+<li>If two or more applications have the same deadline, they are further sorted by the order they were added.</li>
+<li>As the sorting works like a filter, the selected sorting order will <b>not</b> persist for subsequent listings.</li>
 </ul>
 </div>
 
@@ -189,7 +190,7 @@ list sort/desc
 
 ### Finding by keyword: `find`
 
-Search for internship applications by keyword. The search is case-insensitive.
+Search for internship applications by company or role with a keyword. The search is case-insensitive.
 
 Format:
 
@@ -204,7 +205,7 @@ find Software Engineer
 ```
 
 This command lists all internship applications that contain the keyword "Software Engineer" in either its company or
-role details.
+role fields.
 
 ---
 
@@ -265,6 +266,14 @@ Format:
 help
 ```
 
+<div style="background-color: #331c16; color: #c3b091; padding: 15px; border-radius: 8px; border-left: 5px solid #966919;">
+<h4>Notes</h4>
+<ul>
+<li>This command is still valid if extra parameters are given
+<br>Example: <code>help me</code></li>
+</ul>
+</div>
+
 ---
 
 ### Exit Internity: `exit`
@@ -319,14 +328,14 @@ exit
 
 ## Command Summary
 
-| **Action**              | **Command** | **Format**                                                                                                                                                  | **Example**                                                                       |
-|-------------------------|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
-| **Add Application**     | `add`       | `add company/COMPANY_NAME role/ROLE_NAME deadline/DEADLINE pay/PAY_AMOUNT`                                                                                  | `add company/Google role/Software Engineer Intern deadline/17-09-2025 pay/100000` |
-| **Delete Application**  | `delete`    | `delete INDEX`                                                                                                                                              | `delete 2`                                                                        |
-| **Update Application**  | `update`    | `update INDEX FIELD/VALUE`                                                                                                                                  | `update 1 status/Interviewing`                                                    |
-| **List Applications**   | `list`      | `list` → list all applications in the order they were added <br> `list sort/ORDER` → sort applications by deadline ascending (`asc`) or descending (`desc`) | `list` <br> `list sort/asc` <br> `list sort/desc`                                 |
-| **Find Application**    | `find`      | `find KEYWORD`                                                                                                                                              | `find Software Engineer`                                                          |
-| **Set/Change username** | `username`  | `username NEW_USERNAME`                                                                                                                                     | `username Yoshikage Kira`                                                         |
-| **Display Dashboard**   | `dashboard` | `dashboard`                                                                                                                                                 | `dashboard`                                                                       |
-| **Help**                | `help`      | `help`                                                                                                                                                      | `help`                                                                            |
-| **Exit Internity**      | `exit`      | `exit`                                                                                                                                                      | `exit`                                                                            |
+| **Action**              | **Command** | **Format**                                                                                                                                                  | **Example**                                                                     |
+|-------------------------|-------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
+| **Add Application**     | `add`       | `add company/COMPANY_NAME role/ROLE_NAME deadline/DEADLINE pay/PAY_AMOUNT`                                                                                  | `add company/Google role/Software Engineer Intern deadline/17-09-2025 pay/7000` |
+| **Delete Application**  | `delete`    | `delete INDEX`                                                                                                                                              | `delete 2`                                                                      |
+| **Update Application**  | `update`    | `update INDEX FIELD/VALUE`                                                                                                                                  | `update 1 status/Interviewing`                                                  |
+| **List Applications**   | `list`      | `list` → list all applications in the order they were added <br> `list sort/ORDER` → sort applications by deadline ascending (`asc`) or descending (`desc`) | `list` <br> `list sort/asc` <br> `list sort/desc`                               |
+| **Find Application**    | `find`      | `find KEYWORD`                                                                                                                                              | `find Software Engineer`                                                        |
+| **Set/Change username** | `username`  | `username NEW_USERNAME`                                                                                                                                     | `username Yoshikage Kira`                                                       |
+| **Display Dashboard**   | `dashboard` | `dashboard`                                                                                                                                                 | `dashboard`                                                                     |
+| **Help**                | `help`      | `help`                                                                                                                                                      | `help`                                                                          |
+| **Exit Internity**      | `exit`      | `exit`                                                                                                                                                      | `exit`                                                                          |
