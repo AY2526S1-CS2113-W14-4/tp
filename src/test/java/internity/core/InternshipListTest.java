@@ -1,16 +1,16 @@
 package internity.core;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.List;
+
+import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
-
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -204,9 +204,12 @@ class InternshipListTest {
         InternshipList.add(older);
         InternshipList.add(newer);
 
-        InternshipList.sortInternships(ListCommand.OrderType.DESCENDING); // descending
+        List<Internship> sorted = InternshipList.sortInternships(ListCommand.OrderType.DESCENDING);
 
-        assertEquals("NewerCo", InternshipList.get(0).getCompany());
-        assertEquals("OlderCo", InternshipList.get(1).getCompany());
+        assertEquals("NewerCo", sorted.get(0).getCompany());
+        assertEquals("OlderCo", sorted.get(1).getCompany());
+
+        assertEquals("OlderCo", InternshipList.get(0).getCompany());
+        assertEquals("NewerCo", InternshipList.get(1).getCompany());
     }
 }
