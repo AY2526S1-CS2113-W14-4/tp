@@ -11,7 +11,7 @@ activate IL
 IL -> S: save(List)
 activate S
 
-' === Directory check with nested activation ===
+' === Directory check ===
 opt parent directory exists
     S -> S: Files.createDirectories(filePath.getParent())
     activate S
@@ -19,9 +19,15 @@ opt parent directory exists
     deactivate S
 end
 
-' === Continue with save process ===
+' === Create temp file ===
+S -> S: tempFile = filePath.resolveSibling(filePath.getFileName() + ".tmp")
+activate S
+S --> S: return tempFile
+deactivate S
+
+' === Write to temp file ===
 create ":PrintWriter" as PW
-S -> PW**: new PrintWriter(filePath)
+S -> PW**: new PrintWriter(tempFile)
 activate PW
 return
 
@@ -58,6 +64,16 @@ end
 S -> PW: close()
 deactivate PW
 destroy PW
+
+' === Atomic move ===
+S -> S: try Files.move(tempFile, filePath, REPLACE_EXISTING, ATOMIC_MOVE)
+activate S
+alt AtomicMoveNotSupportedException
+    S -> S: Files.move(tempFile, filePath, REPLACE_EXISTING)
+    note right: Fallback: non-atomic move
+end
+S --> S: return
+deactivate S
 
 S --> IL
 deactivate S

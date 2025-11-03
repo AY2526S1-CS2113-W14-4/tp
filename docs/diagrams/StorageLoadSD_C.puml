@@ -7,7 +7,7 @@ participant ":BufferedReader" as BR
 
 loop for each remaining line
     S -> S: parse internship from file line
-    S -> S: split line by "|" and trim parts[]
+    S -> S: split line by "|" and trim each part
 
     alt parts.length != 5
         S --> S: return error (invalid field count)
@@ -18,7 +18,7 @@ loop for each remaining line
             S --> S: return if any invalid
         end
 
-        S -> DF: parse(deadline)
+        S -> DF: parse deadline
         activate DF
         alt invalid date
             DF --> S: throw InternityException
@@ -34,7 +34,7 @@ loop for each remaining line
         return
         note right of Intern: Created per valid line in file
 
-        S -> Intern: setStatus(status)
+        S -> Intern: set status
         activate Intern
         Intern --> S
         deactivate Intern

@@ -10,15 +10,15 @@ participant ":Storage" as Storage
 participant "<<class>>\nUi" as Ui
 
 
-User -> Manager : type command (e.g., "delete 1")
+User -> Manager : type command\n(e.g., "delete 1")
 Manager -> Parser : parse user input
 Parser -> Factory : create command
 Factory --> Parser : return Command
 Parser --> Manager : return Command
 
 Manager -> Command : execute
-Command -> Model : modify / query internships
-Command -> Ui : Ui display method
+Command -> Model : modify / query\ninternships
+Command -> Ui : Ui display\nmethod
 Manager -> Storage : save changes
 Manager --> User :
 @end

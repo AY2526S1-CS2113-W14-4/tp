@@ -83,3 +83,4 @@ code reuse.
 [#65](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/65),
 [#78](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/78),
 [#79](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/79)
+- Performed extensive testing on another team's project to find bugs / issues.
