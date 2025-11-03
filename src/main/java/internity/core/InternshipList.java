@@ -1,5 +1,6 @@
 package internity.core;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -9,11 +10,13 @@ import internity.logic.commands.ListCommand;
 import internity.storage.Storage;
 import internity.ui.Ui;
 
+
+
 /**
  * The {@code InternshipList} class manages a collection of {@link Internship}
  * objects representing internship applications.
  * <p>
- * It provides methods to add, delete, retrieve, list, sort, and search internships.
+ * It provides methods to add, delete, find, list, retrieve, sort and update internships.
  * The class also handles persistence by loading from and saving to storage.
  * </p>
  */
@@ -271,31 +274,56 @@ public class InternshipList {
         return username;
     }
 
-    // @@author {lukeai-tan}
     /**
-     * Finds the internship with the earliest deadline.
+     * Finds the internship with the nearest deadline.
+     * <p>
+     * Returns a {@link AbstractMap.SimpleEntry} containing the internship with the nearest deadline
+     * and the count of other internships that share the same deadline. The method first searches for
+     * internships with future deadlines (including today). If none exist, it returns
+     * the most recent past deadline.
+     * </p>
      * <p>
      * Assumes the internship list is non-empty.
      * </p>
      *
-     * @return the internship with the nearest upcoming deadline
+     * @return an {@link AbstractMap.SimpleEntry} where the key is the internship with the nearest deadline,
+     *         and the value is the count of additional internships with the same deadline
      * @throws InternityException if an error occurs while accessing internship data
      */
-    public static Internship findNearestDeadlineInternship() throws InternityException {
+    public static AbstractMap.SimpleEntry<Internship, Integer> findNearestDeadlineInternship()
+            throws InternityException {
         LOGGER.info("Finding internship with nearest deadline.");
         assert InternshipList.size() > 0 : "Cannot find nearest deadline in empty list";
+
         Internship nearest = null;
+        // no. of internships with same deadline as nearest
+        int countSameDeadline = 0;
+
+        // check if this internship has the nearest deadline (at least as near as the current nearest)
+        boolean isNearestDeadline;
+        //  check if the deadline is in the future (including today)
+        boolean isDeadlineInFuture;
+        // check if the deadline is the same as the current nearest deadline
+        boolean isSameDeadline;
 
         // get the internship with the nearest deadline that is in the future
         for (int i = 0; i < InternshipList.size(); i++) {
             Internship internship = InternshipList.get(i);
 
-            boolean isNearestDeadline = (nearest == null)
-                    || (internship.getDeadline().compareTo(nearest.getDeadline()) < 0);
-            boolean isDeadlineInFuture = (Date.getToday().compareTo(internship.getDeadline()) <= 0);
+            isNearestDeadline = (nearest == null)
+                    || (internship.getDeadline().compareTo(nearest.getDeadline()) <= 0);
+            isDeadlineInFuture = (Date.getToday().compareTo(internship.getDeadline()) <= 0);
 
             if (isNearestDeadline && isDeadlineInFuture) {
-                nearest = internship;
+                isSameDeadline = (nearest != null)
+                        && (internship.getDeadline().compareTo(nearest.getDeadline()) == 0);
+
+                if (isSameDeadline) {
+                    countSameDeadline += 1;
+                } else {
+                    nearest = internship;
+                    countSameDeadline = 0;
+                }
             }
         }
 
@@ -307,16 +335,26 @@ public class InternshipList {
             for (int i = 0; i < InternshipList.size(); i++) {
                 Internship internship = InternshipList.get(i);
 
-                boolean isNearestDeadline = (nearest == null)
-                        || (internship.getDeadline().compareTo(nearest.getDeadline()) > 0);
+                isNearestDeadline = (nearest == null)
+                        || (internship.getDeadline().compareTo(nearest.getDeadline()) >= 0);
 
                 if (isNearestDeadline) {
-                    nearest = internship;
+                    isSameDeadline = (nearest != null)
+                            && (internship.getDeadline().compareTo(nearest.getDeadline()) == 0);
+
+                    if (isSameDeadline) {
+                        countSameDeadline += 1;
+                    } else {
+                        nearest = internship;
+                        countSameDeadline = 0;
+                    }
                 }
             }
         }
 
         LOGGER.fine("Found nearest deadline internship: " + nearest);
-        return nearest;
+        LOGGER.fine("Found occurrence of nearest deadline: " + countSameDeadline);
+
+        return new AbstractMap.SimpleEntry<>(nearest, countSameDeadline);
     }
 }
