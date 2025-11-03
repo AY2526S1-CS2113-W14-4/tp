@@ -795,6 +795,7 @@ the username, total internships, status overview and nearest deadline.
    - Nearest deadline: Gets the upcoming internship with the nearest deadline using `InternshipList.getNearestDeadline()`.
      - Case 1: If internship with future (at least today) upcoming deadline exist, displays the internship details.
      - Case 2: If no such internships exist, it displays the details of internship with the most recent past deadline and marks it as <code>(OVERDUE!)</code>.
+   - Nearest deadline count: Gets the count of internships with the same deadline as the nearest deadline internship.
    - Status overview: Aggregates internship statuses into categories (Pending, Applied, etc.) and displays a summary.
 4. If no internships exist, a meaningful fallback message is shown (e.g. "No internships found.").
 
