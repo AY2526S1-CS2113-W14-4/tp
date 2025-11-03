@@ -655,23 +655,23 @@ The search looks for matching company or role names.
 - **Implementation**:
     - Internships are filtered using a stream to check if the keyword exists in either the company name or the role.
     - The filter is case-insensitive (`keyword.toLowerCase()`).
-    - If no internships match the keyword, a message is printed: "No internships with this Company or Role found."
+    - If no internships match the keyword, a message is printed: "No internships with this company or role found."
     - If matches are found, the results are passed to the `Ui.printFindInternship()` method for display.
 
 ### Example Usage Scenario
 
-1. **Step 1**: The user launches the application and executes a find command by typing `find Google`.
+**Step 1**: The user launches the application and executes a find command by typing `find Google`.
 
-2. **Step 2**: The `CommandParser` parses the input, extracting the command word `find` and the argument `Google`.
+**Step 2**: The `CommandParser` parses the input, extracting the command word `find` and the argument `Google`.
 
-3. **Step 3**: The `CommandFactory` creates a `FindCommand` with the keyword `Google`.
+**Step 3**: The `CommandFactory` creates a `FindCommand` with the keyword `Google`.
 
-4. **Step 4**: The `FindCommand.execute()` method is called, triggering the `InternshipList.findInternship()` method.
+**Step 4**: The `FindCommand.execute()` method is called, triggering the `InternshipList.findInternship()` method.
 
-5. **Step 5**: `findInternship()` filters the internships, looking for the keyword in both the company and role fields.
+**Step 5**: `findInternship()` filters the internships, looking for the keyword in both the company and role fields.
 If any matches are found, they are displayed through the UI.
 
-6. **Step 6**: If no matches are found, the user sees the message printed in the Ui: "No internships with this company or role found."
+**Step 6**: If no matches are found, the user sees the message printed in the UI: "No internships with this company or role found."
 
 ### Internals and Key Functions
 
@@ -694,12 +694,12 @@ for display. The UI is responsible for presenting the search results to the user
 - **Expected Output**:
     ```
     These are the matching internships in your list:
-    ______________________________________________________________________________________________
-    No. Company         Role                           Deadline        Pay        Status
-    ______________________________________________________________________________________________
-      1 Google          Software Engineer              17-09-2025      120000     Pending   
-      2 Alphabet        Googleerrr                     17-09-2025      120000     Pending    
-    ______________________________________________________________________________________________
+    _____________________________________________________________________________________________________________
+    No. Company                        Role                           Deadline        Pay        Status 
+    _____________________________________________________________________________________________________________
+      1 Google                         Software Engineer              17-09-2025      120000     Pending   
+      2 Alphabet                       Googleerrr                     17-09-2025      120000     Pending    
+    _____________________________________________________________________________________________________________
     ```
 
   If no internships match:
@@ -745,7 +745,7 @@ for moderate-sized datasets but may require optimisation for larger datasets.
     * Cons: May produce partial matches that are not meaningful (e.g. “Meta” matching “Metaverse”). 
 
 * **Alternative 2:** Exact or regex-based matching.
-    * Pros: Allows for precise control — users can specify exact matches or complex patterns.
+    * Pros: Allows for precise control as users can specify exact matches or complex patterns.
     * Pros: More suitable for power users who need fine-grained filtering.
     * Cons: Less user-friendly for casual users unfamiliar with regex or strict syntax.
     * Cons: Increased complexity compared to simple substring search due to more complex validation and greater likelihood of parsing errors.
@@ -754,16 +754,15 @@ for moderate-sized datasets but may require optimisation for larger datasets.
 
 ### Username feature
 
-**API**: [`UsernameCommand.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/logic/commands/UsernameCommand.java)
+**API**: `UsernameCommand.java`
 
-The Username feature allows the user to set a personalized username that is stored within the application's
+The Username feature allows the user to set a personalised username that is stored within the application's
 persistent data model and displayed in future interactions.
 
 ![Username Command: Sequence Diagram](diagrams/UsernameCommandSD.png)
 
-
 #### Implementation
-1. The `UsernameCommand` is created by the `CommandParser` after recognizing the `username` keyword from user input.
+1. The `UsernameCommand` is created by the `CommandParser` after recognising the `username` keyword from user input.
     ```sh
     username Jane Doe
     ```
