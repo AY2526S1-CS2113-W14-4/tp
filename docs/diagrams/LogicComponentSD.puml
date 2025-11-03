@@ -18,7 +18,7 @@ CP --> CP: return from validate
 deactivate CP
 
 ' --- split input ---
-CP -> CP: split input into commandWord and args
+CP -> CP: split input into\ncommandWord and args
 activate CP
 CP --> CP: return from split
 deactivate CP
@@ -36,7 +36,7 @@ alt Command requires argument parsing
     deactivate AddC
     AP --> CF: return AddCommand
     deactivate AP
-else Command does not require args (exit/dashboard)
+else Command does not require args
     CF -> ExitC**: create ExitCommand
     activate ExitC
     return

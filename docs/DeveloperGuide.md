@@ -103,7 +103,7 @@ When a command is executed, it delegates output responsibilities to the `Ui` cla
 For example:
    - `Ui.printAddInternship()` displays confirmation for a newly added internship.
    - `Ui.printFindInternship()` displays results in a neat, column-aligned format.
-3. For specialized displays such as the dashboard, the `DashboardUi` class is used.
+3. For specialised displays such as the dashboard, the `DashboardUi` class is used.
 
 #### Design Considerations
 - Static methods
@@ -138,7 +138,7 @@ The class diagram above shows the main classes involved in parsing, creating, an
 - All Command subclasses implement the execute() method, following the Command Pattern.
 
 #### How it Works
-1. User input (e.g. `add company/Google role/Software Engineer deadline/17-09-2025 pay/1000`) is received by CommandParser.
+1. User input (e.g. `add company/Google role/Software Engineer deadline/17-09-2025 pay/7000`) is received by CommandParser.
 2. The `CommandParser`:
    - Validates that the input is not empty or malformed.
    - Splits the input into a command keyword and arguments.
@@ -148,7 +148,7 @@ The class diagram above shows the main classes involved in parsing, creating, an
    - Uses the `ArgumentParser` to interpret argument strings.
    - Returns a fully constructed `Command` object.
 4. The `Command` object executes its logic (e.g. adds a new internship to `InternshipList`).
-5. Finally, the result of the execution is printed ot the console via the `Ui`.
+5. Finally, the result of the execution is printed to the console via the `Ui`.
 
 #### Sequence Diagram
 The following sequence diagram illustrates how the Logic Component processes an input command:
@@ -157,13 +157,13 @@ The following sequence diagram illustrates how the Logic Component processes an 
 
 #### Explaining Commands with and without arguments
 1. Commands that **require** arguments 
-   - `add`, `update`, `delete`, `find`, `list`, `username`
+   - `add`, `delete`, `find`, `list`, `update`, `username`
    - These commands need extra information to execute correctly:
      - `add` needs company, role, deadline and pay.
      - `update` needs an index and fields to update.
      - `find` needs a search keyword.
 2. Commands that **do not require** arguments
-   - `exit`, `dashboard`, `help`
+   - `dashboard`, `exit`, `help`
    - These commands operate independently of data supplied by the user.
    - `CommandFactory` directly constructs the corresponding `Command` object (e.g. `ExitCommand` or `DashboardCommand`) without invoking `ArgumentParser`.
 
