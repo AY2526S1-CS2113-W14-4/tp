@@ -208,7 +208,7 @@ The sequence diagram above shows how the `AddCommand` interacts with the `Intern
 
 The following object diagram illustrates the objects after an internship has been added using the `AddCommand`.
 
-![Model Component - Object Diagram (After adding an internship)](diagrams/ModelComponentDD_Add.png)
+![Model Component - Object Diagram (After adding an internship)](diagrams/ModelComponentOD_Add.png)
 
 After executing the `AddCommand`, a new `Internship` object is created and added to the `InternshipList`.
 The `Internship` object contains all relevant attributes, including company, role, pay, status, and a deadline
