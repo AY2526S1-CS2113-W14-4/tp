@@ -206,6 +206,17 @@ The sequence diagram above shows how the `AddCommand` interacts with the `Intern
 2. `InternshipList` creates a new `Internship` object with those parameters.
 3. `InternshipList` calls `add()` to add the new internship to the static ArrayList of internships.
 
+The following object diagram illustrates the objects after an internship has been added using the `AddCommand`.
+
+![Model Component - Object Diagram (After adding an internship)](diagrams/ModelComponentDD_Add.png)
+
+After executing the `AddCommand`, a new `Internship` object is created and added to the `InternshipList`.
+The `Internship` object contains all relevant attributes, including company, role, pay, status, and a deadline
+that points to a separate `Date` object representing the day, month and year of the application deadline.
+The `AddCommand` maintains a reference to both the newly created `Internship` and its associated `Date` during execution.
+The object diagram illustrates these relationships, showing that `InternshipList` now contains the new `Internship`, and
+that deadline is a distinct object referenced by `Internship`.
+
 The following sequence diagram illustrates how the Model Component processes an Update command:
 
 ![Model Component: Sequence Diagram (Updating status of an existing internship)](diagrams/ModelComponentSD_Update.png)
