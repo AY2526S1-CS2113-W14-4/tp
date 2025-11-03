@@ -1191,10 +1191,9 @@ Test case 2: Invalid username input
 ---
 
 ### Displaying the Internity Dashboard
-Prerequisites: At least one internship has been added to the system.
 
 Test case 1: Display dashboard with multiple internships
-- Action: `dashboard`
+- Action: Add internships, then `dashboard`
 - Expected:
   - Dashboard shows the current username.
   - Total internships are displayed.
@@ -1217,7 +1216,19 @@ Test case 4: Dashboard reflects recent changes
 - Expected:
   - Dashboard reflects the updated internship count, deadlines and statuses.
 
+Test case 5: Nearest deadline is overdue
+- Action: Add only internships with deadlines in the past, then `dashboard`
+- Expected:
+    - Dashboard shows the nearest deadline internship marked as `(OVERDUE!)`.
+
+Test case 6: Multiple internships with the same nearest deadline
+- Action: Add multiple internships with the same nearest deadline (e.g. the date today), then `dashboard`
+- Expected:
+    - Dashboard shows the nearest deadline internship and indicates the count of other internships with that deadline.
+
+
 ---
+
 
 ### Saving Data
 Prerequisites: 
