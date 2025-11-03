@@ -287,7 +287,7 @@ This process ensures strict input integrity, correct field representation and da
 * Assertion ensures arguments remain non-blank after validation.
 
 **2. Splitting Fields**
-* Splits the input string using the predefined delimiter PARSE_LOGIC_ADD.
+* Splits the input string using the predefined regular expression pattern `PARSE_LOGIC_ADD`, which employs a lookahead to separate fields at whitespace positions that precede one of the expected prefixes (`company/`, `role/`, `deadline/`, or `pay/`).
 * Expects exactly four parts each prefixed with `company/`, `role/`, `deadline/` and `pay/`, and in this exact order. 
 * If the number of fields is not four, throws `InternityException.invalidAddCommand()`.
 * If any field is missing or placed in the wrong order, throws `InternityException.noFieldForAdd()` specifying that field.
@@ -455,7 +455,7 @@ Given below is an example usage scenario and how the update mechanism behaves at
 
   - Splits the arguments into the index token and a tagged fields segment.  
   - Converts the 1-based index to 0-based.  
-  - Scans tagged parts for `company/`, `role/`, `deadline/`, `pay/`, `status/`.  
+  - Scans tagged parts for `company/`, `role/`, `deadline/`, `pay/`, `status/` using the predefined regular expression pattern `PARSE_LOGIC_UPDATE`.  
   - Parses types and validates formats.  
     - `deadline/` is parsed with `DateFormatter.parse(...)`.  
     - `pay/` is parsed as a non-negative integer.  
@@ -470,7 +470,7 @@ Given below is an example usage scenario and how the update mechanism behaves at
 - **Step 4.** Executing the command
   `InternityManager` calls `UpdateCommand.execute()`, which:
 
-  - Initializes `isUpdated = false`.  
+  - Initialises `isUpdated = false`.  
   - For each non-null field, calls the corresponding `InternshipList.updateX(...)`.  
     Each update method checks index bounds and applies the new value.  
     `updateStatus` additionally validates and canonicalizes the status string.  
