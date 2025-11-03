@@ -890,4 +890,32 @@ class StorageTest {
         assertEquals("Amazon", internships.get(1).getCompany());
         assertTrue(errContent.toString().contains("Warning: Skipped line with non-ASCII characters in role"));
     }
+
+    @Test
+    void load_usernameWithEmoji_skipsUsername() throws InternityException, IOException {
+        String content = "Username (in line below):\n"
+                + "User😊Name\n"  // Emoji in username
+                + "Google | SWE | 15-03-2025 | 6000 | Pending\n";
+        Files.writeString(Path.of(testFilePath), content);
+
+        ArrayList<Internship> internships = storage.load();
+
+        assertEquals(1, internships.size());
+        assertNull(InternshipList.getUsername()); // Username should not be set
+        assertEquals("Google", internships.get(0).getCompany());
+    }
+
+    @Test
+    void load_validAsciiUsername_loadsSuccessfully() throws InternityException, IOException {
+        String content = "Username (in line below):\n"
+                + "Valid_User-123!@#\n"  // All valid ASCII characters
+                + "Google | SWE | 15-03-2025 | 6000 | Pending\n";
+        Files.writeString(Path.of(testFilePath), content);
+
+        ArrayList<Internship> internships = storage.load();
+
+        assertEquals(1, internships.size());
+        assertEquals("Valid_User-123!@#", InternshipList.getUsername()); // Username should be set
+        assertEquals("Google", internships.get(0).getCompany());
+    }
 }
