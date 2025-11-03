@@ -4,6 +4,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import internity.logic.commands.ListCommand;
@@ -159,18 +160,44 @@ public class InternshipList {
         }
         assert (size() > 0) : "Internship list should not be empty";
 
-        List<Internship> view = sortInternships(order);
-
-        Ui.printInternshipListHeader("Here are the internships in your list:");
-        int i = 0;
-        for (Internship internship : view) {
-            LOGGER.fine("Listing internship at index: " + i);
-            Ui.printInternshipListContent(i, internship);
-            i++;
+        // Pair each internship with its original index
+        List<Map.Entry<Integer, Internship>> indexedList = new ArrayList<>();
+        for (int i = 0; i < internshipList.size(); i++) {
+            indexedList.add(Map.entry(i, internshipList.get(i)));
         }
-        LOGGER.info("Finished listing internships. Total: " + i);
-        assert (i == view.size()) : "All internships should be listed";
+
+        // Only sort if an order is specified
+        if (order == ListCommand.OrderType.ASCENDING || order == ListCommand.OrderType.DESCENDING) {
+            Comparator<Map.Entry<Integer, Internship>> comparator =
+                    Comparator.comparing(entry -> entry.getValue().getDeadline());
+            if (order == ListCommand.OrderType.DESCENDING) {
+                comparator = comparator.reversed();
+            }
+            indexedList.sort(comparator);
+        }
+
+        // Print header
+        String header = "Here are the internships in your list";
+        if (order == ListCommand.OrderType.ASCENDING) {
+            header += " (sorted by deadline ascending):";
+        } else if (order == ListCommand.OrderType.DESCENDING) {
+            header += " (sorted by deadline descending):";
+        } else {
+            header += " (in order added):";
+        }
+        Ui.printInternshipListHeader(header);
+
+        // Display internships with their original indexes
+        for (Map.Entry<Integer, Internship> entry : indexedList) {
+            int originalIndex = entry.getKey();
+            Internship internship = entry.getValue();
+            Ui.printInternshipListContent(originalIndex, internship);
+        }
+
+        LOGGER.info("Finished listing internships. Total: " + indexedList.size());
+        assert (indexedList.size() == size()) : "All internships should be listed";
     }
+
 
     // @@author {V1T0bh}
     private static boolean isEmpty() {
