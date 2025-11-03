@@ -44,7 +44,7 @@ class Date {
 }
 
 
-InternshipList *--> "*" Internship
+InternshipList *-- "*" Internship
 Internship .|> "<<interface>>\nComparable<T>"
 Date .left.|> "<<interface>>\nComparable<T>"
 Internship -right-> "1" Date : due by >
