@@ -245,13 +245,13 @@ dashboard
 <ul>
 <li>This command is still valid if extra parameters are given
 <br>Example: <code>dashboard cs2113</code></li>
-<li>The <strong>Nearest Deadline</strong> displays the internship with the closest upcoming deadline. If no future deadlines exist, it shows the most recent past deadline and marks it as <code>(OVERDUE!)</code>.
+<li>The <strong>Nearest Deadline</strong> displays the internship with the closest upcoming deadline. If no future deadlines exist, it shows the most recent past deadline and marks it as <code>(OVERDUE!)</code>.</li>
 <br>Example:
 
-<code>Nearest Deadline:
-
-31-10-2019 | Coffee Barista @ Sunbucks (OVERDUE!)</code></li>
-</ul>
+```
+Nearest Deadline:
+  31-10-2019 | Coffee Barista @ Sunbucks (OVERDUE!)
+```
 </div>
 
 ---
