@@ -1,0 +1,17 @@
+@startuml
+title Help Command - Sequence Diagram
+
+participant ":InternityManager" as IM
+participant ":HelpCommand" as HC
+participant "<<class>>\nUi" as Ui
+
+IM -> HC: execute()
+activate HC
+HC -> Ui: printHelp()
+activate Ui
+Ui --> HC
+deactivate Ui
+HC --> IM
+deactivate HC
+
+@enduml

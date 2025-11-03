@@ -328,7 +328,8 @@ At any failure stage: The issue is logged an appropriate `InternityException` is
 **Step 4.** When `InternityManager` calls `AddCommand.execute()`:
 * A new `Internship` object is created using the parsed details.
 * The `InternshipList.add(internship)` method adds the internship to the global static list.
-* The `Ui.printAddInternship()` method displays a formatted confirmation message to the user:
+* The `Ui.printAddInternship()` method displays a formatted confirmation message to the user.\
+    **Output:**
     ```
     Added this internship:
       Company: Google
@@ -837,6 +838,22 @@ and the main command loop in InternityManager is stopped.
 termination.
 3. Since `isExit()` returns true, the main loop breaks, ending the program.
 4. ExitCommand is the only `Command` subclass that returns true for `isExit()`.
+
+---
+
+### Help feature
+
+**API**: `HelpCommand.java`
+
+The `HelpCommand` provides a quick reference to all available commands in the Internity application.
+The commands are listed in an ordered, easy-to-read format to assist navigation and usage.
+
+![Help Command: Sequence Diagram](diagrams/HelpCommandSD.png)
+
+#### Implementation
+1. When the user enters `help`, the `CommandParser` returns a `HelpCommand` instance.
+2. `InternityManager` calls `execute()` on the command, which invokes the `Ui.printHelp()` method.
+3. `Ui.printHelp()` prints a formatted list detailing all commands.
 
 ---
 
