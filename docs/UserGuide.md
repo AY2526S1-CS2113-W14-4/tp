@@ -47,7 +47,7 @@ Tip: Type `help` to view a list of available commands at any time.
 Example: <code>delete INDEX</code> → Please input <code>delete 1</code></li>
 <li>The commands <code>dashboard</code>, <code>help</code> and <code>exit</code> will ignore any arguments. The command will still be valid.</li>
 <li>If using a PDF version, be careful when copying commands that span multiple lines as spaces surrounding line-breaks may be omitted.</li>
-<li>Uppercase, lowercase, digits and symbols are allowed. More specifically, only valid ASCII printable characters are allowed (character code 32 to 126).</li>
+<li>Uppercase, lowercase, digits and symbols are allowed. More specifically, only valid ASCII printable characters are allowed (character codes 32 to 126).</li>
 </ul>
 </div>
 
@@ -317,13 +317,28 @@ exit
 
 
 * **Q: How can I reset my data to start fresh?**
-  <br> A: Close the app and delete or rename the `data/internships.txt` file. On next start, the app will create a new empty data file. Be careful: this deletes all saved internships.
+  <br> A: Close the app and delete the `data/internships.txt` file. On next start, the app will create a new empty data file. Be careful: this deletes all saved internships.
 
 
 * **Q: I see warnings about corrupted lines being deleted when I start Internity — what happened?**
   <br> A: On startup, Internity scans the save file (`data/internships.txt`) for malformed or corrupted lines. If any problematic lines are found, the program automatically detects and removes those lines to keep the data consistent and prints a warning for each deleted line. These warnings appear before the welcome message.
   <br>*Important*: the deletions are staged in memory and are NOT written back to the save file immediately. The cleaned data is only persisted to disk when the program executes a command. If you force-quit the program (for example, pressing Ctrl+C) before typing any command, the program exits without saving and the original save file will remain unchanged.
 
+
+* **Q: Does the username persist between sessions?**
+  <br> A: Yes, the username is saved in the data file and automatically loaded when you start Internity.
+
+
+* **Q: Can I have duplicate internship applications?**
+  <br> A: Yes, Internity allows multiple entries with the same company and role, as they may represent different opportunities or applications.
+
+
+* **Q: What if I enter a deadline in the past?**
+  <br> A: You can add past deadlines without issue.
+
+
+* **Q: Is the pay amount monthly or annual?**
+  <br> A: The pay field represents the monthly salary (e.g., in SGD or your local currency). It's stored as a number without units, so you may choose to use any currency.
 ---
 
 ## Command Summary
