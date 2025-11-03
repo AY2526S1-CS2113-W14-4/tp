@@ -1,5 +1,6 @@
 package internity.logic.cli;
 
+import internity.core.InternityException;
 import internity.logic.commands.AddCommand;
 import internity.logic.commands.Command;
 import internity.logic.commands.DashboardCommand;
@@ -10,7 +11,6 @@ import internity.logic.commands.ListCommand;
 import internity.logic.commands.UpdateCommand;
 import internity.logic.commands.UsernameCommand;
 import internity.logic.commands.HelpCommand;
-import internity.core.InternityException;
 
 /**
  * A factory class responsible for creating {@link Command} objects

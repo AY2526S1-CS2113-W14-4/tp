@@ -60,11 +60,10 @@ note as NoteStorage
 end note
 
 Storage ..> NoteStorage
-
 Storage ..> Internship
 Storage ..> DateFormatter
 Storage ..> InternityException
 InternshipList "1" - "1" Storage : uses >
-InternshipList --> "*" Internship
+InternshipList *-- "*" Internship
 
 @enduml
