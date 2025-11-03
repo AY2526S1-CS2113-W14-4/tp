@@ -18,6 +18,7 @@ Y2 CEG. Part of the development team for Internity, supporting Internity by prov
 - Implemented HelpCommand to provide users with help information on available commands
 - Wrote unit tests for Internship, InternshipList, ListCommand, and HelpCommand classes to ensure code reliability and correctness
 - Added UI methods to display internship listings and help information to users
+- Refactored existing code to improve readability and maintainability
 
 ### Documentation
 - User Guide:
@@ -30,6 +31,8 @@ Y2 CEG. Part of the development team for Internity, supporting Internity by prov
   - Added UML Diagrams for:
     - Model Component Class Diagram
     - Model Component Sequence Diagram
+  - Updated some sections for better clarity and accuracy.
+- Added Javadoc comments for all newly created classes and methods to enhance code documentation and facilitate future
 
 ### Project management
 * Set up team organization on GitHub.
@@ -41,5 +44,14 @@ Y2 CEG. Part of the development team for Internity, supporting Internity by prov
 
 #### Contribution to Team
 - Provided timely PR reviews to teammates.
+  - [#56](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/56)
+  - [#66](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/66)
+  - [#95](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/95)
+  - [#189](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/189)
+  - [#190](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/190)
+  - [See others](https://github.com/AY2526S1-CS2113-W14-4/tp/pulls?q=is%3Apr+reviewed-by%3A%40me+is%3Aclosed)
 
 #### Contributions beyond Team
+- Provided comments to other teams' tPs via upstream repo PR reviews:
+  - [[CS2113-W13-4] BusyBreak](https://github.com/nus-cs2113-AY2526S1/tp/pull/36)
+  - [[CS2113-T10-2] ClassCraft](https://github.com/nus-cs2113-AY2526S1/tp/pull/13)
