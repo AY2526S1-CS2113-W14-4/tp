@@ -15,6 +15,13 @@
 - Added static calls to `InternshipList.updateX(...)` for each non-null field
 - Added **unit tests** to verify that the command correctly updates internships, throws appropriate exceptions for invalid input, and integrates properly with `ArgumentParser` and `InternshipList`.
 
+### `ListCommand`
+- Refactored the existing `ListCommand` and `InternshipList` interaction to resolve the issue where the internship list could not revert to its original order after sorting.
+- Modified the `InternshipList.sortInternships()` method to create a separate `ArrayList` copy instead of sorting the internal list directly, ensuring sorting is temporary and non-persistent.
+- Updated `listAll()` to iterate through this temporary view when the user specifies list sort/asc or list sort/desc, leaving the original list unchanged.
+- Verified that the default `list` command still displays internships in the order they were added.
+- Added unit tests confirming that sorting only affects the current view, and that subsequent `list` commands correctly revert to the original unsorted order.
+
 ### Documentation
 - **Developer Guide:**
   - Worked on the section for the `UpdateCommand`, covering:
@@ -24,6 +31,7 @@
       - `Update Command Sequence Diagram`
       - `Update Feature Class Diagram`
   - Conducted **manual testing** to confirm that command behavior matched the described documentation scenarios.  
+  - Updated the section for the `ListCommand` to match the updated implementation for sorting.
 
 ### Community
 Reviewed PRs
