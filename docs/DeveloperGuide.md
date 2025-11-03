@@ -764,7 +764,7 @@ persistent data model and displayed in future interactions.
     ```
 2. The `UsernameCommand` constructor validates that the argument is non-null and non-blank.
 3. When `execute()` is called:
-   - The provided username is stored via `InternshipList.setUSername(username)`.
+   - The provided username is stored via `InternshipList.setUsername(username)`.
    - The UI is updated through `Ui.printSetUsername(username)` to show the change.
 4. The command does not modify any internship data and does not terminate the application.
 
