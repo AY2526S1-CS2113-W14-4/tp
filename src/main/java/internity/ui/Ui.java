@@ -192,8 +192,8 @@ public class Ui {
 
                   - add       : Add a new internship application with company, role, deadline, and pay.
                   - delete    : Remove an internship application at the specified index.
-                  - list      : Display all internship applications, optionally sorted by deadline.
                   - find      : Search and list internship applications matching a keyword.
+                  - list      : Display all internship applications, optionally sorted by deadline.
                   - update    : Update any field of an internship application at the specified index.
                   - username  : Set your username for personalised greetings.
                   - dashboard : View statistics about your internship applications.
