@@ -1,5 +1,6 @@
 package internity.core;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.logging.Logger;
@@ -7,6 +8,8 @@ import java.util.logging.Logger;
 import internity.logic.commands.ListCommand;
 import internity.storage.Storage;
 import internity.ui.Ui;
+
+
 
 /**
  * The {@code InternshipList} class manages a collection of {@link Internship}
@@ -266,25 +269,29 @@ public class InternshipList {
         return username;
     }
 
-    // @@author {lukeai-tan}
     /**
-     * Finds the internship with the earliest deadline.
+     * Finds the internship with the nearest deadline.
+     * <p>
+     * Returns a {@link AbstractMap.SimpleEntry} containing the internship with the nearest deadline
+     * and the count of other internships that share the same deadline. The method first searches for
+     * internships with future deadlines (including today). If none exist, it returns
+     * the most recent past deadline.
+     * </p>
      * <p>
      * Assumes the internship list is non-empty.
      * </p>
      *
-     * @return the internship with the nearest upcoming deadline
+     * @return an {@link AbstractMap.SimpleEntry} where the key is the internship with the nearest deadline,
+     *         and the value is the count of additional internships with the same deadline
      * @throws InternityException if an error occurs while accessing internship data
      */
-    public static ArrayList<Internship> findNearestDeadlineInternship() throws InternityException {
+    public static AbstractMap.SimpleEntry<Internship, Integer> findNearestDeadlineInternship() throws InternityException {
         LOGGER.info("Finding internship with nearest deadline.");
         assert InternshipList.size() > 0 : "Cannot find nearest deadline in empty list";
-        ArrayList<Internship> result = new ArrayList<>();
+
         Internship nearest = null;
-        // value of pay is no. of internships with same deadline as nearest
-        Internship countSameDeadlineInternship = new Internship(
-                "Count", "count", new Date(1, 1,1970),
-                0);
+        // no. of internships with same deadline as nearest
+        int countSameDeadline = 0;
 
         // check if this internship has the nearest deadline (at least as near as the current nearest)
         boolean isNearestDeadline;
@@ -292,8 +299,6 @@ public class InternshipList {
         boolean isDeadlineInFuture;
         // check if the deadline is the same as the current nearest deadline
         boolean isSameDeadline;
-        // no. of internships with same deadline as nearest
-        int countSameDeadline = 0;
 
         // get the internship with the nearest deadline that is in the future
         for (int i = 0; i < InternshipList.size(); i++) {
@@ -325,7 +330,7 @@ public class InternshipList {
                 Internship internship = InternshipList.get(i);
 
                 isNearestDeadline = (nearest == null)
-                        || (internship.getDeadline().compareTo(nearest.getDeadline()) > 0);
+                        || (internship.getDeadline().compareTo(nearest.getDeadline()) >= 0);
 
                 if (isNearestDeadline) {
                     isSameDeadline = (nearest != null)
@@ -333,7 +338,7 @@ public class InternshipList {
 
                     if (isSameDeadline) {
                         countSameDeadline += 1;
-                    } else{
+                    } else {
                         nearest = internship;
                         countSameDeadline = 0;
                     }
@@ -342,12 +347,8 @@ public class InternshipList {
         }
 
         LOGGER.fine("Found nearest deadline internship: " + nearest);
-        LOGGER.fine("Found occurence of nearest deadline: " + countSameDeadline);
+        LOGGER.fine("Found occurrence of nearest deadline: " + countSameDeadline);
 
-        countSameDeadlineInternship.setPay(countSameDeadline);
-        result.add(nearest);
-        result.add(countSameDeadlineInternship);
-
-        return result;
+        return new AbstractMap.SimpleEntry<>(nearest, countSameDeadline);
     }
 }

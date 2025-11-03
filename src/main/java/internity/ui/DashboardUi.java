@@ -1,9 +1,6 @@
 package internity.ui;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 import internity.core.InternityException;
@@ -126,9 +123,9 @@ public class DashboardUi {
             return;
         }
 
-        ArrayList<Internship> nearestResult = InternshipList.findNearestDeadlineInternship();
-        Internship nearest = nearestResult.get(0);
-        int countNearest = nearestResult.get(1).getPay(); // Using pay field to store count of nearest deadlines
+        AbstractMap.SimpleEntry<Internship, Integer> nearestResult = InternshipList.findNearestDeadlineInternship();
+        Internship nearest = nearestResult.getKey();
+        int countNearest = nearestResult.getValue();
 
         if (nearest == null) {
             System.out.println("\nNearest Deadline: No valid deadlines found.");
@@ -143,7 +140,7 @@ public class DashboardUi {
                 nearest.getRole(),
                 nearest.getCompany(),
                 (isDeadlineInPast)? "(OVERDUE!)" : "");
-        if (countNearest > 0){
+        if (countNearest > 0) {
             System.out.printf(INDENT + "(Found %d other internship(s) with the same deadline)%n", countNearest);
         }
 
