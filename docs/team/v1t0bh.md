@@ -49,7 +49,7 @@ Y2 CEG. Part of the development team for Internity, supporting Internity by prov
   - [#95](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/95)
   - [#189](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/189)
   - [#190](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/190)
-  - [See others](https://github.com/AY2526S1-CS2113-W14-4/tp/pulls?q=is%3Apr+reviewed-by%3A%40me+is%3Aclosed)
+  - [See others](https://github.com/AY2526S1-CS2113-W14-4/tp/pulls?q=is%3Apr+reviewed-by%3AV1T0bh+is%3Aclosed+)
 
 #### Contributions beyond Team
 - Provided comments to other teams' tPs via upstream repo PR reviews:
