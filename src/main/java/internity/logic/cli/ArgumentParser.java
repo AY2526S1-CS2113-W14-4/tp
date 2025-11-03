@@ -2,7 +2,8 @@ package internity.logic.cli;
 
 import java.util.logging.Logger;
 
-import internity.Internity;
+import internity.core.Date;
+import internity.core.InternityException;
 import internity.core.InternshipList;
 import internity.core.Status;
 import internity.logic.commands.AddCommand;
@@ -11,8 +12,6 @@ import internity.logic.commands.FindCommand;
 import internity.logic.commands.ListCommand;
 import internity.logic.commands.UpdateCommand;
 import internity.logic.commands.UsernameCommand;
-import internity.core.Date;
-import internity.core.InternityException;
 import internity.ui.Ui;
 import internity.utils.DateFormatter;
 
