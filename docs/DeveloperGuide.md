@@ -91,8 +91,8 @@ The UI component is responsible for all interactions between the user and the ap
 It displays messages, prompts, and formatted lists in the command-line interface (CLI), and ensures that feedback 
 from executed commands is presented clearly.
 
-The API of this component is specified in the [`Ui.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/ui/Ui.java) class
-and the [`DashboardUi.java`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/ui/DashboardUi.java).
+The API of this component is specified in the `Ui.java` class
+and the `DashboardUi.java`.
 
 ![UI Component Diagram](diagrams/UiComponentOverview.png)
 
@@ -168,14 +168,14 @@ The following sequence diagram illustrates how the Logic Component processes an 
    - `CommandFactory` directly constructs the corresponding `Command` object (e.g. `ExitCommand` or `DashboardCommand`) without invoking `ArgumentParser`.
 
 This distinction is represented in the above sequence diagram's `alt` block, showing the two conditional flows:
-- Top path (commands requiring arguments) -> parsed via `ArgumentParser`.
+- Top path (commands requiring arguments) -> parsed via `ArgumentParser`, then instantiated.
 - Bottom path (commands not requiring arguments) -> instantiated directly.
 
 ---
 
 ### Model Component
 
-**API**: [`internity.core`](https://github.com/AY2526S1-CS2113-W14-4/tp/blob/master/src/main/java/internity/core/)
+**API**: `internity.core`
 
 #### Overview
 
@@ -188,24 +188,23 @@ The `Model` component:
 
 ![Model Component: Class Diagram](diagrams/ModelComponentCD.png)<br>
 The class diagram above shows the main classes involved in manipulating `Internship` objects.
-* InternshipList is a singleton class that manages a static ArrayList of Internship objects. It provides methods to add, delete, update, find and list internships. It also allows
-* Internship represents a single internship application with attributes like company, role, deadline, pay and status.
+* InternshipList is a class that manages a static ArrayList of Internship objects. It provides methods to add, delete, find, list, retrieve, sort and update internships.
+* Internship represents a single internship application with the attributes company, role, deadline, pay and status.
 * Date encapsulates date-related functionality, including parsing and formatting dates in dd-MM-yyyy format.
-* Status is an enum representing the possible statuses of an internship application (Pending, Applied, Interview, Offer, Rejected).
+* Status is an enum representing the possible statuses of an internship application (Pending, Interested, Applied, Interviewing, Offer, Accepted, Rejected).
 
 *Getters and setters have been omitted from Class Diagram for clarity.*
 
 #### Sequence Diagram
 
-The following sequence diagram illustrates how the Model Component processes an Add command:
+The following sequence diagram illustrates how the Model Component processes an `AddCommand`:
 
 ![Model Component: Sequence Diagram (Adding a new Internship)](diagrams/ModelComponentSD_Add.png)
 
 The sequence diagram above shows how the `AddCommand` interacts with the `InternshipList` to add a new internship.
 1. The `InternshipList.add()` method is called with the necessary parameters (company, role, deadline, pay).
 2. `InternshipList` creates a new `Internship` object with those parameters.
-3. `InternshipList` calls `add()` to add the new internship to the static list.
-
+3. `InternshipList` calls `add()` to add the new internship to the static ArrayList of internships.
 
 The following sequence diagram illustrates how the Model Component processes an Update command:
 

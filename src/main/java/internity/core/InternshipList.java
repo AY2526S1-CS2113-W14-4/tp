@@ -12,7 +12,7 @@ import internity.ui.Ui;
  * The {@code InternshipList} class manages a collection of {@link Internship}
  * objects representing internship applications.
  * <p>
- * It provides methods to add, delete, retrieve, list, sort, and search internships.
+ * It provides methods to add, delete, find, list, retrieve, sort and update internships.
  * The class also handles persistence by loading from and saving to storage.
  * </p>
  */
