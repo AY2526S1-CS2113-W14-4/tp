@@ -16,9 +16,39 @@ activate BR
 BR --> S: return username
 deactivate BR
 
-S -> IL: set username
-activate IL
-IL --> S
-deactivate IL
+S -> S: trim username
+activate S
+S --> S
+deactivate S
+
+alt username is not empty
+    S -> S: isAsciiOnly(username)
+    activate S
+    S --> S: return boolean
+    deactivate S
+
+    alt username contains only ASCII characters
+        S -> IL: setUsername(username)
+        activate IL
+        IL --> S
+        deactivate IL
+        note right
+            Username successfully loaded
+        end note
+    else username contains non-ASCII characters
+        S -> S: log warning
+        activate S
+        note right
+            Skip setting invalid username
+            (contains non-ASCII characters)
+        end note
+        S --> S
+        deactivate S
+    end
+else username is empty
+    note right
+        Skip empty username
+    end note
+end
 
 @enduml

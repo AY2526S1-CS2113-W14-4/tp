@@ -11,6 +11,7 @@ class InternityManager {
     - saveData(): void
     - configureUsername(): void
     - isValidUsername(username: String): boolean
+    - isAsciiOnly(str: String): boolean
 }
 
 class CommandParser

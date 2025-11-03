@@ -130,13 +130,37 @@ public class InternityManager {
     }
 
     /**
-     * Validates a username string to ensure it is not {@code null} or blank.
+     * Validates a username string to ensure it is not {@code null} or blank,
+     * and contains only printable ASCII characters.
      *
      * @param username the username string to validate
-     * @return {@code true} if the username is non-null and not blank;<p>
-     *         {@code false} otherwise
+     * @return {@code true} if the username is valid; {@code false} otherwise
      */
     private boolean isValidUsername(String username) {
-        return username != null && !username.isBlank();
+        if (username == null || username.isBlank()) {
+            return false;
+        }
+        String trimmed = username.trim();
+        return isAsciiOnly(trimmed);
+    }
+
+    /**
+     * Checks if a string contains only printable ASCII characters (32-126).
+     * This prevents malicious non-ASCII and control characters from being stored.
+     *
+     * @param str The string to check.
+     * @return true if the string contains only printable ASCII characters, false otherwise.
+     */
+    private boolean isAsciiOnly(String str) {
+        if (str == null) {
+            return false;
+        }
+        for (int i = 0; i < str.length(); i++) {
+            char c = str.charAt(i);
+            if (c < 32 || c > 126) {
+                return false;
+            }
+        }
+        return true;
     }
 }
