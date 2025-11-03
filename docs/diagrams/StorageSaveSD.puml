@@ -12,11 +12,12 @@ IL -> S: save(List)
 activate S
 
 ' === Directory check ===
-S -> S: if (filePath.getParent() != null)
-activate S
-S -> S: Files.createDirectories(filePath.getParent())
-S --> S: return
-deactivate S
+opt parent directory exists
+    S -> S: Files.createDirectories(filePath.getParent())
+    activate S
+    S --> S: return
+    deactivate S
+end
 
 ' === Create temp file ===
 S -> S: tempFile = filePath.resolveSibling(filePath.getFileName() + ".tmp")
