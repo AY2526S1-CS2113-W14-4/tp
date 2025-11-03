@@ -315,7 +315,7 @@ public class InternshipList {
 
                 if (isSameDeadline) {
                     countSameDeadline += 1;
-                } else{
+                } else {
                     nearest = internship;
                     countSameDeadline = 0;
                 }
