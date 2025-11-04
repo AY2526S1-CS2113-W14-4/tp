@@ -50,7 +50,7 @@ Wrote unit tests for AddCommand and FindCommand to ensure code correctness and r
 * Developer Guide
   * Added implementation details for the `add`, `find` and `help` features
   * Described sequence of operations, parsing logic, and design considerations
-  * Added and documented new UML Diagrams to improve the technical clarity of the model layer and features:
+  * Added UML Diagrams to improve the technical clarity of the components:
     * Object Diagram: Model Component
     * Sequence Diagrams: AddCommand, FindCommand, HelpCommand
   * Updated instructions for manual testing
