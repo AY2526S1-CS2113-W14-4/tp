@@ -61,6 +61,7 @@ Wrote unit tests for AddCommand and FindCommand to ensure code correctness and r
 - PRs reviewed (with non-trivial review comments):
 [#75](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/75),
 [#109](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/109),
-[#175](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/175)
+[#175](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/175).
+[Other PRs.](https://github.com/AY2526S1-CS2113-W14-4/tp/pulls?q=is%3Apr+reviewed-by%3ABestBearrr+is%3Aclosed)
 - Collaborated closely with team members to design and refine command features
 - Helped maintain consistent coding standards across the team
