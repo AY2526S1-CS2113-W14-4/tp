@@ -4,8 +4,6 @@
 Internity is a Command-Line Interface (CLI) application designed to help users manage their internship applications efficiently. 
 It is especially useful for Computer Science students who often apply to hundreds of internships and need a simple yet powerful 
 way to organize their applications.
-Internity enables users to add, update, delete, find, and list internship entries, each containing detailed attributes such as the company name, role, application deadline, pay, and status.
-Additionally, Internity offers a dashboard overview for quick insights and ensures data persistence across sessions, allowing users to seamlessly continue where they left off.
 
 ### Code Contributions (and Enhancements)
 [RepoSense link](https://nus-cs2113-ay2526s1.github.io/tp-dashboard/?search=&sort=groupTitle&sortWithin=title&timeframe=commit&mergegroup=&groupSelect=groupByRepos&breakdown=true&checkedFileTypes=docs~functional-code~test-code~other&since=2025-09-19T00%3A00%3A00&filteredFileName=&tabOpen=true&tabType=authorship&tabAuthor=lukeai-tan&tabRepo=AY2526S1-CS2113-W14-4%2Ftp%5Bmaster%5D&authorshipIsMergeGroup=false&authorshipFileTypes=docs~functional-code~test-code~other&authorshipIsBinaryFileTypeChecked=false&authorshipIsIgnoredFilesChecked=false)
@@ -27,16 +25,6 @@ the system more modular and maintainable.
 - This enhancement centralizes the instantiation of commands based on user input, improving separation of concerns and
 maintainability.
 - Simplifies `CommandParser` by delegating command creation, making it easier to add new commands in the future.
-
-#### Argument Parser (`ArgumentParser`) 
-- Designed and implemented `ArgumentParser` to centralize command argument parsing.
-- Provides a structured way for commands like `add`, `delete`, `update`, `list` to parse their input arguments.
-- Allows future developers to easily add new parsing methods for additional commands, promoting modularity and
-code reuse.
-
-#### Argument Parsing Support (`DateFormatter` and `Date`)
-- Created `DateFormatter` for parsing user-provided dates and `Date` as a custom comparable date object
-  used across internships.
 
 #### Exit, Username, Dashboard Command (`ExitCommand`, `UsernameCommand`, `DashboardCommand`)
 - Implemented the `exit` command for users to exit the program.
