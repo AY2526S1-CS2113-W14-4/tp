@@ -15,13 +15,12 @@ like a dashboard overview for quick insights and data persistence between sessio
 
 #### AddCommand
 * Implemented the AddCommand feature, enabling users to record new internship entries with details such as company, role, deadline, and pay.
-* Designed the command to integrate seamlessly with the ArgumentParser, Ui and InternshipList.
-* Implemented comprehensive validation for empty fields, negative and non-numeric pay, and exceeding character limits.
+* Designed the command to function and integrate seamlessly with other classes.
+* Implemented comprehensive validation to handle empty fields, negative and non-numeric pay, and exceeding character limits.
 
 #### FindCommand
 * Implemented FindCommand, which filters internships by matching user keywords against both company and role fields.
 * Designed case-insensitive substring matching for more intuitive search results.
-* Integrated with the ArgumentParser, Ui and InternshipList
 
 #### ArgumentParser
 * Designed and implemented parsing logic for both add and find commands.
@@ -41,8 +40,8 @@ Wrote unit tests for AddCommand and FindCommand to ensure code correctness and r
 ### Project Management
 * Coordinated weekly development tasks and ensured alignment with milestone deliverables.
 * Managed the GitHub project board, assigning issues and tracking progress across sprints.
-* Reviewed and approved pull requests to ensure adherence to coding and documentation standards.
-* Ensured consistent code quality through periodic refactoring and adherence to the project’s coding style guidelines.
+* Reviewed and approved pull requests to ensure adherence to coding standards.
+* Ensured consistent code quality through periodic refactoring and adherence to coding style guidelines.
 
 ### Documentation
 * User Guide:
@@ -50,7 +49,7 @@ Wrote unit tests for AddCommand and FindCommand to ensure code correctness and r
   * Improved clarity to enhance user understanding
 * Developer Guide
   * Added implementation details for the `add`, `find` and `help` features
-  * Described sequence of operations, logic for parsing arguments, as well as design considerations
+  * Described sequence of operations, parsing logic, and design considerations
   * Added and documented new UML Diagrams to improve the technical clarity of the model layer and features:
     * Object Diagram: Model Component
     * Sequence Diagrams: AddCommand, FindCommand, HelpCommand
