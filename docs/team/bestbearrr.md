@@ -15,33 +15,23 @@ like a dashboard overview for quick insights and data persistence between sessio
 
 #### AddCommand
 * Implemented the AddCommand feature, enabling users to record new internship entries with details such as company, role, deadline, and pay.
-* Designed the command to integrate seamlessly with the ArgumentParser, ensuring robust validation and structured parsing.
-* Added logic in AddCommand.execute() to instantiate a new Internship object and update the global static InternshipList.
-* Enhanced usability by integrating Ui.printAddInternship() for consistent success feedback after addition.
+* Designed the command to integrate seamlessly with the ArgumentParser, Ui and InternshipList.
 * Implemented comprehensive validation for empty fields, negative and non-numeric pay, and exceeding character limits.
 
 #### FindCommand
 * Implemented FindCommand, which filters internships by matching user keywords against both company and role fields.
 * Designed case-insensitive substring matching for more intuitive search results.
-* Integrated with the ArgumentParser to handle and validate keyword input.
-* Ensured that filtered results are displayed using the Ui layer in a consistent and readable format.
-* Optimised command behavior to handle empty and invalid inputs gracefully using centralised exception handling.
+* Integrated with the ArgumentParser, Ui and InternshipList
 
 #### ArgumentParser
 * Designed and implemented parsing logic for both add and find commands.
-* For AddCommand:
-    * Developed a structured parsing mechanism that enforces strict input format (company/, role/, deadline/, pay/).
-    * Implemented extensive validation and error handling for missing prefixes, field order, and data format.
-* For FindCommand:
-    * Implemented argument extraction logic to handle single or multi-word search terms.
-    * Ensured trimming, normalisation, and exception handling for blank or invalid input.
-* Enhanced logging for debugging and traceability of command parsing.
-
+  * Developed a structured parsing mechanism for the input formats.
+  * Implemented extensive validation and error handling for missing prefixes, field order and data format.
+  * Ensured trimming and exception handling for blank or invalid input.
+    
 #### User Interface
-* Added methods to display messages and information from commands.  
-* Enhanced Ui class to provide standardised feedback for add and find commands.
+* Added methods to display messages and information from commands.
 * Improved readability and formatting of success and error messages.
-* Added logging and structured formatting for output consistency.
 
 #### Internship
 * Added a toString method to display the internship details to a structured text format
@@ -51,9 +41,7 @@ Wrote unit tests for AddCommand and FindCommand to ensure code correctness and r
 ### Project Management
 * Coordinated weekly development tasks and ensured alignment with milestone deliverables.
 * Managed the GitHub project board, assigning issues and tracking progress across sprints.
-* Led feature integration and conflict resolution during merges to maintain a stable main branch.
 * Reviewed and approved pull requests to ensure adherence to coding and documentation standards.
-* Organised and documented team discussions during meetings, ensuring clear follow-ups and accountability.
 * Ensured consistent code quality through periodic refactoring and adherence to the project’s coding style guidelines.
 
 ### Documentation
@@ -64,10 +52,8 @@ Wrote unit tests for AddCommand and FindCommand to ensure code correctness and r
   * Added implementation details for the `add`, `find` and `help` features
   * Described sequence of operations, logic for parsing arguments, as well as design considerations
   * Added and documented new UML Diagrams to improve the technical clarity of the model layer and features:
-    * Model Component Object Diagram 
-    * AddCommand Sequence Diagram
-    * FindCommand Sequence Diagram
-    * HelpCommand Sequence Diagram
+    * Object Diagram: Model Component
+    * Sequence Diagrams: AddCommand, FindCommand, HelpCommand
   * Updated instructions for manual testing
 
 ### Community
