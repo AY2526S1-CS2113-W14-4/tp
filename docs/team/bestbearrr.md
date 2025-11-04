@@ -63,6 +63,5 @@ Wrote unit tests for AddCommand and FindCommand to ensure code correctness and r
 [#75](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/75),
 [#109](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/109),
 [#175](https://github.com/AY2526S1-CS2113-W14-4/tp/pull/175)
-- Collaborated closely with team members to design and refine command features, ensuring consistency across all implementations.
-- Helped maintain consistent coding standards across the team by suggesting improvements to naming conventions and code structure.
-- Contributed to sprint planning discussions, helping prioritise tasks and define achievable milestones.
+- Collaborated closely with team members to design and refine command features
+- Helped maintain consistent coding standards across the team
